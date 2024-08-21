@@ -1,0 +1,137 @@
+.wrapper_registeration {
+  .registeration_main {
+    background-color: #e8e3de;
+    height: 100%;
+    padding: 2rem 0;
+  }
+  .registeration_text {
+    margin: 2rem 0;
+    text-align: center;
+    h1 {
+      font-size: 28px;
+    }
+    h3 {
+      font-size: 20px;
+    }
+  }
+  .wrapper_inputs {
+    width: 70%;
+    margin: auto;
+    display: flex;
+    justify-content: space-evenly;
+    .ready_logins {
+      button {
+        border: 2px solid #d1c6c0;
+        margin-bottom: 2rem;
+        width: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 30px;
+        font-size: 18px;
+        border-radius: 15px;
+        &:hover {
+          border: 2px solid #44232c;
+        }
+        svg {
+          margin-right: 10px;
+        }
+      }
+    }
+    .type_inputs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      input {
+        cursor: pointer;
+        border: 2px solid #d1c6c0;
+        margin-bottom: 2rem;
+        width: 300px;
+        padding: 10px 30px;
+        font-size: 18px;
+        border-radius: 15px;
+        background-color: #f5f2ed;
+        &:hover {
+          border: 2px solid #44232c;
+        }
+      }
+    }
+  }
+  .linktoregister {
+    text-align: center;
+    margin: 3rem 0;
+  }
+  .btn_signup {
+    width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 30px;
+    font-size: 18px;
+    border-radius: 15px;
+    background-color: #275df0;
+    color: white;
+    border: 2px solid #275df0;
+  }
+}
+
+.passwordStrengthIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .inputWrapper {
+    position: relative;
+    width: 300px;
+  }
+
+  .inputField {
+    cursor: pointer;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    background-color: #f5f2ed;
+    color: #d1c6c0;
+  }
+
+  .eyeIcon {
+    position: absolute;
+    top: 14px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #44232c;
+    font-size: 18px;
+  }
+
+  .strengthMeter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    width: 100%;
+
+    .strengthBar {
+      width: 20%;
+      height: 2px;
+      background-color: #ddd;
+
+      &.active {
+        background-color: #0073ff;
+      }
+    }
+  }
+  .errorText {
+    margin: 1rem 0;
+  }
+
+  .strengthLabel {
+    font-size: 12px;
+    color: #4b3835;
+    text-align: right;
+  }
+}

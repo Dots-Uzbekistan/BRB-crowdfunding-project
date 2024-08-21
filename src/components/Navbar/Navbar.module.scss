@@ -1,0 +1,38 @@
+.wrapper_navbar {
+  padding: 2rem 0;
+  .wrapper_width {
+    width: 92%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .link_navbar {
+      font-size: 22px;
+      text-decoration: none;
+      color: #000000;
+    }
+    .search {
+      position: relative;
+      input {
+        cursor: pointer;
+        width: 300px;
+        padding: 8px 15px 8px 40px;
+        border-radius: 10px;
+      }
+      .icon {
+        position: absolute;
+        top: 4px;
+        left: 0;
+        transform: translate(50%, 50%);
+      }
+    }
+    .btns {
+      .link_btn {
+        font-size: 22px;
+        text-decoration: none;
+        color: #000000;
+        margin-left: 1rem;
+      }
+    }
+  }
+}
