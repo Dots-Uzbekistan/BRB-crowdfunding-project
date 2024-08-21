@@ -99,6 +99,10 @@
       border: 4px solid #000000;
       background: transparent;
       font-weight: 500;
+      &:hover {
+        gap: 2rem;
+        transition: 0.3s all ease-in-out;
+      }
     }
   }
 }

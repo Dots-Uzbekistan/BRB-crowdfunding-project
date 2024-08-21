@@ -59,11 +59,24 @@ const Header = () => {
       </div>
       <div className={styles.right}>
         <div className={styles.yellow_cont}>
-          <p className={styles.text_yellow}>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className={styles.text_yellow}
+          >
             One click <br /> away from <br />
             bright future
-          </p>
-          <span className={styles.yellow_icon}>
+          </motion.p>
+          <motion.span
+            animate={{ rotate: 360 }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              repeatType: "loop",
+            }}
+            className={styles.yellow_icon}
+          >
             <svg
               width="65"
               height="65"
@@ -76,10 +89,10 @@ const Header = () => {
                 fill="black"
               />
             </svg>
-          </span>
+          </motion.span>
         </div>
         <motion.button className={styles.button_signup}>
-          Sign up
+          <p>Sign up</p>
           <svg
             width="27"
             height="27"
