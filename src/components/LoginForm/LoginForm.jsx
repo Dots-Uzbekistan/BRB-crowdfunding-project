@@ -1,11 +1,23 @@
-import React from "react";
-import styles from "./Navbar.module.scss";
-import { Link } from "react-router-dom";
-import { FaSearch } from "react-icons/fa";
-const Navbar = () => {
+import React, { useState } from "react";
+import styles from "./LoginForm.module.scss";
+import oneid from "../../assets/oneid.png";
+import quant from "../../assets/quant.png";
+
+const LoginForm = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
   return (
-    <nav className={styles.wrapper_navbar}>
-      <div className={styles.wrapper_width}>
+    <div className={styles.container}>
+      <div className={styles.welcome}>
         <svg
           width="66"
           height="47"
@@ -19,23 +31,42 @@ const Navbar = () => {
           />
         </svg>
 
-        <Link className={styles.link_navbar}>Explore</Link>
-        <div className={styles.search}>
-          <FaSearch className={styles.icon} />
-          <input type="search" placeholder="Search" />
-        </div>
-        <Link className={styles.link_navbar}>Raise Money</Link>
-        <div className={styles.btns}>
-          <Link className={styles.link_btn} to={"/login"}>
-            Log in
-          </Link>
-          <Link to={"/registration"} className={styles.link_btn}>
-            Sign in
-          </Link>
+        <h1>
+          We are <span className={styles.highlightYellow}>happy</span> to <br />{" "}
+          see you <span className={styles.highlightGreen}>again</span>!
+        </h1>
+        <p>
+          Together, we're making <br /> dreams a reality.
+        </p>
+      </div>
+      <div className={styles.form}>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={handleUsernameChange}
+          className={styles.inputField}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={handlePasswordChange}
+          className={styles.inputField}
+        />
+        <button className={styles.loginButton}>Log in</button>
+        <p className={styles.continueText}>or continue with</p>
+        <div className={styles.socialButtons}>
+          <button className={styles.socialButtonOneID}>
+            <img src={oneid} alt="" /> OneID
+          </button>
+          <button className={styles.socialButtonQuant}>
+            <img src={quant} alt="" /> Quant bank account
+          </button>
         </div>
       </div>
-    </nav>
+    </div>
   );
 };
 
-export default Navbar;
+export default LoginForm;

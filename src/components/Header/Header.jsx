@@ -18,7 +18,12 @@ const Header = () => {
           Invest in founders building the future
         </motion.p>
         <div className={styles.green_container_wrapper}>
-          <article className={styles.green_cont}>
+          <motion.article
+            className={styles.green_cont}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             <div className={styles.text_green_group}>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -33,8 +38,13 @@ const Header = () => {
               </div>
             </div>
             <CountUp end={3466} className={styles.number_header_countup} />
-          </article>
-          <article className={styles.green_cont}>
+          </motion.article>
+          <motion.article
+            className={styles.green_cont}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             <div className={styles.text_green_group}>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -54,11 +64,16 @@ const Header = () => {
               end={774}
               className={styles.number_header_countup}
             />
-          </article>
+          </motion.article>
         </div>
       </div>
       <div className={styles.right}>
-        <div className={styles.yellow_cont}>
+        <motion.div
+          className={styles.yellow_cont}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -90,7 +105,7 @@ const Header = () => {
               />
             </svg>
           </motion.span>
-        </div>
+        </motion.div>
         <motion.button className={styles.button_signup}>
           <p>Sign up</p>
           <svg

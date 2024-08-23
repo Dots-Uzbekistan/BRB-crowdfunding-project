@@ -1,24 +1,57 @@
 import React from "react";
 import styles from "./WhyUs.module.scss";
+import { motion } from "framer-motion";
 import { LineChart } from "@mui/x-charts/LineChart";
 
 const WhyUs = () => {
   return (
     <section className={styles.wrapper_us}>
-      <div className={styles.left_us}>
-        <p className={styles.text_us}>
+      <motion.div
+        className={styles.left_us}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.p
+          className={styles.text_us}
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           Why create <br /> on Fundflow?
-        </p>
-        <article className={styles.cont_us_yellow}>
-          <p className={styles.text_yellow}>
+        </motion.p>
+        <motion.article
+          className={styles.cont_us_yellow}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.p
+            className={styles.text_yellow}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             Use our collaboration <br /> tools to reach
-          </p>
-          <p className={styles.number_info_yellow}>23% more investors</p>
-        </article>
-      </div>
+          </motion.p>
+          <motion.p
+            className={styles.number_info_yellow}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            23% more investors
+          </motion.p>
+        </motion.article>
+      </motion.div>
       <div className={styles.right_us}>
         <div className={styles.right_us_containers}>
-          <article className={styles.purple}>
+          <motion.article
+            className={styles.purple}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             <svg
               width="220"
               height="221"
@@ -56,10 +89,27 @@ const WhyUs = () => {
                 mask="url(#path-5-inside-2_235_387)"
               />
             </svg>
-            <p>Build audience and interact with them </p>
-          </article>
-          <article className={styles.green_us}>
-            <p>AI tools are ready to help you grow </p>
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              Build audience and interact with them{" "}
+            </motion.p>
+          </motion.article>
+          <motion.article
+            className={styles.green_us}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              AI tools are ready to help you grow{" "}
+            </motion.p>
             <svg
               width="140"
               height="145"
@@ -76,7 +126,7 @@ const WhyUs = () => {
                 fill="black"
               />
             </svg>
-          </article>
+          </motion.article>
         </div>
         <div className={styles.wrapper_linechart}>
           <p className={styles.text_linechart}>

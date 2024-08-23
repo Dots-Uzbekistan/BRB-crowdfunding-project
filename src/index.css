@@ -23,3 +23,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+#shadow-host-companion {
+  display: none;
+}

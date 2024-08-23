@@ -1,0 +1,161 @@
+.wrapper_campaign {
+  width: 92%;
+  margin: auto;
+  h1 {
+    font-size: 70px;
+    line-height: 1.3;
+    .highlight_purple {
+      border-radius: 14px;
+      background-color: #cabcf8;
+      padding: 0 0.4rem;
+    }
+    .highlight_green {
+      border-radius: 14px;
+      background-color: #a5ffb8;
+      padding: 0 0.4rem;
+    }
+  }
+
+  .category {
+    border: 1px solid red;
+    display: flex;
+    gap: 17px;
+    margin: 3rem 0 0 0;
+    .filtersContainer {
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      padding: 1rem 3rem;
+      line-height: 1;
+      width: 400px;
+      height: 100%;
+      background-color: #a5ffb8;
+      border-radius: 14px;
+      font-weight: 600;
+
+      .filterHeader {
+        font-size: 20px;
+        margin-bottom: 15px;
+      }
+
+      .filterSection {
+        margin-bottom: 20px;
+      }
+
+      h4 {
+        margin-bottom: 10px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .radioGroup {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .radioOption {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+
+        input[type="radio"] {
+          margin-right: 10px;
+          accent-color: black; /* Adjust the color of the radio button */
+        }
+      }
+
+      .radioOption:last-child {
+        margin-bottom: 0;
+      }
+    }
+    // border: 1px solid red;
+    .products {
+      width: 100%;
+      .carousel {
+        display: flex;
+        align-items: center;
+
+        &Control {
+          background-color: transparent;
+          border: none;
+          font-size: 24px;
+          cursor: pointer;
+
+          &.prev {
+            margin-right: 10px;
+          }
+
+          &.next {
+            margin-left: 10px;
+          }
+        }
+
+        &Items {
+          //   border: 1px solid black;
+          display: flex;
+          overflow: hidden;
+          width: 100%;
+          padding: 0 2rem;
+          justify-content: space-between;
+        }
+
+        &Item {
+          //   border: 2px solid green;
+          width: 100px;
+          flex-shrink: 0;
+          text-align: center;
+          cursor: pointer;
+          color: #919191;
+
+          &.active {
+            display: block;
+            color: black;
+          }
+        }
+
+        &Icon {
+          width: 50px;
+          height: 50px;
+        }
+      }
+      .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .campaignCard {
+        background-color: #f4f4f4;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .image {
+        width: 100%;
+        height: 150px;
+        background-color: #ddd;
+        margin-bottom: 10px;
+      }
+
+      .trending {
+        background-color: #ffdd57;
+        border-radius: 12px;
+        padding: 5px 10px;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+
+      .title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .funding {
+        font-size: 1rem;
+        color: #666;
+      }
+    }
+  }
+}
