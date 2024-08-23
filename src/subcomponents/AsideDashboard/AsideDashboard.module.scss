@@ -1,0 +1,47 @@
+.aside_filter {
+  .filtersContainer {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 1rem 3rem;
+    line-height: 1;
+    width: 300px;
+    height: 100%;
+    background-color: #a5ffb8;
+    border-radius: 14px;
+    font-weight: 600;
+
+    .filterHeader {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .filterSection {
+      margin-bottom: 20px;
+    }
+
+    h4 {
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .radioGroup {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .radioOption {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+
+      input[type="radio"] {
+        margin-right: 10px;
+        accent-color: black; /* Adjust the color of the radio button */
+      }
+    }
+
+    .radioOption:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

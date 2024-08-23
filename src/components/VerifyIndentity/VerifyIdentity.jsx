@@ -13,9 +13,9 @@ const VerifyIdentity = () => {
     name: "",
     surname: "",
     email: "",
-    mobile: "",
-    passportId: "",
-    file: null,
+    phone_number: "",
+    passport_number: "",
+    passport_document: null,
   });
 
   const [fileInfo, setFileInfo] = useState(null); // State to hold file info
@@ -46,12 +46,14 @@ const VerifyIdentity = () => {
     data.append("name", formData.name);
     data.append("surname", formData.surname);
     data.append("email", formData.email);
-    data.append("mobile", formData.mobile);
-    data.append("passport_id", formData.passportId);
-    if (formData.file) {
-      data.append("file", formData.file);
+    data.append("phone_number", formData.phone_number);
+    data.append("passport_number", formData.passport_number);
+    if (formData.passport_document) {
+      data.append("passport_document", formData.passport_document);
     }
-    const token = localStorage.getItem(token);
+    // const token = localStorage.getItem(token);
+    const token = localStorage.getItem("token"); // Corrected token retrieval
+
     console.log(token);
     if (!token) {
       console.error("No token found");
@@ -140,6 +142,7 @@ const VerifyIdentity = () => {
             onChange={handleChange}
             required
           />
+
           <input
             type="email"
             name="email"
@@ -150,17 +153,18 @@ const VerifyIdentity = () => {
           />
           <input
             type="text"
-            name="mobile"
+            name="phone_number"
             placeholder="Mobile Number"
-            value={formData.mobile}
+            value={formData.phone_number}
             onChange={handleChange}
             required
           />
+
           <input
             type="text"
-            name="passportId"
+            name="passport_number"
             placeholder="Passport ID"
-            value={formData.passportId}
+            value={formData.passport_number}
             onChange={handleChange}
             required
           />
@@ -170,7 +174,7 @@ const VerifyIdentity = () => {
           <label className={styles.uploadLabel}>
             <input
               type="file"
-              name="file"
+              name="passport_document"
               onChange={handleChange}
               accept="image/*,application/pdf"
               required
@@ -178,17 +182,17 @@ const VerifyIdentity = () => {
             <span>
               <MdOutlineFileUpload className={styles.upload_icon} />
               click here to select or drop
-              {fileInfo && (
-                <div className={styles.fileInfo}>
-                  {renderFileIcon(fileInfo.type)}
-                  <p>{fileInfo.name}</p>
-                </div>
-              )}
             </span>
+            {fileInfo && (
+              <div className={styles.fileInfo}>
+                {renderFileIcon(fileInfo.type)}
+                <p>{fileInfo.name}</p>
+              </div>
+            )}
           </label>
 
           <button className={styles.registerBtn} type="submit">
-            Submit
+            Submit and Register
           </button>
         </form>
 

@@ -35,7 +35,7 @@ const Registration = () => {
           </article>
         </div>
         <button className={styles.btn_register}>
-          <Link to={"/verifyidentity"} className={styles.fullregister}>
+          <Link to={"/lastregistration"} className={styles.fullregister}>
             Next
           </Link>
 

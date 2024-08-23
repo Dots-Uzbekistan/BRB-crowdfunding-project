@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 4rem 0;
+  padding: 2rem 0;
 
   .left {
     width: 100%;
@@ -59,6 +59,12 @@
       border: 2px solid #000;
       border-radius: 8px;
       font-size: 1rem;
+      .fileInfo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 17px;
+      }
     }
 
     .formGroup {

@@ -134,7 +134,7 @@ const LastRegistration = () => {
             className={isPasswordMismatch ? styles.mismatchPassword : ""}
           />
           <button className={styles.registerButton} onClick={handleRegister}>
-            Register
+            Next
           </button>
         </div>
       )}

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FaUser } from "react-icons/fa";
 import { FaMoneyBill } from "react-icons/fa";
 import CountUp from "react-countup";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -107,7 +108,9 @@ const Header = () => {
           </motion.span>
         </motion.div>
         <motion.button className={styles.button_signup}>
-          <p>Sign up</p>
+          <Link to={"/registration"} className={styles.signup_register}>
+            <p>Sign up</p>
+          </Link>
           <svg
             width="27"
             height="27"
