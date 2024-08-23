@@ -1,0 +1,60 @@
+// CampaignGrid.module.scss
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.campaignCard {
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.imageWrapper {
+  position: relative;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .trendingLabel {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background-color: #ff6f61;
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+}
+
+.campaignDetails {
+  padding: 16px;
+
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    color: #333333;
+  }
+
+  p {
+    margin: 4px 0;
+    color: #666666;
+    font-size: 0.95rem;
+  }
+}

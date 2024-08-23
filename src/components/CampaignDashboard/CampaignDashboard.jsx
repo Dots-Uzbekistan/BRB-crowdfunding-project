@@ -9,8 +9,22 @@ import { FaLeaf } from "react-icons/fa";
 import { MdOutlineSportsBasketball } from "react-icons/md";
 import { AiTwotoneMedicineBox } from "react-icons/ai";
 import AsideDashboard from "../../subcomponents/AsideDashboard/AsideDashboard";
+import CampaignsFilters from "../../components/CampaignFilters/CampaignFilters";
+import CampaignGrid from "../../components/CampaignGrid/CampaignGrid";
 
 const CampaignDashboard = () => {
+  const [filters, setFilters] = useState({
+    sort: "newest",
+    goal_amount: "",
+    funding_status: "",
+    project_state: "",
+    raised_percentage: "",
+  });
+
+  const handleApplyFilters = (newFilters) => {
+    setFilters(newFilters);
+  };
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const carouselItems = [
@@ -36,19 +50,7 @@ const CampaignDashboard = () => {
   const selectSlide = (index) => {
     setCurrentIndex(index);
   };
-  const [campaigns, setCampaigns] = useState([]);
 
-  useEffect(() => {
-    // Fetch campaigns from the API
-    axios
-      .get("http://161.35.19.77:8001/api/catalog/campaigns")
-      .then((response) => {
-        setCampaigns(response.data); // Assuming response data is an array of campaigns
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the campaigns!", error);
-      });
-  }, []);
   return (
     <section className={styles.dashboard_wrapper}>
       <Navbar />
@@ -81,29 +83,9 @@ const CampaignDashboard = () => {
                 &gt;
               </button>
             </div>
-            <div className={styles.container}>
-              {campaigns.map((campaign) => (
-                <div key={campaign.id} className={styles.campaignCard}>
-                  <div className={styles.image}>
-                    {/* Assuming the image URL is in campaign.image */}
-                    <img
-                      src={campaign.image}
-                      alt={campaign.name}
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </div>
-                  {campaign.trending && (
-                    <div className={styles.trending}>Trending this week</div>
-                  )}
-                  <div className={styles.title}>{campaign.name}</div>
-                  <div className={styles.funding}>
-                    {campaign.funding}% funded
-                  </div>
-                </div>
-              ))}
-            </div>
+            <CampaignGrid />
           </div>
-          <AsideDashboard />
+          <AsideDashboard filters={filters} />
         </div>
       </div>
     </section>

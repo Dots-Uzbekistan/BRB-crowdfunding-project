@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import styles from "./AsideDashboard.module.scss";
-const AsideDashboard = () => {
-  const [sortBy, setSortBy] = useState("newest");
-  const [raisedAmount, setRaisedAmount] = useState("<10mln");
-  const [goalAmount, setGoalAmount] = useState("<10mln");
-  const [fundingState, setFundingState] = useState("live");
-  const [currency, setCurrency] = useState("uzs");
-  const [projectState, setProjectState] = useState("production");
-  const [raisedPercentage, setRaisedPercentage] = useState("<75%");
+
+const AsideDashboard = ({ onApplyFilters }) => {
+  const [sortBy, setSortBy] = useState("");
+  // const [raisedAmount, setRaisedAmount] = useState("");
+  const [goalAmount, setGoalAmount] = useState("");
+  const [fundingState, setFundingState] = useState("");
+  // const [currency, setCurrency] = useState("");
+  const [projectState, setProjectState] = useState("");
+  const [raisedPercentage, setRaisedPercentage] = useState("");
+
   const renderRadioGroup = (name, options, selectedValue, setSelectedValue) => (
     <div className={styles.radioGroup}>
       {options.map((option) => (
@@ -24,6 +26,16 @@ const AsideDashboard = () => {
       ))}
     </div>
   );
+
+  const handleApplyFilters = () => {
+    onApplyFilters({
+      sort: sortBy,
+      goal_amount: goalAmount,
+      funding_status: fundingState,
+      project_state: projectState,
+      raised_percentage: raisedPercentage,
+    });
+  };
 
   return (
     <aside className={styles.aside_filter}>
@@ -43,21 +55,6 @@ const AsideDashboard = () => {
             ],
             sortBy,
             setSortBy
-          )}
-        </div>
-
-        <div className={styles.filterSection}>
-          <h4>Raised amount:</h4>
-          {renderRadioGroup(
-            "raisedAmount",
-            [
-              { value: "<10mln", label: "<10 mln uzs" },
-              { value: "10-100mln", label: "10 mln - 100 mln uzs" },
-              { value: "100-500mln", label: "100 mln - 500 mln uzs" },
-              { value: ">500mln", label: ">500 mln uzs" },
-            ],
-            raisedAmount,
-            setRaisedAmount
           )}
         </div>
 
@@ -91,19 +88,6 @@ const AsideDashboard = () => {
         </div>
 
         <div className={styles.filterSection}>
-          <h4>Currency:</h4>
-          {renderRadioGroup(
-            "currency",
-            [
-              { value: "uzs", label: "UZS" },
-              { value: "usd", label: "USD" },
-            ],
-            currency,
-            setCurrency
-          )}
-        </div>
-
-        <div className={styles.filterSection}>
           <h4>Project state:</h4>
           {renderRadioGroup(
             "projectState",
@@ -131,6 +115,10 @@ const AsideDashboard = () => {
             setRaisedPercentage
           )}
         </div>
+
+        <button onClick={handleApplyFilters} className={styles.applyButton}>
+          Apply Filters
+        </button>
       </div>
     </aside>
   );

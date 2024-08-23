@@ -2,6 +2,7 @@ import React, { createContext, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Main from "./pages/Main/Main";
+
 import Registration from "./components/Registration/Registration";
 import VerifyIdentity from "./components/VerifyIndentity/VerifyIdentity";
 import LastRegistration from "./components/LastRegistration/LastRegistration";
