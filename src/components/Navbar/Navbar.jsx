@@ -1,46 +1,65 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./Navbar.module.scss";
 import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode"; // Import jwt-decode (corrected the import)
 import { FaSearch, FaBell, FaUserCircle } from "react-icons/fa";
+import styles from "./Navbar.module.scss";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null); // Reference to the dropdown container
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  // Close dropdown if clicked outside
+  // Logout function to clear the token
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+  };
+
+  const checkTokenValidity = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000; // Current time in seconds
+
+        if (decodedToken.exp > currentTime) {
+          setIsAuthenticated(true);
+        } else {
+          handleLogout(); // Token expired, log out user
+        }
+      } catch (error) {
+        handleLogout(); // If decoding fails, log out user
+      }
+    } else {
+      setIsAuthenticated(false);
+    }
+  };
+
   useEffect(() => {
+    checkTokenValidity();
+
+    // Attach event listener when dropdown is open
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false); // Close the dropdown
+        setIsOpen(false);
       }
     };
 
-    // Attach event listener when dropdown is open
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
 
-    // Cleanup event listener on unmount or when isOpen changes
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication
 
-  useEffect(() => {
-    // Check if token exists in localStorage
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, []); // Runs only once, when component mounts
   return (
     <nav className={styles.wrapper_navbar}>
       <div className={styles.wrapper_width}>
@@ -77,9 +96,18 @@ const Navbar = () => {
                 />
                 {isOpen && (
                   <div className={styles.dropdownMenu}>
-                    <button className={styles.dropdownItem}>Profile</button>
-                    <button className={styles.dropdownItem}>Settings</button>
-                    <button className={styles.dropdownItem}>Log out</button>
+                    <Link to={"/profile"} className={styles.link_dropdown}>
+                      <button className={styles.dropdownItem}>Profile</button>
+                    </Link>
+                    <Link to={"/settings"} className={styles.link_dropdown}>
+                      <button className={styles.dropdownItem}>Settings</button>
+                    </Link>
+                    <button
+                      className={styles.dropdownItem}
+                      onClick={handleLogout}
+                    >
+                      Log out
+                    </button>
                   </div>
                 )}
               </div>

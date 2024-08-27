@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
-import axios from "axios"; // Import Axios
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import styles from "./LoginForm.module.scss";
 import oneid from "../../assets/oneid.png";
 import quant from "../../assets/quant.png";
@@ -9,7 +9,15 @@ const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
+
+  // Check for an existing token when the component mounts
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -20,7 +28,7 @@ const LoginForm = () => {
   };
 
   const handleLogin = async () => {
-    setErrorMessage(""); // Clear any previous errors
+    setErrorMessage("");
 
     const requestBody = {
       username,
@@ -28,7 +36,6 @@ const LoginForm = () => {
     };
 
     try {
-      // Fetch login API using Axios
       const response = await axios.post(
         "http://161.35.19.77:8001/api/auth/login/",
         requestBody
@@ -36,23 +43,16 @@ const LoginForm = () => {
 
       const { token } = response.data;
 
-      // Check if login is successful and token exists
       if (token) {
-        // Store token in localStorage or use AuthContext for global state management
         localStorage.setItem("token", token);
-
-        // Navigate to the explore page if logged in successfully
         navigate("/dashboard");
       }
     } catch (error) {
-      // Handle errors (login failure or network issue)
-      if (error.response && error.response.data.message) {
+      if (error.response && error.response.data?.message) {
         setErrorMessage("Login failed: " + error.response.data.message);
       } else {
         setErrorMessage("An error occurred. Please try again.");
       }
-
-      // Navigate to the last registration page if login fails
       navigate("/lastregistration");
     }
   };
@@ -95,7 +95,7 @@ const LoginForm = () => {
           onChange={handlePasswordChange}
           className={styles.inputField}
         />
-        <button className={styles.loginButton} onClick={handleLogin}>
+        <button type="submit" className={styles.loginButton} onClick={handleLogin}>
           Log in
         </button>
         {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}

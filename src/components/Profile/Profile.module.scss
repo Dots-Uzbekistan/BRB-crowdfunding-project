@@ -1,0 +1,48 @@
+.investmentPage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profileInfo {
+  display: flex;
+  align-items: center;
+  background-color: #f7f5dd; /* Light yellow */
+  padding: 10px;
+  border-radius: 10px;
+  justify-content: space-between;
+}
+
+.profileText {
+  display: flex;
+  flex-direction: column;
+}
+
+.investments {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.investmentCard {
+  background-color: #b5e7a0; /* Light green */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.donutChart {
+  background-color: #c4a4e6; /* Light purple */
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
