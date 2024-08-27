@@ -8,11 +8,11 @@ const CampaignGrid = () => {
 
   useEffect(() => {
     // Retrieve token from local storage
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("token");
 
     if (token) {
       axios
-        .get(`http://161.35.19.77:8001/api/catalog/`, {
+        .get(`http://161.35.19.77:8001/api/catalog/campaigns`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

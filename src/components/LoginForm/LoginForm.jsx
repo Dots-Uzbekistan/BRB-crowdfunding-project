@@ -41,10 +41,10 @@ const LoginForm = () => {
         requestBody
       );
 
-      const { token } = response.data;
+      const { access } = response.data;
 
-      if (token) {
-        localStorage.setItem("token", token);
+      if (access) {
+        localStorage.setItem("token", access);
         navigate("/dashboard");
       }
     } catch (error) {
