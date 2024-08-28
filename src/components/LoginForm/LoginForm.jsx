@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import styles from "./LoginForm.module.scss";
 import oneid from "../../assets/oneid.png";
@@ -9,9 +9,9 @@ const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isPasswordCorrect, setIsPasswordCorrect] = useState(null);
   const navigate = useNavigate();
 
-  // Check for an existing token when the component mounts
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -29,6 +29,7 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     setErrorMessage("");
+    setIsPasswordCorrect(null);
 
     const requestBody = {
       username,
@@ -48,28 +49,22 @@ const LoginForm = () => {
         navigate("/dashboard");
       }
     } catch (error) {
+      setIsPasswordCorrect(false);
       if (error.response && error.response.data?.message) {
-        setErrorMessage("Login failed: " + error.response.data.message);
+        if (error.response.data.message === "Incorrect password") {
+          setErrorMessage("Password is not correct");
+        } else {
+          setErrorMessage("Login failed: " + error.response.data.message);
+        }
       } else {
         setErrorMessage("An error occurred. Please try again.");
       }
-      navigate("/lastregistration");
     }
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.welcome}>
-        <svg
-          width="66"
-          height="47"
-          viewBox="0 0 66 47"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* SVG content */}
-        </svg>
-
         <h1>
           We are <span className={styles.highlightYellow}>happy</span> to <br />{" "}
           see you <span className={styles.highlightGreen}>again</span>!
@@ -85,7 +80,9 @@ const LoginForm = () => {
           placeholder="Username"
           value={username}
           onChange={handleUsernameChange}
-          className={styles.inputField}
+          className={`${styles.inputField} ${
+            isPasswordCorrect === false ? styles.incorrect : ""
+          }`}
         />
         <input
           type="password"
@@ -93,12 +90,26 @@ const LoginForm = () => {
           placeholder="Password"
           value={password}
           onChange={handlePasswordChange}
-          className={styles.inputField}
+          className={`${styles.inputField} ${
+            isPasswordCorrect === false ? styles.incorrect : ""
+          }`}
         />
-        <button type="submit" className={styles.loginButton} onClick={handleLogin}>
+        <button
+          type="submit"
+          className={styles.loginButton}
+          onClick={handleLogin}
+        >
           Log in
         </button>
         {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
+        {isPasswordCorrect === false && (
+          <p className={styles.registerText}>
+            Don't have an account?{" "}
+            <Link to="/lastregistration" className={styles.registerLink}>
+              Create a new one
+            </Link>
+          </p>
+        )}
         <p className={styles.continueText}>or continue with</p>
         <div className={styles.socialButtons}>
           <button className={styles.socialButtonOneID}>

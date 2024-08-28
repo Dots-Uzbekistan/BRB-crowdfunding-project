@@ -3,10 +3,8 @@ import styles from "./AsideDashboard.module.scss";
 
 const AsideDashboard = ({ onApplyFilters }) => {
   const [sortBy, setSortBy] = useState("");
-  // const [raisedAmount, setRaisedAmount] = useState("");
   const [goalAmount, setGoalAmount] = useState("");
   const [fundingState, setFundingState] = useState("");
-  // const [currency, setCurrency] = useState("");
   const [projectState, setProjectState] = useState("");
   const [raisedPercentage, setRaisedPercentage] = useState("");
 
@@ -19,7 +17,11 @@ const AsideDashboard = ({ onApplyFilters }) => {
             name={name}
             value={option.value}
             checked={selectedValue === option.value}
-            onChange={() => setSelectedValue(option.value)}
+            onChange={() =>
+              setSelectedValue(
+                selectedValue === option.value ? "" : option.value
+              )
+            }
           />
           {option.label}
         </label>
@@ -28,12 +30,35 @@ const AsideDashboard = ({ onApplyFilters }) => {
   );
 
   const handleApplyFilters = () => {
+    console.log("Applying filters from AsideDashboard:", {
+      sort: sortBy,
+      goal_amount: goalAmount,
+      funding_status: fundingState,
+      project_state: projectState,
+      raised_percentage: raisedPercentage,
+    });
     onApplyFilters({
       sort: sortBy,
       goal_amount: goalAmount,
       funding_status: fundingState,
       project_state: projectState,
       raised_percentage: raisedPercentage,
+    });
+  };
+
+  const handleDeselectAll = () => {
+    setSortBy("");
+    setGoalAmount("");
+    setFundingState("");
+    setProjectState("");
+    setRaisedPercentage("");
+
+    onApplyFilters({
+      sort: "",
+      goal_amount: "",
+      funding_status: "",
+      project_state: "",
+      raised_percentage: "",
     });
   };
 
@@ -63,10 +88,10 @@ const AsideDashboard = ({ onApplyFilters }) => {
           {renderRadioGroup(
             "goalAmount",
             [
-              { value: "<10mln", label: "<10 mln uzs" },
-              { value: "10-100mln", label: "10 mln - 100 mln uzs" },
-              { value: "100-500mln", label: "100 mln - 500 mln uzs" },
-              { value: ">500mln", label: ">500 mln uzs" },
+              { value: "lt_1000", label: "< 10 mln UZS" },
+              { value: "btw_1000_10000", label: "10 mln - 100 mln UZS" },
+              { value: "btw_10000_50000", label: "100 mln - 500 mln UZS" },
+              { value: "gt_50000", label: "> 500 mln UZS" },
             ],
             goalAmount,
             setGoalAmount
@@ -78,8 +103,8 @@ const AsideDashboard = ({ onApplyFilters }) => {
           {renderRadioGroup(
             "fundingState",
             [
-              { value: "live", label: "Live" },
               { value: "successful", label: "Successful" },
+              { value: "live", label: "Live" },
               { value: "upcoming", label: "Upcoming" },
             ],
             fundingState,
@@ -92,9 +117,9 @@ const AsideDashboard = ({ onApplyFilters }) => {
           {renderRadioGroup(
             "projectState",
             [
-              { value: "production", label: "Production" },
-              { value: "prototype", label: "Prototype" },
               { value: "concept", label: "Concept" },
+              { value: "prototype", label: "Prototype" },
+              { value: "production", label: "Production" },
               { value: "launched", label: "Launched" },
             ],
             projectState,
@@ -103,22 +128,27 @@ const AsideDashboard = ({ onApplyFilters }) => {
         </div>
 
         <div className={styles.filterSection}>
-          <h4>Raised %:</h4>
+          <h4>Raised percentage:</h4>
           {renderRadioGroup(
             "raisedPercentage",
             [
-              { value: "<75%", label: "< 75%" },
-              { value: "75%-100%", label: "75% - 100%" },
-              { value: ">100%", label: "> 100%" },
+              { value: "lt_75", label: "< 75%" },
+              { value: "btw_75_100", label: "75% - 100%" },
+              { value: "gt_100", label: "> 100%" },
             ],
             raisedPercentage,
             setRaisedPercentage
           )}
         </div>
 
-        <button onClick={handleApplyFilters} className={styles.applyButton}>
-          Apply Filters
-        </button>
+        <div className={styles.buttonsContainer}>
+          <button className={styles.applyButton} onClick={handleApplyFilters}>
+            Apply Filters
+          </button>
+          <button className={styles.deselectButton} onClick={handleDeselectAll}>
+            Reset
+          </button>
+        </div>
       </div>
     </aside>
   );

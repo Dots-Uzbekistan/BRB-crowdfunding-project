@@ -1,13 +1,14 @@
 .aside_filter {
   .filtersContainer {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    padding: 1rem 3rem;
+    padding: 1rem 2rem;
     line-height: 1;
     width: 300px;
-    height: 100%;
+    height: 110vh;
     background-color: #a5ffb8;
     border-radius: 14px;
     font-weight: 600;
+    position: relative;
 
     .filterHeader {
       font-size: 20px;
@@ -44,10 +45,23 @@
       margin-bottom: 0;
     }
   }
+
   .applyButton {
     width: 100%;
     border-radius: 14px;
     padding: 10px 15px;
-    background-color: #a5ffb8;
+    background-color: black;
+    color: white;
+  }
+  .deselectButton {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    background: transparent;
+    padding: 5px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    background-color: black;
+    color: white;
   }
 }

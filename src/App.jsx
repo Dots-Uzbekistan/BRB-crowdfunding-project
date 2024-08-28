@@ -10,6 +10,7 @@ import LoginForm from "./components/LoginForm/LoginForm";
 import CampaignDashboard from "./components/CampaignDashboard/CampaignDashboard";
 import Profile from "./components/Profile/Profile";
 import Settings from "./components/Settings/Settings";
+import CampaignDetail from "./components/CampaignDetail/CampaignDetail";
 export const AuthContext = createContext();
 function App() {
   const [isSuccessful, setIsSuccessful] = useState(false);
@@ -35,6 +36,7 @@ function App() {
         <Route path="/dashboard" element={<CampaignDashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/campaign/:id" element={<CampaignDetail />} />
       </Routes>
     </AuthContext.Provider>
   );
