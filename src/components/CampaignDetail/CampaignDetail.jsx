@@ -12,7 +12,7 @@ const CampaignDetail = () => {
 
   useEffect(() => {
     const fetchCampaignDetail = async () => {
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem("token");
 
       if (!token) {
         setError("No authentication token found.");
