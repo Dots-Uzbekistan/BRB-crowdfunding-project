@@ -62,10 +62,10 @@ const CampaignDashboard = () => {
     console.log("Selected category:", carouselItems[index].category); // Debugging
   };
 
-  const handleDeselectCategory = () => {
-    handleApplyFilters({ project_category: "" });
-    console.log("Deselected category");
-  };
+  // const handleDeselectCategory = () => {
+  //   handleApplyFilters({ project_category: "" });
+  //   console.log("Deselected category");
+  // };
 
   return (
     <section className={styles.dashboard_wrapper}>
@@ -90,7 +90,7 @@ const CampaignDashboard = () => {
                     key={index}
                     onClick={() => selectSlide(index)}
                   >
-                    {item.icon}
+                    <span>{item.icon}</span>
                     <p>{item.text}</p>
                   </div>
                 ))}

@@ -1,33 +1,329 @@
-.campaignDetailContainer {
-  padding: 20px;
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.middle {
+  width: 92%;
+  margin: auto;
+}
+.wrapper_card_campaign {
+  gap: 3rem;
+  display: flex;
+  justify-content: center;
+  .card_image {
+    width: 700px;
+    height: 500px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 24px;
+  }
+  .info_desc_card {
+    .title_card {
+      font-size: 50px;
+      font-weight: 600;
+    }
+    .desc_card {
+      font-size: 25px;
+      line-height: 1.1;
+      color: #0000006c;
+    }
+    .statistic {
+      .miniStats_title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        p {
+          font-size: 28px;
+          font-weight: 600;
+        }
+      }
+      .progressBarContainer {
+        margin: 10px 0;
+      }
+
+      .miniStats {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        p {
+          font-size: 20px;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .btn_card_camapign {
+      width: 100%;
+      margin: 2rem 0;
+      .investmentgoto {
+        .investmentgoto_1 {
+          padding: 1rem 0;
+          background-color: black;
+          width: 100%;
+          color: white;
+          font-size: 30px;
+          border-radius: 14px;
+          cursor: pointer;
+          border: 2px solid black;
+          transition: 0.3 all linear;
+          &:hover {
+            background-color: white;
+            color: black;
+          }
+        }
+      }
+      .btn_function {
+        margin: 2rem 0;
+        display: grid;
+        gap: 10px;
+        grid-template-columns: auto auto auto;
+        .like {
+          cursor: pointer;
+          border-radius: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 1rem;
+          font-size: 30px;
+          padding: 1rem;
+          border: 2px solid black;
+        }
+        .share {
+          cursor: pointer;
+          border-radius: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 1rem;
+          font-size: 30px;
+          padding: 1rem;
+          border: 2px solid black;
+        }
+        .bookmark_campaign {
+          cursor: pointer;
+          border-radius: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 1rem;
+          font-size: 30px;
+          padding: 1rem;
+          border: 2px solid black;
+        }
+      }
+    }
+  }
+}
+.tabsContainer {
+  width: 100%;
 }
 
-.campaignDetailContainer h1 {
+.tabNav {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
   margin-bottom: 20px;
+  width: 600px;
 }
 
-.campaignDetailContainer img {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 20px;
-}
-
-.campaignDetailContainer p {
-  margin: 10px 0;
-}
-
-.error {
-  color: red;
-  text-align: center;
-}
-
-.tag {
-  display: inline-block;
-  background-color: #e8fc85;
-  color: #000;
-  padding: 5px 10px;
-  border-radius: 5px;
-  margin-right: 5px;
-  margin-bottom: 5px;
+.tabButton {
+  flex: 1;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
   font-weight: bold;
+  text-align: center;
+  color: #333;
+  font-size: 20px;
+  transition: background 0.3s, color 0.3s;
+
+  &:hover {
+    background: #f7f7f7;
+  }
+}
+
+.active {
+  color: black;
+  border-bottom: 2px solid black;
+}
+
+.tabContent {
+  width: 100%;
+}
+.wrapper_overview_right {
+  height: 400px;
+  width: 60%;
+  background-color: #d5e8ea;
+  border-radius: 14px;
+  padding: 2rem 3rem;
+}
+.tab_container_wrapper_overview {
+  display: flex;
+  gap: 1rem;
+  h2 {
+    font-size: 40px;
+  }
+  p {
+    font-size: 22px;
+    line-height: 1.3;
+    margin: 2rem 0;
+  }
+}
+.projectState {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.wrapper_tabs_review {
+  gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+.user_info_card {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  gap: 1rem;
+  .defaultProfileIcon {
+    font-size: 40px;
+    fill: rgb(0, 0, 0);
+  }
+  .user_creator {
+    line-height: 1.1;
+    p {
+      font-size: 18px;
+      color: #0000006c;
+    }
+  }
+}
+.user_info_card_fortabs {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  .defaultProfileIcon {
+    font-size: 40px;
+    fill: rgb(0, 0, 0);
+  }
+  .user_creator_fortabs {
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    line-height: 1.1;
+
+    p {
+      font-size: 18px;
+      color: #0000006c;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+.wrapper_overview {
+  min-height: 350px;
+  padding: 2rem;
+  width: 48%;
+  border: 4px solid black;
+  border-radius: 24px;
+}
+.bio_creator {
+  text-align: center;
+  margin: 4rem 0;
+  font-size: 30px;
+}
+.img_creator {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+.bioContainer {
+  .real_bio {
+    margin: 1rem 0;
+    font-size: 18px;
+    color: #333;
+  }
+}
+
+.showMoreButton {
+  text-decoration: underline;
+  text-align: end;
+  cursor: pointer;
+}
+
+.stepsContainer {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #e9f7fa;
+  border-radius: 8px;
+}
+.ask_question {
+  margin: 2rem 0;
+  text-align: end;
+  h3 {
+    font-size: 30px;
+    line-height: 1.1;
+  }
+  .btn_ask {
+    width: 350px;
+    font-size: 30px;
+    padding: 10px 15px;
+    margin: 1rem 0;
+    background-color: black;
+    color: white;
+    border-radius: 14px;
+    cursor: pointer;
+    border: 2px solid black;
+    transition: 0.3 all linear;
+    &:hover {
+      background-color: white;
+      color: black;
+    }
+  }
+}
+.ant-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.ant-steps-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &.ant-steps-item-finish .ant-steps-item-icon {
+    background-color: #a5ffb8; 
+    border-color: #a5ffb8;
+  }
+
+  &.ant-steps-item-process .ant-steps-item-icon {
+    background-color: #ffd700; 
+    border-color: #ffd700;
+  }
+
+  &.ant-steps-item-wait .ant-steps-item-icon {
+    background-color: #d3d3d3; 
+    border-color: #d3d3d3;
+  }
+
+  .ant-steps-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    transition: all 0.3s ease;
+  }
+
+  .ant-steps-item-title {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+  }
 }

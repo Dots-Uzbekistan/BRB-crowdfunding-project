@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 import styles from "./DonutChart.module.scss";
+import { ThreeDots } from "react-loader-spinner";
 
 const DonutChart = () => {
   const [categoryBreakdown, setCategoryBreakdown] = useState([]);
@@ -90,7 +91,7 @@ const DonutChart = () => {
   return (
     <div className={styles.donutChart}>
       {error ? (
-        <p>{error}</p>
+        <ThreeDots color="#A5FFB8" height={80} width={80} />
       ) : categoryBreakdown.length > 0 ? (
         <PieChart width={500} height={600}>
           <Pie
