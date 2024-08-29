@@ -78,7 +78,7 @@ const ProfileMiniDashboard = () => {
                 <li key={index} className={styles.updateItem}>
                   <div className={styles.updateIcon}></div>
                   <div className={styles.updateDetails}>
-                    <strong>{update.campaign_name}</strong>
+                    <h2>{update.campaign_name}</h2>
                     <p>{update.title}</p>
                   </div>
                   <span className={styles.updateBadge}>1</span>

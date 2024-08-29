@@ -71,29 +71,15 @@ const DonutChart = () => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="#fff" // Ensures the text color is white
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontSize={16} // Increase font size for better visibility
-      >
-        {`${categoryBreakdown[index].category_name}: ${(percent * 100).toFixed(
-          1
-        )}%`}
-      </text>
-    );
   };
 
   return (
     <div className={styles.donutChart}>
+      <h1>Investment categories:</h1>
       {error ? (
         <ThreeDots color="#A5FFB8" height={80} width={80} />
       ) : categoryBreakdown.length > 0 ? (
-        <PieChart width={500} height={600}>
+        <PieChart width={500} height={550}>
           <Pie
             data={categoryBreakdown}
             dataKey="percentage"
@@ -101,7 +87,7 @@ const DonutChart = () => {
             cx="50%"
             cy="50%"
             outerRadius={200}
-            innerRadius={20}
+            innerRadius={80}
             fill="#8884d8"
             label={renderCustomLabel}
             labelLine={false}

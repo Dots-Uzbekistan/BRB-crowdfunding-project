@@ -84,9 +84,9 @@ const Profile = () => {
                 )}
               </div>
               <div className={styles.profileText}>
-                <h4>Your Username: {profile.username}</h4>
+                <h3>{profile.username}</h3>
                 <h4>
-                  Your Full name: {profile.name} {profile.surname}
+                  {profile.name} {profile.surname}
                 </h4>
               </div>
             </div>

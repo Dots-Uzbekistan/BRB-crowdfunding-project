@@ -348,15 +348,14 @@ const CampaignDetail = () => {
                   <FAQ />
                 </div>
               )}
-              {activeTab === "updates" && (
-                <div>
-                  <Updates />
-                </div>
-              )}
+              {activeTab === "updates" && <div>
+              <Updates/>
+              </div>}
             </div>
           </div>
         </div>
         <Kickstarterad />
+      
       </div>
       <FooterMini />
     </section>

@@ -101,6 +101,9 @@ const Updates = () => {
           Next
         </button>
       </div>
+      <div className={styles.button_yellow_campaign}>
+        <h1>Campaign launched</h1>
+      </div>
     </div>
   );
 };
