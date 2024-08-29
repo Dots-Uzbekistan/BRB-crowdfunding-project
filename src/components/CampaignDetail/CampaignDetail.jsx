@@ -15,6 +15,9 @@ import { FaRegLightbulb } from "react-icons/fa";
 import { CiSettings } from "react-icons/ci";
 import { LuStore } from "react-icons/lu";
 import { SiTicktick } from "react-icons/si";
+import Kickstarterad from "../../subcomponents/Kickstarterad/Kickstarterad";
+import FAQ from "../../subcomponents/FAQ/FAQ";
+import Updates from "../../subcomponents/Updates/Updates";
 
 const CampaignDetail = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -341,18 +344,19 @@ const CampaignDetail = () => {
                 </div>
               )}
               {activeTab === "faq" && (
-                <div className={styles.tab_container_wrapper_faq}></div>
+                <div className={styles.tab_container_wrapper_faq}>
+                  <FAQ />
+                </div>
               )}
-              {activeTab === "updates" && <div>Updates content goes here.</div>}
+              {activeTab === "updates" && (
+                <div>
+                  <Updates />
+                </div>
+              )}
             </div>
           </div>
         </div>
-        {/* <div className={styles.ask_question}>
-          <h3>
-            Don’t see the answer to <br /> your question ? Ask here{" "}
-          </h3>
-          <button className={styles.btn_ask}>Ask Question</button>
-        </div> */}
+        <Kickstarterad />
       </div>
       <FooterMini />
     </section>
