@@ -18,12 +18,9 @@
   }
 
   .category {
-    // border: 1px solid red;
     display: flex;
     gap: 17px;
     margin: 3rem 0 0 0;
-
-    // border: 1px solid red;
     .products {
       width: 100%;
       .carousel {
@@ -46,7 +43,6 @@
         }
 
         &Items {
-          //   border: 1px solid black;
           display: flex;
           overflow: hidden;
           width: 100%;
@@ -55,7 +51,6 @@
         }
 
         &Item {
-          //   border: 2px solid green;
           width: 100px;
           flex-shrink: 0;
           text-align: center;

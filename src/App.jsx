@@ -2,7 +2,6 @@ import React, { createContext, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Main from "./pages/Main/Main";
-
 import Registration from "./components/Registration/Registration";
 import VerifyIdentity from "./components/VerifyIndentity/VerifyIdentity";
 import LastRegistration from "./components/LastRegistration/LastRegistration";
@@ -36,7 +35,7 @@ function App() {
         <Route path="/dashboard" element={<CampaignDashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/campaign/:id" element={<CampaignDetail />} />
+        <Route path="/campaigns/:id" element={<CampaignDetail />} />
       </Routes>
     </AuthContext.Provider>
   );

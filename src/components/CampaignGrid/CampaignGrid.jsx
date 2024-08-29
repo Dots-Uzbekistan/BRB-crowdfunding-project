@@ -15,7 +15,7 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
   const navigate = useNavigate();
 
   const handleCardClick = (id) => {
-    navigate(`/campaign/${id}`);
+    navigate(`/campaigns/${id}`);
   };
 
   useEffect(() => {
@@ -161,7 +161,7 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
                       <p>{campaign.location}</p>
                       <p>
                         {campaign.days_left} days left •{" "}
-                        {campaign.percentage_funded}% funded
+                        {campaign.percent_raised}% funded
                       </p>
                       <div className={styles.bottomSection}>
                         <StarRatings

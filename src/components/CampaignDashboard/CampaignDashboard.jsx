@@ -21,12 +21,11 @@ const CampaignDashboard = () => {
     funding_status: "",
     project_state: "",
     raised_percentage: "",
-    project_category: "", // Filter for category
+    project_category: "",
   });
 
-  // Function to update filters when applying new filters
   const handleApplyFilters = (newFilters) => {
-    console.log("Applying filters:", newFilters); // Debugging
+    console.log("Applying filters:", newFilters);
     setFilters((prevFilters) => ({
       ...prevFilters,
       ...newFilters,
@@ -35,7 +34,6 @@ const CampaignDashboard = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Carousel items representing different categories
   const carouselItems = [
     { icon: <RiAlignItemBottomLine />, text: "All", category: "All" },
     { icon: <FaPen />, text: "Art & Crafts", category: "art" },
@@ -46,31 +44,27 @@ const CampaignDashboard = () => {
     { icon: <AiTwotoneMedicineBox />, text: "Medicine", category: "medicine" },
   ];
 
-  // Navigate to the previous slide in the carousel
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? carouselItems.length - 1 : prevIndex - 1
     );
   };
 
-  // Navigate to the next slide in the carousel
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1
     );
   };
 
-  // Handle the selection of a specific slide/category
   const selectSlide = (index) => {
     setCurrentIndex(index);
     handleApplyFilters({ project_category: carouselItems[index].category });
     console.log("Selected category:", carouselItems[index].category); // Debugging
   };
 
-  // Deselect the currently selected category
   const handleDeselectCategory = () => {
     handleApplyFilters({ project_category: "" });
-    console.log("Deselected category"); // Debugging
+    console.log("Deselected category");
   };
 
   return (
@@ -105,19 +99,20 @@ const CampaignDashboard = () => {
                 &gt;
               </button>
             </div>
-            {filters.project_category && (
+            {/* {filters.project_category && (
               <button
                 className={styles.deselectCategoryButton}
                 onClick={handleDeselectCategory}
               >
                 Deselect Category
               </button>
-            )}
+            )} */}
             <CampaignGrid filters={filters} />
           </div>
           <AsideDashboard onApplyFilters={handleApplyFilters} />
         </div>
         <LastVisitedCampaigns />
+        <SavedCampaigns />
         <FooterMini />
       </div>
     </section>

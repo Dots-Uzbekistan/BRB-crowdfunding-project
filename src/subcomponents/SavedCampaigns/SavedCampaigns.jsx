@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import StarRatings from "react-star-ratings";
 import { AiFillDelete } from "react-icons/ai";
-import styles from "./SavedCampaigns.module.scss"; // Ensure this file has the same styles as CampaignGrid
-
+import styles from "./SavedCampaigns.module.scss";
 const SavedCampaigns = () => {
   const [savedCampaigns, setSavedCampaigns] = useState([]);
-  const [showAll, setShowAll] = useState(false); // State to toggle view
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchSavedCampaigns = () => {
@@ -49,7 +48,7 @@ const SavedCampaigns = () => {
             const imageUrl =
               campaign.media && campaign.media.length > 0
                 ? campaign.media[0].file
-                : "https://via.placeholder.com/150"; // Default image if none is available
+                : "https://via.placeholder.com/150";
 
             const ratings = campaign.ratings || [];
             const averageRating =
@@ -63,6 +62,13 @@ const SavedCampaigns = () => {
                   <div className={styles.trendingLabel}>Trending this week</div>
                   <div className={styles.hoverOverlay}>
                     {campaign.description}
+                    <div className={styles.btn_overlay}>
+                      {campaign.tags.map((tag) => (
+                        <button key={tag.id} className="tag-button">
+                          {tag.name}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className={styles.campaignDetails}>

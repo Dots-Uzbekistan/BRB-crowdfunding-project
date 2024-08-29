@@ -1,0 +1,71 @@
+.transactionHistory {
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  .showMoreButton {
+    position: absolute;
+    top: 3rem;
+    right: 1rem;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  h2 {
+    font-size: 60px;
+    margin-bottom: 1rem;
+  }
+
+  .transactionItem {
+    margin-bottom: 0.5rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .transactionDate {
+    font-weight: 600;
+    font-size: 30px;
+    background-color: #e0f1f5;
+    padding: 5px 2rem;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+  }
+
+  .transactionDetails {
+    padding: 10px 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .transactionIcon {
+    width: 40px;
+    height: 40px;
+    margin-right: 1rem;
+  }
+
+  .transactionInfo {
+    flex-grow: 1;
+    line-height: 1.2;
+  }
+
+  .transactionTitle {
+    font-weight: bold;
+    font-size: 25px;
+  }
+
+  .transactionStatus {
+    color: gray;
+    font-size: 0.9rem;
+  }
+
+  .transactionAmount {
+    font-size: 25px;
+    font-weight: 500;
+  }
+
+  .transactionTime {
+    font-size: 0.9rem;
+    color: gray;
+    text-align: right;
+  }
+}

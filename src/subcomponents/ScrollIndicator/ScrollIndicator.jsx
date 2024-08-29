@@ -2,34 +2,45 @@ import React, { useEffect, useState } from "react";
 import styles from "./ScrollIndicator.module.scss";
 
 const ScrollIndicator = () => {
-  const [scrollTop, setScrollTop] = useState(0);
-  const [docHeight, setDocHeight] = useState(0);
+  const [scrollPercentage, setScrollPercentage] = useState(0);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setScrollTop(window.scrollY);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollTop = window.scrollY;
+          const docHeight =
+            document.documentElement.scrollHeight - window.innerHeight;
+          const scrollProgress = (scrollTop / docHeight) * 100;
+
+          setScrollPercentage(scrollProgress);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     const handleResize = () => {
-      setDocHeight(document.documentElement.scrollHeight - window.innerHeight);
+      const scrollTop = window.scrollY;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const scrollProgress = (scrollTop / docHeight) * 100;
+
+      setScrollPercentage(scrollProgress);
     };
 
-    // Attach event listeners
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleResize);
 
-    // Initial call to set document height
-    handleResize();
+    handleResize(); // Initial calculation
 
-    // Cleanup event listeners on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  // Calculate the scroll percentage
-  const scrollPercentage = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
 
   return (
     <div className={styles.scrollIndicatorWrapper}>

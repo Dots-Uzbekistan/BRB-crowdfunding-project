@@ -1,48 +1,39 @@
 .investmentPage {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  width: 92%;
+  margin: auto;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+  .title_profile_section {
+    display: flex;
+    justify-content: space-between;
+    h2 {
+      font-size: 50px;
+    }
+    .profileInfo {
+      background-color: #e8fc85;
+      border-radius: 14px;
+      display: flex;
+      gap: 1rem;
+      padding: 10px 15px;
+      .name_surname {
+        display: flex;
+        gap: 5px;
+      }
+    }
+  }
+  .chart_investments {
+    display: flex;
   }
 }
 
-.profileInfo {
+.loaderContainer {
   display: flex;
   align-items: center;
-  background-color: #f7f5dd; /* Light yellow */
-  padding: 10px;
-  border-radius: 10px;
-  justify-content: space-between;
-}
-
-.profileText {
-  display: flex;
-  flex-direction: column;
-}
-
-.investments {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.investmentCard {
-  background-color: #b5e7a0; /* Light green */
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.donutChart {
-  background-color: #c4a4e6; /* Light purple */
-  padding: 20px;
-  border-radius: 10px;
-  display: flex;
   justify-content: center;
-  align-items: center;
+  height: 100vh; 
+  width: 100vw; 
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  z-index: 9999; 
 }
