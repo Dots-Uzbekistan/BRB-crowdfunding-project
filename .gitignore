@@ -1,0 +1,67 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# dotenv
+.env
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+/backend/apps/authentication/migrations/0002_auto_20240822_1550.py
+/backend/apps/authentication/migrations/0003_alter_authuser_email_alter_authuser_full_name.py
+/backend/apps/authentication/migrations/0004_alter_authuser_email.py
+/backend/apps/campaigns/migrations/0007_alter_campaigncategory_name_alter_campaigntag_name_and_more.py
+/backend/apps/campaigns/migrations/0008_campaignnews_title.py
+/backend/apps/users/migrations/0002_alter_userprofile_options_and_more.py
+/backend/apps/campaigns/migrations/0009_alter_campaignmedia_campaign_and_more.py
+/backend/apps/campaigns/migrations/0010_alter_campaign_creator_alter_campaignvisit_campaign_and_more.py
+/backend/apps/campaigns/migrations/0011_campaign_investment_type.py
+/backend/apps/campaigns/migrations/0012_alter_campaign_project_state.py
+/backend/apps/campaigns/migrations/0013_campaign_company_valuation_and_more.py
+/backend/apps/campaigns/migrations/0014_alter_campaign_company_valuation_and_more.py
+/backend/apps/campaigns/migrations/0015_campaignfaq.py
+/backend/apps/campaigns/migrations/0016_campaignlike.py
+/backend/apps/campaigns/migrations/0017_rename_first_liked_at_campaignlike_liked_at.py
+/backend/apps/investments/migrations/0002_alter_investment_campaign.py
+/backend/apps/users/migrations/0003_userprofile_role.py
+/backend/apps/users/migrations/0004_usersavedcampaign_is_active_and_more.py
