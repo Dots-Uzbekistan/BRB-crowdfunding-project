@@ -4,12 +4,13 @@ from .models import UserProfile, UserSavedCampaign
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-	list_display = ('name', 'surname', 'email', 'phone_number', 'passport_number', 'created_at')
-	search_fields = ('name', 'surname', 'email', 'phone_number', 'passport_number')
+	list_display = ('user__username', 'name', 'surname', 'email', 'phone_number', 'passport_number', 'role', 'created_at')
+	search_fields = ('user__username', 'name', 'surname', 'email', 'phone_number', 'passport_number')
 
+	list_filter = ('role',)
 
 class UserSavedCampaignAdmin(admin.ModelAdmin):
-	list_display = ('user', 'campaign', 'saved_at')
+	list_display = ('user', 'campaign', 'saved_at', 'last_saved_at', 'is_active')
 	search_fields = ('user', 'campaign')
 
 

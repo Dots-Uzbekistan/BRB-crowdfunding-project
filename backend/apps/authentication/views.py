@@ -50,6 +50,7 @@ class AuthUserProfileDetailView(generics.RetrieveUpdateAPIView):
 class PasswordChangeView(APIView):
 	permission_classes = [IsAuthenticated]
 	authentication_classes = [JWTAuthentication]
+	serializer_class = PasswordChangeSerializer
 
 	def post(self, request, *args, **kwargs):
 		serializer = PasswordChangeSerializer(data=request.data, context={'request': request})

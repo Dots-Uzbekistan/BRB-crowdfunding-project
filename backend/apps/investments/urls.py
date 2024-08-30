@@ -1,13 +1,16 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from apps.investments.views import InvestmentViewSet, TransactionViewSet, PaymentViewSet
-from apps.notifications.views import NotificationViewSet
+from django.urls import path
 
-router = DefaultRouter()
-router.register(r'investments', InvestmentViewSet)
-router.register(r'transactions', TransactionViewSet)
-router.register(r'payments', PaymentViewSet)
+from apps.investments.views import InvestmentsEndingSoonView, InvestmentCategoryBreakdownView, CampaignViewsRateView, \
+    Last30DaysInvestmentView, UserInvestedCampaignNewsView, TransactionHistoryView, CreateInvestmentView
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('dashboard/ending-soon/', InvestmentsEndingSoonView.as_view(), name='investments-ending-soon'),
+    path('dashboard/category-breakdown/', InvestmentCategoryBreakdownView.as_view(),
+         name='investment-category-breakdown'),
+    path('dashboard/views-rate/', CampaignViewsRateView.as_view(), name='investment-views-rate'),
+    path('dashboard/last-30-days/', Last30DaysInvestmentView.as_view(), name='last-30-days-investment'),
+    path('dashboard/updates/', UserInvestedCampaignNewsView.as_view(), name='user-invested-campaign-news'),
+    path('dashboard/history/', TransactionHistoryView.as_view(), name='transaction-history'),
+
+    path('create-investment/', CreateInvestmentView.as_view(), name='create-investment'),
 ]

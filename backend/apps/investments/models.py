@@ -3,8 +3,9 @@ from django.db import models
 
 class Investment(models.Model):
 	user = models.ForeignKey('authentication.AuthUser', on_delete=models.CASCADE)
-	campaign = models.ForeignKey('campaigns.Campaign', on_delete=models.CASCADE)
+	campaign = models.ForeignKey('campaigns.Campaign', on_delete=models.CASCADE, related_name='investments')
 	amount = models.DecimalField(max_digits=10, decimal_places=2)
+	address = models.CharField(max_length=255)
 	investment_date = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):

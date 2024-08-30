@@ -25,5 +25,6 @@ class PasswordChangeSerializer(serializers.Serializer):
 		return value
 
 	def validate_new_password(self, value):
-		# Add any custom password validation here
+		if len(value) < 8:
+			raise serializers.ValidationError('Password must be at least 8 characters long')
 		return value
