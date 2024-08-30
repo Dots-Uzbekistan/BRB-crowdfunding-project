@@ -16,6 +16,12 @@
       justify-content: center;
       gap: 1rem;
       padding: 10px 15px;
+      .avatarImage {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin-top: 10px;
+      }
       .avatarIcon {
         margin-top: 10px;
       }

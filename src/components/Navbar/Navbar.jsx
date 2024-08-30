@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // corrected import
 import { FaSearch, FaBell, FaUserCircle } from "react-icons/fa";
+import axios from "axios";
 import styles from "./Navbar.module.scss";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [profileImage, setProfileImage] = useState("");
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
@@ -17,6 +19,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
+    setProfileImage(""); // Clear profile image on logout
     navigate("/login");
   };
 
@@ -29,6 +32,7 @@ const Navbar = () => {
 
         if (decodedToken.exp > currentTime) {
           setIsAuthenticated(true);
+          fetchUserProfile();
         } else {
           handleLogout();
         }
@@ -39,6 +43,23 @@ const Navbar = () => {
       setIsAuthenticated(false);
       navigate("/login");
     }
+  };
+
+  const fetchUserProfile = () => {
+    const token = localStorage.getItem("token");
+    axios
+      .get("http://161.35.19.77:8001/api/users/profile/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const data = response.data;
+        setProfileImage(data.profile_image);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the user profile:", error);
+      });
   };
 
   useEffect(() => {
@@ -91,10 +112,19 @@ const Navbar = () => {
             <div className={styles.user_icons}>
               <FaBell className={styles.icon} />
               <div className={styles.dropdownContainer} ref={dropdownRef}>
-                <FaUserCircle
-                  className={styles.icon}
-                  onClick={toggleDropdown}
-                />
+                {profileImage ? (
+                  <img
+                    src={profileImage}
+                    alt="Profile Avatar"
+                    className={styles.iconImage}
+                    onClick={toggleDropdown}
+                  />
+                ) : (
+                  <FaUserCircle
+                    className={styles.icon}
+                    onClick={toggleDropdown}
+                  />
+                )}
                 {isOpen && (
                   <div className={styles.dropdownMenu}>
                     <Link to={"/profile"} className={styles.link_dropdown}>

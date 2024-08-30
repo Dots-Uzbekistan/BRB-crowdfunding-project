@@ -1,12 +1,13 @@
 import React from "react";
 import styles from "./Header.module.scss";
 import { motion } from "framer-motion";
-import { FaUser } from "react-icons/fa";
-import { FaMoneyBill } from "react-icons/fa";
+import { FaUser, FaMoneyBill } from "react-icons/fa";
 import CountUp from "react-countup";
 import { Link } from "react-router-dom";
 
 const Header = () => {
+  const token = localStorage.getItem("token");
+
   return (
     <section className={styles.header_main}>
       <div className={styles.left}>
@@ -16,7 +17,7 @@ const Header = () => {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className={styles.header_text}
         >
-          Invest in founders building the future
+          Invest in founders building the future
         </motion.p>
         <div className={styles.green_container_wrapper}>
           <motion.article
@@ -107,23 +108,43 @@ const Header = () => {
             </svg>
           </motion.span>
         </motion.div>
-        <motion.button className={styles.button_signup}>
-          <Link to={"/registration"} className={styles.signup_register}>
-            <p>Sign up</p>
-          </Link>
-          <svg
-            width="27"
-            height="27"
-            viewBox="0 0 31 38"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0.102783 0.210393H11.8064L30.4996 18.6598L11.8064 37.1092H0.102783L18.8773 18.6598L0.102783 0.210393Z"
-              fill="black"
-            />
-          </svg>
-        </motion.button>
+        {token ? (
+          <motion.button className={styles.button_signup}>
+            <Link to={"/dashboard"} className={styles.signup_register}>
+              <p>Explore</p>
+            </Link>
+            <svg
+              width="27"
+              height="27"
+              viewBox="0 0 31 38"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0.102783 0.210393H11.8064L30.4996 18.6598L11.8064 37.1092H0.102783L18.8773 18.6598L0.102783 0.210393Z"
+                fill="black"
+              />
+            </svg>
+          </motion.button>
+        ) : (
+          <motion.button className={styles.button_signup}>
+            <Link to={"/registration"} className={styles.signup_register}>
+              <p>Sign up</p>
+            </Link>
+            <svg
+              width="27"
+              height="27"
+              viewBox="0 0 31 38"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0.102783 0.210393H11.8064L30.4996 18.6598L11.8064 37.1092H0.102783L18.8773 18.6598L0.102783 0.210393Z"
+                fill="black"
+              />
+            </svg>
+          </motion.button>
+        )}
       </div>
     </section>
   );

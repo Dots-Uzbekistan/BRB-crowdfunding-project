@@ -11,11 +11,12 @@ import SavedCampaigns from "../../subcomponents/SavedCampaigns/SavedCampaigns";
 import ProfileMiniDashboard from "../../userprofile/ProfileMiniDashboard/ProfileMiniDashboard";
 import TransactionHistory from "../../userprofile/TransactionHistory/TransactionHistory";
 import FooterMini from "../../subcomponents/FooterMini/FooterMini";
+
 const Profile = () => {
   const [profile, setProfile] = useState({
     username: "",
     name: "",
-    avatar: "",
+    profile_image: "",
     surname: "",
   });
   const [loading, setLoading] = useState(true);
@@ -35,7 +36,7 @@ const Profile = () => {
           setProfile({
             username: data.username,
             name: data.name,
-            avatar: data.avatar,
+            profile_image: data.profile_image,
             surname: data.surname,
           });
         })
@@ -62,8 +63,6 @@ const Profile = () => {
             radius="9"
             color="#4fa94d"
             ariaLabel="three-dots-loading"
-            wrapperStyle={{}}
-            wrapperClassName=""
             visible={true}
           />
         </div>
@@ -73,9 +72,9 @@ const Profile = () => {
             <h2>My investments</h2>
             <div className={styles.profileInfo}>
               <div className={styles.profileAvatar}>
-                {profile.avatar ? (
+                {profile.profile_image ? (
                   <img
-                    src={profile.avatar}
+                    src={profile.profile_image}
                     alt="Profile Avatar"
                     className={styles.avatarImage}
                   />

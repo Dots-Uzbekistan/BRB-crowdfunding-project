@@ -4,14 +4,7 @@ import styles from "./Settings.module.scss";
 import Navbar from "../Navbar/Navbar";
 import FooterMini from "../../subcomponents/FooterMini/FooterMini";
 import avatar from "../../assets/avatar.jpg";
-import {
-  FaCamera,
-  FaUser,
-  FaPhoneAlt,
-  FaEnvelope,
-  FaLock,
-  FaKey,
-} from "react-icons/fa";
+import { FaCamera } from "react-icons/fa";
 
 const Settings = () => {
   const [profileImage, setProfileImage] = useState(null);
@@ -26,14 +19,11 @@ const Settings = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [alertMessage, setAlertMessage] = useState("");
-  const [alertType, setAlertType] = useState(""); // 'success' or 'error'
+  const [alertType, setAlertType] = useState("");
 
   const fileInputRef = useRef(null);
-
-  // Fetch token from localStorage
   const token = localStorage.getItem("token");
 
-  // Fetch user profile info on component mount
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -41,18 +31,26 @@ const Settings = () => {
           "http://161.35.19.77:8001/api/users/profile/",
           {
             headers: {
-              Authorization: `Bearer ${token}`, // Add token in headers
+              Authorization: `Bearer ${token}`,
             },
           }
         );
-        const { username, name, surname, email, phone_number, bio } =
-          response.data;
+        const {
+          username,
+          name,
+          surname,
+          email,
+          phone_number,
+          bio,
+          profile_image,
+        } = response.data;
         setUsername(username);
         setName(name);
         setSurname(surname);
         setEmail(email);
         setPhoneNumber(phone_number);
         setBio(bio);
+        setProfileImage(profile_image);
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
@@ -61,26 +59,58 @@ const Settings = () => {
     fetchProfile();
   }, [token]);
 
-  // Handle profile update
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("profile_image", file);
+    try {
+      const response = await axios.put(
+        "http://161.35.19.77:8001/api/users/update-profile/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.profile_image) {
+        setProfileImage(response.data.profile_image);
+        setAlertMessage("Profile image updated successfully.");
+        setAlertType("success");
+      } else {
+        throw new Error("Invalid response from server.");
+      }
+    } catch (error) {
+      setAlertMessage(
+        `Error uploading image: ${
+          error.response?.data?.message || error.message
+        }`
+      );
+      setAlertType("error");
+      console.error("Error uploading image:", error.response || error);
+    }
+  };
+
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    if (profileImage) {
-      formData.append("profile_image", profileImage);
-    }
     formData.append("bio", bio);
     formData.append("phone_number", phoneNumber);
     formData.append("email", email);
 
     try {
-      const response = await axios.post(
-        "/api/users/update-profile/",
+      const response = await axios.put(
+        "http://161.35.19.77:8001/api/users/update-profile/",
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, // Add token in headers
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -105,14 +135,14 @@ const Settings = () => {
 
     try {
       const response = await axios.post(
-        "/api/users/change-password/",
+        "http://161.35.19.77:8001/api/auth/change-password/",
         {
           old_password: oldPassword,
           new_password: newPassword,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Add token in headers
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -125,7 +155,6 @@ const Settings = () => {
     }
   };
 
-  // Trigger file input
   const handleClick = () => {
     fileInputRef.current.click();
   };
@@ -148,9 +177,7 @@ const Settings = () => {
               <div className={styles.profileImage}>
                 <label htmlFor="profileImage" className={styles.imageLabel}>
                   <img
-                    src={
-                      profileImage ? URL.createObjectURL(profileImage) : avatar
-                    }
+                    src={profileImage ? profileImage : avatar}
                     alt="Profile"
                     className={styles.img_settings}
                   />
@@ -164,7 +191,7 @@ const Settings = () => {
                   id="profileImage"
                   accept="image/*"
                   ref={fileInputRef}
-                  onChange={(e) => setProfileImage(e.target.files[0])}
+                  onChange={handleImageUpload}
                   style={{ display: "none" }}
                 />
               </div>
@@ -177,7 +204,6 @@ const Settings = () => {
             </div>
             <div className={styles.profileInfo}>
               <div className={styles.formGroup}>
-                {/* <FaUser className={styles.icon} /> */}
                 <textarea
                   placeholder="Bio"
                   value={bio}
@@ -186,7 +212,6 @@ const Settings = () => {
                 />
               </div>
               <div className={styles.formGroup}>
-                {/* <FaPhoneAlt className={styles.icon} /> */}
                 <p>Mobile number</p>
                 <input
                   type="text"
@@ -197,7 +222,6 @@ const Settings = () => {
                 />
               </div>
               <div className={styles.formGroup}>
-                {/* <FaEnvelope className={styles.icon} /> */}
                 <p>Email</p>
                 <input
                   type="email"
@@ -207,6 +231,9 @@ const Settings = () => {
                   className={styles.textField_number}
                 />
               </div>
+              <button type="submit" className={styles.applyButton}>
+                Save Changes
+              </button>
             </div>
           </form>
         </div>
@@ -215,7 +242,6 @@ const Settings = () => {
           <h2>Change Password</h2>
           <form onSubmit={handlePasswordSubmit}>
             <div className={styles.formGroup}>
-              {/* <FaLock className={styles.icon} /> */}
               <p>Old Password</p>
               <input
                 type="password"
@@ -226,7 +252,6 @@ const Settings = () => {
               />
             </div>
             <div className={styles.formGroup}>
-              {/* <FaKey className={styles.icon} /> */}
               <p>New Password</p>
               <input
                 type="password"
@@ -237,7 +262,6 @@ const Settings = () => {
               />
             </div>
             <div className={styles.formGroup}>
-              {/* <FaKey className={styles.icon} /> */}
               <p>Confirm new password</p>
               <input
                 type="password"

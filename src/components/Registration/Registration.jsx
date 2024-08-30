@@ -4,11 +4,14 @@ import LoginNavbar from "../../subcomponents/LoginNavbar/LoginNavbar";
 import money from "../../assets/money.png";
 import laptop from "../../assets/laptop.png";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 
 const Registration = () => {
   const [selectedRole, setSelectedRole] = useState(null);
-
+  const handleRoleSelection = (role) => {
+    setSelectedRole(role);
+    localStorage.setItem("selectedRole", role); // Save the selected role to localStorage
+  };
   return (
     <section className={styles.registration}>
       <LoginNavbar />
@@ -19,7 +22,7 @@ const Registration = () => {
             className={`${styles.role_investor} ${
               selectedRole === "investor" ? styles.selected : ""
             }`}
-            onClick={() => setSelectedRole("investor")}
+            onClick={() => handleRoleSelection("investor")}
           >
             <img src={money} alt="Investor" />
             <p>Investor</p>
@@ -28,7 +31,7 @@ const Registration = () => {
             className={`${styles.role_creator} ${
               selectedRole === "creator" ? styles.selected : ""
             }`}
-            onClick={() => setSelectedRole("creator")}
+            onClick={() => handleRoleSelection("creator")}
           >
             <img src={laptop} alt="Creator" />
             <p>Creator</p>

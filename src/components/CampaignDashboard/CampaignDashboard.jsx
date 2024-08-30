@@ -11,8 +11,8 @@ import { RiAlignItemBottomLine } from "react-icons/ri";
 import AsideDashboard from "../../subcomponents/AsideDashboard/AsideDashboard";
 import CampaignGrid from "../../components/CampaignGrid/CampaignGrid";
 import SavedCampaigns from "../../subcomponents/SavedCampaigns/SavedCampaigns";
-import FooterMini from "../../subcomponents/FooterMini/FooterMini";
 import LastVisitedCampaigns from "../LastVisitedCampaigns/LastVisitedCampaigns";
+import Footer from "../Footer/Footer";
 
 const CampaignDashboard = () => {
   const [filters, setFilters] = useState({
@@ -99,22 +99,15 @@ const CampaignDashboard = () => {
                 &gt;
               </button>
             </div>
-            {/* {filters.project_category && (
-              <button
-                className={styles.deselectCategoryButton}
-                onClick={handleDeselectCategory}
-              >
-                Deselect Category
-              </button>
-            )} */}
+
             <CampaignGrid filters={filters} />
           </div>
           <AsideDashboard onApplyFilters={handleApplyFilters} />
         </div>
         <LastVisitedCampaigns />
         <SavedCampaigns />
-        <FooterMini />
       </div>
+      <Footer />
     </section>
   );
 };
