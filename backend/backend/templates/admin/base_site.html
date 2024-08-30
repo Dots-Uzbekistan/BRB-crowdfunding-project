@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}Fundflow{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Fundflow admin</a></h1>
+{% endblock %}
+
+{% block nav-global %}
+{{ block.super }}
+<a href="http://161.35.19.77:8001/api/docs/#/" target="_blank">View Platform</a>
+{% endblock %}
+
+
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom_admin.css' %}">
+{% endblock %}
