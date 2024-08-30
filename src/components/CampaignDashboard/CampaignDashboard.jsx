@@ -11,7 +11,7 @@ import { RiAlignItemBottomLine } from "react-icons/ri";
 import AsideDashboard from "../../subcomponents/AsideDashboard/AsideDashboard";
 import CampaignGrid from "../../components/CampaignGrid/CampaignGrid";
 import SavedCampaigns from "../../subcomponents/SavedCampaigns/SavedCampaigns";
-import LastVisitedCampaigns from "../LastVisitedCampaigns/LastVisitedCampaigns";
+// import LastVisitedCampaigns from "../LastVisitedCampaigns/LastVisitedCampaigns";
 import Footer from "../Footer/Footer";
 
 const CampaignDashboard = () => {
@@ -104,7 +104,7 @@ const CampaignDashboard = () => {
           </div>
           <AsideDashboard onApplyFilters={handleApplyFilters} />
         </div>
-        <LastVisitedCampaigns />
+        {/* <LastVisitedCampaigns /> */}
         <SavedCampaigns />
       </div>
       <Footer />

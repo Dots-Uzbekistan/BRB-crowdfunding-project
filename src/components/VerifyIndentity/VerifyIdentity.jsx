@@ -18,12 +18,12 @@ const VerifyIdentity = () => {
     passport_document: null,
   });
 
-  const [fileInfo, setFileInfo] = useState(null); // State to hold file info
+  const [fileInfo, setFileInfo] = useState(null);
 
   const { setIsSuccessful, setRedirectPath, setUser, authToken } =
     useContext(AuthContext);
   const navigate = useNavigate();
-  console.log("Retrieved token:", localStorage.getItem("token")); // or use context
+  console.log("Retrieved token:", localStorage.getItem("token"));
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prevFormData) => ({

@@ -11,6 +11,7 @@ const Registration = () => {
   const handleRoleSelection = (role) => {
     setSelectedRole(role);
     localStorage.setItem("selectedRole", role); // Save the selected role to localStorage
+    console.log(role);
   };
   return (
     <section className={styles.registration}>
@@ -25,7 +26,7 @@ const Registration = () => {
             onClick={() => handleRoleSelection("investor")}
           >
             <img src={money} alt="Investor" />
-            <p>Investor</p>
+            <p>investor</p>
           </article>
           <article
             className={`${styles.role_creator} ${
@@ -34,7 +35,7 @@ const Registration = () => {
             onClick={() => handleRoleSelection("creator")}
           >
             <img src={laptop} alt="Creator" />
-            <p>Creator</p>
+            <p>creator</p>
           </article>
         </div>
         <button className={styles.btn_register}>

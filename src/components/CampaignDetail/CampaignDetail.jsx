@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom"; // Add Link import
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import { ThreeDots } from "react-loader-spinner";
@@ -7,7 +7,6 @@ import { FaRegUserCircle, FaRegHeart, FaShare } from "react-icons/fa";
 import { IoIosHeart } from "react-icons/io";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import styles from "./CampaignDetail.module.scss";
-import { Link } from "react-router-dom";
 import { Progress } from "antd";
 import FooterMini from "../../subcomponents/FooterMini/FooterMini";
 import { Steps } from "antd";
@@ -21,7 +20,7 @@ import Updates from "../../subcomponents/Updates/Updates";
 
 const CampaignDetail = () => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [showMoreBio, setShowMoreBio] = useState(false); // State to manage bio visibility
+  const [showMoreBio, setShowMoreBio] = useState(false); 
   const [campaign, setCampaign] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -52,8 +51,8 @@ const CampaignDetail = () => {
         );
         if (response.status === 200) {
           setCampaign(response.data);
-          setLiked(response.data.liked); // assuming the API response has a liked field
-          setSaved(response.data.saved); // assuming the API response has a saved field
+          setLiked(response.data.liked);
+          setSaved(response.data.saved);
         } else {
           setError(`API returned status code ${response.status}`);
         }
@@ -93,7 +92,7 @@ const CampaignDetail = () => {
     setShowMoreBio((prevShowMore) => !prevShowMore);
   };
 
-  const initialShowCount = 30; // Show the first 50 words initially
+  const initialShowCount = 30; 
   const getTruncatedBio = (bio, wordLimit) => {
     const words = bio.split(" ");
     if (words.length <= wordLimit) return bio;
@@ -222,7 +221,7 @@ const CampaignDetail = () => {
               </div>
             </div>
             <div className={styles.btn_card_camapign}>
-              <Link className={styles.investmentgoto} to={""}>
+              <Link className={styles.investmentgoto} to={`/payment/${id}`}>
                 <button className={styles.investmentgoto_1}>
                   Invest in Campaign
                 </button>
@@ -355,7 +354,6 @@ const CampaignDetail = () => {
           </div>
         </div>
         <Kickstarterad />
-      
       </div>
       <FooterMini />
     </section>

@@ -79,7 +79,7 @@ const InvestmentList = () => {
               ))}
             </>
           ) : (
-            <p>No investments found.</p>
+            <p>You didn't invest yet</p>
           )}
         </>
       )}

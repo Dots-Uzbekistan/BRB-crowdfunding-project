@@ -10,6 +10,7 @@ import CampaignDashboard from "./components/CampaignDashboard/CampaignDashboard"
 import Profile from "./components/Profile/Profile";
 import Settings from "./components/Settings/Settings";
 import CampaignDetail from "./components/CampaignDetail/CampaignDetail";
+import Payment from "./pages/Payment/Payment";
 export const AuthContext = createContext();
 function App() {
   const [isSuccessful, setIsSuccessful] = useState(false);
@@ -28,6 +29,7 @@ function App() {
     >
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/payment/:campaign_id" element={<Payment />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/verifyidentity" element={<VerifyIdentity />} />
         <Route path="/lastregistration" element={<LastRegistration />} />

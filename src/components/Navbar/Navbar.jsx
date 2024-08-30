@@ -20,7 +20,7 @@ const Navbar = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
     setProfileImage(""); // Clear profile image on logout
-    navigate("/login");
+    navigate("/");
   };
 
   const checkTokenValidity = () => {
@@ -41,7 +41,7 @@ const Navbar = () => {
       }
     } else {
       setIsAuthenticated(false);
-      navigate("/login");
+      navigate("/");
     }
   };
 
@@ -106,7 +106,9 @@ const Navbar = () => {
           <FaSearch className={styles.icon} />
           <input type="search" placeholder="Search" />
         </div>
-        <Link className={styles.link_navbar}>Raise Money</Link>
+        <Link className={styles.link_navbar} to={"/payment"}>
+          Raise Money
+        </Link>
         <div className={styles.btns}>
           {isAuthenticated ? (
             <div className={styles.user_icons}>
