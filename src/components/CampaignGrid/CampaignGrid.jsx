@@ -14,10 +14,6 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
   const [showAll, setShowAll] = useState(false);
   const navigate = useNavigate();
 
-  const handleCardClick = (id) => {
-    navigate(`/campaigns/${id}`);
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
@@ -50,7 +46,18 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
           }
         );
 
-        setCampaignList(Array.isArray(response.data) ? response.data : []);
+        const campaigns = Array.isArray(response.data) ? response.data : [];
+        const filteredCampaigns = filters.project_category
+          ? campaigns.filter((campaign) =>
+              campaign.categories.some(
+                (category) =>
+                  category.name.toLowerCase() ===
+                  filters.project_category.toLowerCase()
+              )
+            )
+          : campaigns;
+
+        setCampaignList(filteredCampaigns);
       } catch (error) {
         console.error("Error fetching campaigns:", error);
         setError("Error fetching campaigns.");
@@ -63,30 +70,78 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
   }, [filters]);
 
   useEffect(() => {
-    const fetchSavedCampaigns = () => {
-      const saved = JSON.parse(localStorage.getItem("savedCampaigns")) || [];
-      setSavedCampaigns(saved);
+    const fetchSavedCampaigns = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setError("No token found in local storage.");
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          "http://161.35.19.77:8001/api/users/saved-campaigns/",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setSavedCampaigns(response.data || []);
+      } catch (error) {
+        console.error("Error fetching saved campaigns:", error);
+        setError("Error fetching saved campaigns.");
+      }
     };
 
     fetchSavedCampaigns();
   }, []);
+  const handleCardClick = (campaignId) => {
+    navigate(`/campaigns/${campaignId}`);
+  };
+  const handleSaveCampaign = async (campaign) => {
+    const token = localStorage.getItem("token");
 
-  const handleSaveCampaign = (campaign) => {
-    const saved = JSON.parse(localStorage.getItem("savedCampaigns")) || [];
-    const isAlreadySaved = saved.some((item) => item.id === campaign.id);
-
-    if (!isAlreadySaved) {
-      saved.push(campaign);
-      localStorage.setItem("savedCampaigns", JSON.stringify(saved));
-      setSavedCampaigns(saved);
-    } else {
-      const updatedSaved = saved.filter((item) => item.id !== campaign.id);
-      localStorage.setItem("savedCampaigns", JSON.stringify(updatedSaved));
-      setSavedCampaigns(updatedSaved);
+    if (!token) {
+      console.error("No token found in local storage.");
+      return;
     }
 
-    if (onSaveCampaign) {
-      onSaveCampaign(campaign);
+    try {
+      const isAlreadySaved = savedCampaigns.some(
+        (item) => item.id === campaign.id
+      );
+
+      if (!isAlreadySaved) {
+        await axios.post(
+          `http://161.35.19.77:8001/api/catalog/campaigns/${campaign.id}/save/`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setSavedCampaigns([...savedCampaigns, campaign]);
+      } else {
+        await axios.delete(
+          `http://161.35.19.77:8001/api/catalog/campaigns/${campaign.id}/save/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setSavedCampaigns(
+          savedCampaigns.filter((item) => item.id !== campaign.id)
+        );
+      }
+
+      if (onSaveCampaign) {
+        onSaveCampaign(campaign);
+      }
+    } catch (error) {
+      console.error("Error saving/removing campaign:", error);
     }
   };
 
@@ -110,7 +165,7 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
       ) : (
         <div>
           <div className={styles.title_grid_campaigns}>
-            <h1>Trending Technology Campaigns</h1>
+            <h1>Trending Campaigns</h1>
             <p className={styles.toggleButton} onClick={toggleShowAll}>
               {showAll ? "See Less" : "See More"}
             </p>
@@ -160,19 +215,10 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
                       <h4>{campaign.title}</h4>
                       <p>{campaign.location}</p>
                       <p>
-                        {campaign.days_left} days left •{" "}
-                        {campaign.percent_raised}% funded
+                        {campaign.days_left} days left |
+                        {campaign.percent_raised} % funded
                       </p>
                       <div className={styles.bottomSection}>
-                        <StarRatings
-                          rating={averageRating}
-                          starRatedColor="gold"
-                          starEmptyColor="gray"
-                          numberOfStars={5}
-                          name="rating"
-                          starDimension="20px"
-                          starSpacing="1px"
-                        />
                         <button
                           className={styles.saveButton}
                           onClick={(e) => {

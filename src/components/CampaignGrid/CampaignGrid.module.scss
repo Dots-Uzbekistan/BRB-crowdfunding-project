@@ -41,7 +41,7 @@
   border-radius: 8px;
   overflow: hidden;
   position: relative;
-  height: 420px;
+  height: 400px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -105,11 +105,11 @@
 }
 
 .campaignDetails {
-  padding: 15px;
+  padding: 15px 10px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  justify-content: space-between;
+  position: relative;
 }
 
 .campaignDetails h4 {
@@ -117,20 +117,16 @@
   font-size: 1.2em;
 }
 
-.campaignDetails p {
-  margin: 5px 0;
+.campaignDetails > p {
   color: #555;
+  margin: 0;
+  padding: 0;
 }
 
 .bottomSection {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-}
+  display: grid;
 
-.stars {
-  display: inline-block;
+  align-self: flex-end;
 }
 
 .saveButton {
@@ -140,6 +136,10 @@
   font-size: 1.5em;
   color: gray;
   transition: color 0.3s ease;
+  z-index: 99;
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
 }
 
 .saveButton:hover {

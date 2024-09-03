@@ -103,3 +103,52 @@
     }
   }
 }
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input[type="search"] {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    border-radius: 4px;
+    outline: none;
+    transition: all 0.3s ease;
+    width: 250px;
+
+    &:focus {
+      border-color: #a5ffb8;
+    }
+  }
+
+  .icon {
+    margin-right: 8px;
+    color: #333;
+  }
+
+  .searchResults {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    .searchResultItem {
+      display: block;
+      padding: 10px;
+      color: #333;
+      text-decoration: none;
+      border-bottom: 1px solid #f1f1f1;
+
+      &:hover {
+        background-color: #f1f1f1;
+      }
+    }
+  }
+}

@@ -9,6 +9,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profileImage, setProfileImage] = useState("");
+  const [searchQuery, setSearchQuery] = useState([]); // State to store search query
+  const [searchResults, setSearchResults] = useState([]); // State to store search results
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
@@ -62,6 +64,32 @@ const Navbar = () => {
       });
   };
 
+  const handleSearch = async (query) => {
+    if (!query) return;
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(
+        `http://161.35.19.77:8001/api/catalog/campaigns/?search=${query}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setSearchResults(response.data);
+      console.log("Search Results:", searchResults);
+      // Assuming response.data.results contains the campaigns
+    } catch (error) {
+      console.error("Error during search:", error);
+    }
+  };
+  const results = searchResults || [];
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    handleSearch(query);
+  };
+
   useEffect(() => {
     checkTokenValidity();
 
@@ -104,9 +132,27 @@ const Navbar = () => {
         </Link>
         <div className={styles.search}>
           <FaSearch className={styles.icon} />
-          <input type="search" placeholder="Search" />
+          <input
+            type="search"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          {results.length > 0 && (
+            <div className={styles.searchResults}>
+              {results.map((result) => (
+                <Link
+                  key={result.id}
+                  to={`/campaigns/${result.id}`}
+                  className={styles.searchResultItem}
+                >
+                  {result.title}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
-        <Link className={styles.link_navbar} to={"/payment"}>
+        <Link className={styles.link_navbar} to={"/"}>
           Raise Money
         </Link>
         <div className={styles.btns}>

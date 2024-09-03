@@ -1,23 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Registration.module.scss";
 import LoginNavbar from "../../subcomponents/LoginNavbar/LoginNavbar";
 import money from "../../assets/money.png";
 import laptop from "../../assets/laptop.png";
 import { Link } from "react-router-dom";
-// import { motion } from "framer-motion";
 
 const Registration = () => {
   const [selectedRole, setSelectedRole] = useState(null);
+
+  useEffect(() => {
+    // Retrieve the role from localStorage when the component mounts
+    const savedRole = localStorage.getItem("selectedRole");
+    if (savedRole) {
+      setSelectedRole(savedRole);
+    }
+  }, []);
+
   const handleRoleSelection = (role) => {
     setSelectedRole(role);
     localStorage.setItem("selectedRole", role); // Save the selected role to localStorage
-    console.log(role);
   };
+
   return (
     <section className={styles.registration}>
       <LoginNavbar />
       <div className={styles.wrapper_register}>
-        <h1>Who are you ?</h1>
+        <h1>Who are you?</h1>
         <div className={styles.selection_role}>
           <article
             className={`${styles.role_investor} ${
@@ -26,7 +34,7 @@ const Registration = () => {
             onClick={() => handleRoleSelection("investor")}
           >
             <img src={money} alt="Investor" />
-            <p>investor</p>
+            <p>Investor</p>
           </article>
           <article
             className={`${styles.role_creator} ${
@@ -35,14 +43,13 @@ const Registration = () => {
             onClick={() => handleRoleSelection("creator")}
           >
             <img src={laptop} alt="Creator" />
-            <p>creator</p>
+            <p>Creator</p>
           </article>
         </div>
         <button className={styles.btn_register}>
           <Link to={"/lastregistration"} className={styles.fullregister}>
             Next
           </Link>
-
           <svg
             width="27"
             height="27"
@@ -57,9 +64,8 @@ const Registration = () => {
           </svg>
         </button>
         <p>
-          Already have an account ?{" "}
+          Already have an account?{" "}
           <Link className={styles.link_register} to={"/login"}>
-            {" "}
             Log in here
           </Link>
         </p>

@@ -8,10 +8,11 @@ import { FaLeaf } from "react-icons/fa";
 import { MdOutlineSportsBasketball } from "react-icons/md";
 import { AiTwotoneMedicineBox } from "react-icons/ai";
 import { RiAlignItemBottomLine } from "react-icons/ri";
+import { MdAirlineStops } from "react-icons/md";
+import { GiHealthNormal } from "react-icons/gi";
 import AsideDashboard from "../../subcomponents/AsideDashboard/AsideDashboard";
 import CampaignGrid from "../../components/CampaignGrid/CampaignGrid";
 import SavedCampaigns from "../../subcomponents/SavedCampaigns/SavedCampaigns";
-// import LastVisitedCampaigns from "../LastVisitedCampaigns/LastVisitedCampaigns";
 import Footer from "../Footer/Footer";
 
 const CampaignDashboard = () => {
@@ -35,13 +36,20 @@ const CampaignDashboard = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const carouselItems = [
-    { icon: <RiAlignItemBottomLine />, text: "All", category: "All" },
-    { icon: <FaPen />, text: "Art & Crafts", category: "art" },
-    { icon: <RiSettingsLine />, text: "Technology", category: "technology" },
+    { icon: <RiAlignItemBottomLine />, text: "All", category: "" },
+    { icon: <FaPen />, text: "Art", category: "art" },
+    { icon: <RiSettingsLine />, text: "Tech", category: "tech" },
     { icon: <FaBook />, text: "Education", category: "education" },
-    { icon: <FaLeaf />, text: "Agriculture", category: "agriculture" },
-    { icon: <MdOutlineSportsBasketball />, text: "Sports", category: "sports" },
-    { icon: <AiTwotoneMedicineBox />, text: "Medicine", category: "medicine" },
+    { icon: <FaLeaf />, text: "Nature", category: "nature" },
+
+    {
+      icon: <GiHealthNormal />,
+      text: "Healthcare",
+      category: "healthcare",
+    },
+    { icon: <MdAirlineStops />, text: "Fintech", category: "fintech" },
+    { icon: <AiTwotoneMedicineBox />, text: "Fashion", category: "fashion" },
+    { icon: <MdOutlineSportsBasketball />, text: "Others", category: "others" },
   ];
 
   const prevSlide = () => {
@@ -59,13 +67,14 @@ const CampaignDashboard = () => {
   const selectSlide = (index) => {
     setCurrentIndex(index);
     handleApplyFilters({ project_category: carouselItems[index].category });
-    console.log("Selected category:", carouselItems[index].category); // Debugging
+    console.log("Selected category:", carouselItems[index].category);
   };
 
-  // const handleDeselectCategory = () => {
-  //   handleApplyFilters({ project_category: "" });
-  //   console.log("Deselected category");
-  // };
+  const handleDeselectCategory = () => {
+    setCurrentIndex(0); // Reset to the "All" category
+    handleApplyFilters({ project_category: "" });
+    console.log("Deselected category");
+  };
 
   return (
     <section className={styles.dashboard_wrapper}>
@@ -104,7 +113,6 @@ const CampaignDashboard = () => {
           </div>
           <AsideDashboard onApplyFilters={handleApplyFilters} />
         </div>
-        {/* <LastVisitedCampaigns /> */}
         <SavedCampaigns />
       </div>
       <Footer />

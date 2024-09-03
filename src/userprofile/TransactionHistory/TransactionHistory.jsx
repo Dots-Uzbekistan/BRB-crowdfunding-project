@@ -56,7 +56,7 @@ const TransactionHistory = () => {
 
   return (
     <div className={styles.transactionHistory}>
-      <h2>Transactions history</h2>
+      <h2>Transactions History</h2>
       {transactions.length > 4 && (
         <p className={styles.showMoreButton} onClick={handleShowMore}>
           {expanded ? "Show Less" : "Show More"}
@@ -69,7 +69,7 @@ const TransactionHistory = () => {
           </div>
           <div className={styles.transactionDetails}>
             <img
-              src="transaction-icon.png"
+              src={transaction.campaign_image}
               alt="Transaction"
               className={styles.transactionIcon}
             />

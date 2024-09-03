@@ -87,8 +87,8 @@ const LastRegistration = () => {
         </svg>
 
         <h1>
-          We are <span className={styles.highlightYellow}>happy</span> to <br />{" "}
-          see you <span className={styles.highlightGreen}>again</span>!
+          We are <span className={styles.highlightYellow}>happy</span>
+          <br /> to see <span className={styles.highlightGreen}>you</span>!
         </h1>
         <p>
           Together, we're making <br /> dreams a reality.

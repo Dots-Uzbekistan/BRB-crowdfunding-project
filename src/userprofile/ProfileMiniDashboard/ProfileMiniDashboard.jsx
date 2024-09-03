@@ -76,7 +76,10 @@ const ProfileMiniDashboard = () => {
             <ul className={styles.updatesList}>
               {updates.map((update, index) => (
                 <li key={index} className={styles.updateItem}>
-                  <div className={styles.updateIcon}></div>
+                  <img
+                    src={update.campaign_image}
+                    className={styles.img_updates_mini}
+                  />
                   <div className={styles.updateDetails}>
                     <h2>{update.campaign_name}</h2>
                     <p>{update.title}</p>

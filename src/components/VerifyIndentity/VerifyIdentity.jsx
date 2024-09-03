@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import styles from "./VerifyIdentity.module.scss";
 import oneid from "../../assets/oneid.png";
@@ -19,11 +19,15 @@ const VerifyIdentity = () => {
   });
 
   const [fileInfo, setFileInfo] = useState(null);
-
+  const [role, setRole] = useState(null);
   const { setIsSuccessful, setRedirectPath, setUser, authToken } =
     useContext(AuthContext);
   const navigate = useNavigate();
   console.log("Retrieved token:", localStorage.getItem("token"));
+  useEffect(() => {
+    const savedRole = localStorage.getItem("selectedRole");
+    setRole(savedRole);
+  }, []);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prevFormData) => ({
@@ -50,6 +54,9 @@ const VerifyIdentity = () => {
     data.append("passport_number", formData.passport_number);
     if (formData.passport_document) {
       data.append("passport_document", formData.passport_document);
+    }
+    if (role) {
+      data.append("role", role);
     }
     // const token = localStorage.getItem(token);
     const token = localStorage.getItem("token"); // Corrected token retrieval

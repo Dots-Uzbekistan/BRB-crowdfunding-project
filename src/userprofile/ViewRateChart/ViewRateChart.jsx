@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import moment from "moment";
 import {
   AreaChart,
   Area,
@@ -14,9 +15,13 @@ import styles from "./ViewRateChart.module.scss";
 const ViewsRateChart = () => {
   const [viewsData, setViewsData] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Added loading state
 
   useEffect(() => {
     const fetchViewsRate = async () => {
+      setLoading(true); // Start loading
+      setError(null); // Reset error
+
       try {
         const token = localStorage.getItem("token");
 
@@ -35,16 +40,32 @@ const ViewsRateChart = () => {
           if (Array.isArray(response.data)) {
             const formattedData = response.data
               .map((item) => {
-                const monthlyViews = Object.entries(item.monthly_views).map(
-                  ([month, views]) => ({
-                    month,
-                    views,
-                    campaign: item.campaign_name,
-                  })
-                );
-                return monthlyViews;
+                if (
+                  item.monthly_views &&
+                  typeof item.monthly_views === "object"
+                ) {
+                  return Object.entries(item.monthly_views).map(
+                    ([month, views]) => {
+                      console.log("Raw month value:", month); // Log raw month value
+                      const parsedDate = moment(month, [
+                        "YYYY-MM",
+                        "MM-YYYY",
+                        "MMM YYYY",
+                      ]).toDate(); // Try multiple formats
+
+                      return {
+                        month: isNaN(parsedDate) ? month : parsedDate, // Handle invalid date gracefully
+                        views: Number(views), // Ensure views are numbers
+                        campaign: item.campaign_name,
+                      };
+                    }
+                  );
+                }
+                return [];
               })
               .flat();
+
+            console.log("Formatted Data:", formattedData);
 
             setViewsData(formattedData);
           } else {
@@ -59,6 +80,8 @@ const ViewsRateChart = () => {
           error
         );
         setError("Failed to fetch views rate data.");
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
@@ -67,8 +90,13 @@ const ViewsRateChart = () => {
 
   return (
     <div className={styles.viewsRateChart}>
-      {error ? (
-        <p>{error}</p>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <div>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
       ) : viewsData.length > 0 ? (
         <ResponsiveContainer width="100%" height={400}>
           <AreaChart
@@ -81,10 +109,17 @@ const ViewsRateChart = () => {
                 <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <XAxis dataKey="month" />
+            <XAxis
+              dataKey="month"
+              tickFormatter={(date) =>
+                moment(date).isValid() ? moment(date).format("MMM YYYY") : date
+              }
+            />
             <YAxis />
             <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip />
+            <Tooltip
+              formatter={(value) => new Intl.NumberFormat().format(value)}
+            />
             <Area
               type="monotone"
               dataKey="views"
