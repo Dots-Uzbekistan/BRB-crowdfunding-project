@@ -44,7 +44,7 @@ const EditCampaign = () => {
           </Link>
           <h1>Edit Campaign</h1>
         </div>
-        <Tabs campaignId={id} />
+        <Tabs campaignId={campaign.id} />
       </div>
     </div>
   );

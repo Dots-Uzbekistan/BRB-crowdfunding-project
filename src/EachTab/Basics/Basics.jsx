@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Basics = ({ campaignId }) => {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     name: "",
     title: "",
     description: "",
     categories: [],
     project_state: "",
     location: "",
-  });
+  };
+  const [formData, setFormData] = useState(initialFormData);
+  const [initialData, setInitialData] = useState(initialFormData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -20,7 +22,7 @@ const Basics = ({ campaignId }) => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/edit/`,
+          `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -28,6 +30,7 @@ const Basics = ({ campaignId }) => {
           }
         );
         setFormData(response.data);
+        setInitialData(response.data);
       } catch (error) {
         console.error("Fetch Error:", error); // Log detailed error
         if (error.response) {
@@ -69,9 +72,16 @@ const Basics = ({ campaignId }) => {
     e.preventDefault();
     try {
       setLoading(true);
+      const updatedData = Object.keys(formData).reduce((acc, key) => {
+        if (formData[key] !== initialData[key]) {
+          acc[key] = formData[key];
+        }
+        return acc;
+      }, {});
+      console.log("Updated Data:", updatedData);
       const response = await axios.patch(
         `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/edit/`,
-        formData,
+        updatedData,
         {
           headers: {
             "Content-Type": "application/json",
