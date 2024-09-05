@@ -274,17 +274,17 @@
   align-items: center;
 
   &.ant-steps-item-finish .ant-steps-item-icon {
-    background-color: #a5ffb8; 
+    background-color: #a5ffb8;
     border-color: #a5ffb8;
   }
 
   &.ant-steps-item-process .ant-steps-item-icon {
-    background-color: #ffd700; 
+    background-color: #ffd700;
     border-color: #ffd700;
   }
 
   &.ant-steps-item-wait .ant-steps-item-icon {
-    background-color: #d3d3d3; 
+    background-color: #d3d3d3;
     border-color: #d3d3d3;
   }
 
@@ -302,5 +302,25 @@
     margin-top: 8px;
     font-size: 14px;
     color: #333;
+  }
+}
+.shareNotification {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  animation: fadeOut 8s forwards; /* Optional fade-out animation */
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }

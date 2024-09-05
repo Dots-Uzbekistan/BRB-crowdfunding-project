@@ -158,7 +158,7 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
     <div className={styles.gridContainer}>
       {loading ? (
         <div className={styles.fullPageLoader}>
-          <ThreeDots color="#A5FFB8" height={80} width={80} />
+          <ThreeDots color="#4fa94d" height={80} width={80} />
         </div>
       ) : error ? (
         <p>{error}</p>
@@ -215,7 +215,7 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
                       <h4>{campaign.title}</h4>
                       <p>{campaign.location}</p>
                       <p>
-                        {campaign.days_left} days left |
+                        {campaign.days_left} days left |{" "}
                         {campaign.percent_raised} % funded
                       </p>
                       <div className={styles.bottomSection}>

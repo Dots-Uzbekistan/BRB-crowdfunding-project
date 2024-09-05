@@ -15,12 +15,12 @@ import styles from "./ViewRateChart.module.scss";
 const ViewsRateChart = () => {
   const [viewsData, setViewsData] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // Added loading state
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchViewsRate = async () => {
-      setLoading(true); // Start loading
-      setError(null); // Reset error
+      setLoading(true);
+      setError(null);
 
       try {
         const token = localStorage.getItem("token");
@@ -38,7 +38,7 @@ const ViewsRateChart = () => {
           console.log("API Response:", response.data);
 
           if (Array.isArray(response.data)) {
-            const formattedData = response.data
+            let formattedData = response.data
               .map((item) => {
                 if (
                   item.monthly_views &&
@@ -46,7 +46,6 @@ const ViewsRateChart = () => {
                 ) {
                   return Object.entries(item.monthly_views).map(
                     ([month, views]) => {
-                      console.log("Raw month value:", month); // Log raw month value
                       const parsedDate = moment(month, [
                         "YYYY-MM",
                         "MM-YYYY",
@@ -54,8 +53,8 @@ const ViewsRateChart = () => {
                       ]).toDate(); // Try multiple formats
 
                       return {
-                        month: isNaN(parsedDate) ? month : parsedDate, // Handle invalid date gracefully
-                        views: Number(views), // Ensure views are numbers
+                        month: isNaN(parsedDate) ? month : parsedDate,
+                        views: Number(views),
                         campaign: item.campaign_name,
                       };
                     }
@@ -64,6 +63,9 @@ const ViewsRateChart = () => {
                 return [];
               })
               .flat();
+
+            // Sort data by month
+            formattedData.sort((a, b) => moment(a.month).diff(moment(b.month)));
 
             console.log("Formatted Data:", formattedData);
 
@@ -81,7 +83,7 @@ const ViewsRateChart = () => {
         );
         setError("Failed to fetch views rate data.");
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 

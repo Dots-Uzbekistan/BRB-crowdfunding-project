@@ -104,7 +104,7 @@ const LoginForm = () => {
         {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
         {isPasswordCorrect === false && (
           <p className={styles.registerText}>
-            Don't have an account?{" "}
+            Don't have an account?
             <Link to="/lastregistration" className={styles.registerLink}>
               Create a new one
             </Link>

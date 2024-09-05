@@ -13,7 +13,7 @@ import { GiHealthNormal } from "react-icons/gi";
 import AsideDashboard from "../../subcomponents/AsideDashboard/AsideDashboard";
 import CampaignGrid from "../../components/CampaignGrid/CampaignGrid";
 import SavedCampaigns from "../../subcomponents/SavedCampaigns/SavedCampaigns";
-import Footer from "../Footer/Footer";
+import FooterMini from "../../subcomponents/FooterMini/FooterMini";
 
 const CampaignDashboard = () => {
   const [filters, setFilters] = useState({
@@ -115,7 +115,7 @@ const CampaignDashboard = () => {
         </div>
         <SavedCampaigns />
       </div>
-      <Footer />
+      <FooterMini />
     </section>
   );
 };

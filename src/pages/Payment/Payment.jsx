@@ -19,7 +19,7 @@ const Payment = () => {
 
   useEffect(() => {
     const fetchPaymentDetails = async () => {
-      setLoading(true); // Show loader
+      setLoading(true);
       const token = localStorage.getItem("token");
 
       try {
@@ -144,7 +144,7 @@ const Payment = () => {
               <ThreeDots
                 height="80"
                 width="80"
-                color="#a0f0a0"
+                color="4fa94d"
                 ariaLabel="three-dots-loading"
               />
             </div>

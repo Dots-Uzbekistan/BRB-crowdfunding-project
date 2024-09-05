@@ -152,7 +152,7 @@ const Navbar = () => {
             </div>
           )}
         </div>
-        <Link className={styles.link_navbar} to={"/"}>
+        <Link className={styles.link_navbar} to={"/addcampaign"}>
           Raise Money
         </Link>
         <div className={styles.btns}>

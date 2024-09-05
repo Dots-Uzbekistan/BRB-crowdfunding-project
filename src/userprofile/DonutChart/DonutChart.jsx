@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 import styles from "./DonutChart.module.scss";
-import { ThreeDots } from "react-loader-spinner";
 
 const DonutChart = () => {
   const [categoryBreakdown, setCategoryBreakdown] = useState([]);
@@ -23,11 +22,9 @@ const DonutChart = () => {
             }
           );
 
-          console.log("API Response:", response.data);
-
           if (Array.isArray(response.data)) {
             const formattedData = response.data.map((item) => ({
-              ...item,
+              campaign_name: item.campaign_name,
               percentage: parseFloat(item.percentage),
             }));
             setCategoryBreakdown(formattedData);
@@ -38,11 +35,8 @@ const DonutChart = () => {
           setError("No token found. Please log in.");
         }
       } catch (error) {
-        console.error(
-          "There was an error fetching the category breakdown data:",
-          error
-        );
-        setError("Failed to fetch category breakdown data.");
+        console.error("Error fetching category breakdown data:", error);
+        setError("Failed to fetch data.");
       }
     };
 
@@ -58,39 +52,21 @@ const DonutChart = () => {
     "#36A2EB",
   ];
 
-  const renderCustomLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    percent,
-    index,
-  }) => {
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  };
-
   return (
     <div className={styles.donutChart}>
-      <h1>Investment categories:</h1>
+      <h1>Investment Categories</h1>
       {error ? (
-        <ThreeDots color="#A5FFB8" height={80} width={80} />
+        <p>{error}</p>
       ) : categoryBreakdown.length > 0 ? (
         <PieChart width={500} height={550}>
           <Pie
             data={categoryBreakdown}
             dataKey="percentage"
-            nameKey="category_name"
+            nameKey="campaign_name"
             cx="50%"
             cy="50%"
             outerRadius={200}
             innerRadius={80}
-            fill="#8884d8"
-            label={renderCustomLabel}
-            labelLine={false}
           >
             {categoryBreakdown.map((entry, index) => (
               <Cell
@@ -103,7 +79,7 @@ const DonutChart = () => {
           <Legend />
         </PieChart>
       ) : (
-        <p>No data for the donut chart.</p>
+        <p>No data available for the donut chart.</p>
       )}
     </div>
   );

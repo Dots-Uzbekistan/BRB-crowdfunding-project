@@ -1,0 +1,104 @@
+.wrapper_content_dashboard {
+  width: 92%;
+  margin: 0 auto;
+}
+
+.nav_campaign_dashboard {
+  border-radius: 14px;
+  border: 3px solid black;
+  padding: 10px;
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  justify-content: space-between;
+
+  .select_option {
+    padding: 10px 15px;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    outline: none;
+    option {
+      font-size: 17px;
+    }
+  }
+
+  .link_dashboard_campaign {
+    .link_dashboard {
+      margin-left: 5rem;
+
+      text-decoration: none;
+      color: black;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.accordion {
+  margin: 20px 0;
+}
+.additionalContent {
+}
+.accordion_content.active {
+  display: block;
+}
+
+.inProgressSection {
+  h3 {
+    color: red;
+  }
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+.accordion_item {
+  margin: 1rem 0;
+  border: 2px solid #000;
+  border-radius: 10px;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.accordion_header {
+  padding: 20px;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+}
+.accordion_content {
+  min-height: 300px;
+  padding: 15px 20px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: none;
+  text-align: center;
+  p {
+    font-size: 30px;
+    line-height: 1.1;
+    margin: 2rem 0;
+  }
+  .button {
+    width: 450px;
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+    border-radius: 14px;
+    font-size: 25px;
+    cursor: pointer;
+    border: none;
+  }
+}
+.nextStepSection {
+  h3 {
+    font-size: 30px;
+  }
+}

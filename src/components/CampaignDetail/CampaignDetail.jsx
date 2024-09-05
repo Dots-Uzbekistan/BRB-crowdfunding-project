@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom"; // Add Link import
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import { ThreeDots } from "react-loader-spinner";
@@ -17,15 +17,17 @@ import { SiTicktick } from "react-icons/si";
 import Kickstarterad from "../../subcomponents/Kickstarterad/Kickstarterad";
 import FAQ from "../../subcomponents/FAQ/FAQ";
 import Updates from "../../subcomponents/Updates/Updates";
+import { IoLink } from "react-icons/io5";
 
 const CampaignDetail = () => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [showMoreBio, setShowMoreBio] = useState(false); 
+  const [showMoreBio, setShowMoreBio] = useState(false);
   const [campaign, setCampaign] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showNotification, setShowNotification] = useState(false); // New state for notification
 
   const { id } = useParams();
 
@@ -92,7 +94,7 @@ const CampaignDetail = () => {
     setShowMoreBio((prevShowMore) => !prevShowMore);
   };
 
-  const initialShowCount = 30; 
+  const initialShowCount = 30;
   const getTruncatedBio = (bio, wordLimit) => {
     const words = bio.split(" ");
     if (words.length <= wordLimit) return bio;
@@ -145,10 +147,21 @@ const CampaignDetail = () => {
     }
   };
 
+  const handleShare = () => {
+    const campaignLink = window.location.href;
+    navigator.clipboard
+      .writeText(campaignLink)
+      .then(() => {
+        setShowNotification(true);
+        setTimeout(() => setShowNotification(false), 8000);
+      })
+      .catch((err) => alert("Failed to copy link: " + err));
+  };
+
   if (loading) {
     return (
       <div className={styles.loader}>
-        <ThreeDots color="#A5FFB8" height={80} width={80} />
+        <ThreeDots color="#4fa94d" height={80} width={80} />
       </div>
     );
   }
@@ -170,14 +183,31 @@ const CampaignDetail = () => {
       <Navbar />
       <div className={styles.middle}>
         <div className={styles.wrapper_card_campaign}>
-          {campaign.media && campaign.media[0]?.file ? (
-            <img
-              className={styles.card_image}
-              src={campaign.media[0].file}
-              alt={campaign.title}
-            />
+          {campaign.media && campaign.media.length > 0 ? (
+            campaign.media[0].type === "image" ? (
+              <img
+                className={styles.card_image}
+                src={campaign.media[0].file}
+                alt={campaign.title}
+              />
+            ) : campaign.media[0].type === "video" ? (
+              <div className={styles.videoWrapper}>
+                <iframe
+                  width="100%"
+                  height="315"
+                  src={campaign.media[0].url}
+                  title={campaign.title}
+                  frameBorder="0"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            ) : (
+              <div className={styles.placeholderMedia}>
+                Unsupported Media Type
+              </div>
+            )
           ) : (
-            <div className={styles.placeholderImage}>No Image Available</div>
+            <div className={styles.placeholderMedia}>No Media Available</div>
           )}
           <div className={styles.info_desc_card}>
             <h1 className={styles.title_card}>{campaign.title}</h1>
@@ -230,8 +260,8 @@ const CampaignDetail = () => {
                 <button className={styles.like} onClick={handleLike}>
                   {liked ? <IoIosHeart /> : <FaRegHeart />} Like
                 </button>
-                <button className={styles.share}>
-                  <FaShare />
+                <button className={styles.share} onClick={handleShare}>
+                  <IoLink />
                   Share
                 </button>
                 <button
@@ -244,6 +274,14 @@ const CampaignDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* Share Notification */}
+        {showNotification && (
+          <div className={styles.shareNotification}>
+            Link copied to clipboard!
+          </div>
+        )}
+
         <div className={styles.wrapper_tabs_review}>
           <div className={styles.tabsContainer}>
             <nav className={styles.tabNav}>
@@ -347,9 +385,11 @@ const CampaignDetail = () => {
                   <FAQ />
                 </div>
               )}
-              {activeTab === "updates" && <div>
-              <Updates/>
-              </div>}
+              {activeTab === "updates" && (
+                <div>
+                  <Updates />
+                </div>
+              )}
             </div>
           </div>
         </div>

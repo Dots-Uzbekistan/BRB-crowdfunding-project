@@ -43,7 +43,7 @@ const Registration = () => {
             onClick={() => handleRoleSelection("creator")}
           >
             <img src={laptop} alt="Creator" />
-            <p>Creator</p>
+            <p>Founder</p>
           </article>
         </div>
         <button className={styles.btn_register}>
