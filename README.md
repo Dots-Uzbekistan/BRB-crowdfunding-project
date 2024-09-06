@@ -60,7 +60,4 @@ npm run dev
 Detailed API endpoints are available at our [API documentation](http://161.35.19.77:8001/api/docs/#/).
 
 ## License
-
-## License
-
-This software and its source code are made available under the terms of the Fundflow Proprietary License. Usage, modification, and distribution are subject to the restrictions outlined in the [LICENSE](LICENSE) file located in the root directory of this repository.
+This software and its source code are made available under the terms of the Fundflow Proprietary License. Usage, modification, and distribution are subject to the restrictions outlined in the [LICENSE](LICENSE.md) file located in the root directory of this repository.
