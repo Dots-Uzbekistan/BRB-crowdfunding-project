@@ -1,4 +1,5 @@
 from django.db import models
+from django_ckeditor_5.fields import CKEditor5Field
 
 
 def campaign_media_upload_path(instance, filename):
@@ -36,7 +37,7 @@ class Campaign(models.Model):
     APPROVAL_STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('approved', 'Approved'),
-        ('declined', 'Declined'),
+        ('rejected', 'Rejected'),
     ]
 
     INVESTMENT_TYPE_CHOICES = [
@@ -45,47 +46,58 @@ class Campaign(models.Model):
         ('donation', 'Donation'),
     ]
 
-    title = models.CharField(max_length=255)
-    description = models.TextField()
+    name = models.CharField(max_length=255, blank=True, verbose_name='Project Name')
+    description = models.TextField(verbose_name='Short Description', max_length=255)
     categories = models.ManyToManyField('campaigns.CampaignCategory')
-    tags = models.ManyToManyField('campaigns.CampaignTag')
-    location = models.CharField(max_length=255)
-    currency = models.CharField(max_length=10, choices=CURRENCY_CHOICES)
-    goal_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    raised_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    min_investment = models.DecimalField(max_digits=10, decimal_places=2, default=100.00)
-    funding_status = models.CharField(max_length=10, choices=FUNDING_STATUS_CHOICES, default='upcoming')
     project_state = models.CharField(max_length=10, choices=PROJECT_STATE_CHOICES, default='upcoming')
-    approval_status = models.CharField(max_length=10, choices=APPROVAL_STATUS_CHOICES, default='pending')
+    location = models.CharField(max_length=255)
+
     investment_type = models.CharField(max_length=10, choices=INVESTMENT_TYPE_CHOICES, default='equity')
-    start_date = models.DateField()
-    end_date = models.DateField()
+    goal_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    extra_info = models.TextField(null=True, blank=True, verbose_name='Extra Information')
+
+    title = models.CharField(max_length=255, blank=True, null=True, verbose_name='Campaign Title')
+    pitch = CKEditor5Field('Campaign Pitch', config_name='extends', blank=True, null=True)
+
+    tags = models.ManyToManyField('campaigns.CampaignTag', blank=True)
+    valuation_cap = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True,
+                                        verbose_name='Valuation cap in USD',
+                                        help_text='Valuation cap (for equity-based campaigns)')
+    min_investment = models.DecimalField(max_digits=10, decimal_places=2, default=100.00)
+    max_goal_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    raised_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    funding_status = models.CharField(max_length=10, choices=FUNDING_STATUS_CHOICES, default='upcoming')
+    approval_status = models.CharField(max_length=10, choices=APPROVAL_STATUS_CHOICES, default='pending')
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('users.UserProfile', on_delete=models.CASCADE, related_name='campaigns')
 
-    project_passport = models.FileField(upload_to='campaigns/project_passports/', null=True, blank=True)
-
-    # Fields for Equity-Based Investments
+    project_passport = models.FileField(upload_to='campaigns/project_passports/', null=True, blank=True)  # deprecated
     equity_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True,
-                                            verbose_name='Equity %', help_text='Total equity offered in %')
-    company_valuation = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True,
-                                            verbose_name='Company Valuation in USD',
-                                            help_text='Valuation of the company (for equity-based campaigns)')
-
+                                            verbose_name='Equity %',
+                                            help_text='Total equity offered in %')  # deprecated
     # Fields for Debt-Based Investments
     interest_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True,
                                         verbose_name='Interest Rate %',
-                                        help_text='Interest rate for debt-based campaigns')
+                                        help_text='Interest rate for debt-based campaigns')  # deprecated
     repayment_period_months = models.IntegerField(null=True, blank=True, verbose_name='Repayment Period (Months)',
-                                                  help_text='Repayment period in months for the debt-based campaign')
+                                                  help_text='Repayment period in months for the debt-based campaign')  # deprecated
+
+    currency = models.CharField(max_length=10, choices=CURRENCY_CHOICES, default='usd')  # deprecated
 
     class Meta:
         ordering = ['-created_at']
         verbose_name_plural = 'Campaigns'
 
+    def save(self, *args, **kwargs):
+        if not self.name:
+            self.name = self.title
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return self.title
+        return self.name or self.title
 
 
 class CampaignMedia(models.Model):
@@ -230,3 +242,23 @@ class CampaignLike(models.Model):
 
     def __str__(self):
         return f"{self.user.email} liked {self.campaign.title} (Active: {self.is_active})"
+
+
+class CampaignLink(models.Model):
+    PLATFORM_CHOICES = [
+        ('telegram', 'Telegram'),
+        ('instagram', 'Instagram'),
+        ('facebook', 'Facebook'),
+        ('linkedin', 'LinkedIn'),
+        ('website', 'Website'),
+    ]
+
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='links')
+    link = models.URLField()
+    platform = models.CharField(max_length=10, choices=PLATFORM_CHOICES)
+
+    def __str__(self):
+        return f"{self.campaign.title} - {self.platform}"
+
+    class Meta:
+        verbose_name_plural = 'Campaign Links'

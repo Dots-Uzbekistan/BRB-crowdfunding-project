@@ -2,7 +2,8 @@ from django.urls import path
 
 from .views import CampaignListView, CampaignCategoryListView, CampaignTagListView, CampaignVisitView, \
     CampaignRatingView, LastVisitedCampaignsView, ClosingSoonCampaignsView, CampaignDetailView, CampaignNewsListView, \
-    CampaignNewsDetailView, CampaignFAQListView, CampaignSaveView, CampaignLikeView, CampaignInvestmentView
+    CampaignNewsDetailView, CampaignFAQListView, CampaignSaveView, CampaignLikeView, CampaignInvestmentView, \
+    CampaignRegistrationView
 
 urlpatterns = [
     path('campaigns/', CampaignListView.as_view(), name='campaign-list'),

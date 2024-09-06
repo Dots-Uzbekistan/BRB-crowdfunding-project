@@ -1,14 +1,27 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
 from .models import AuthUser
 
-class AuthUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'full_name', 'is_staff', 'is_active', 'is_superuser', 'last_login')
+
+class AuthUserAdmin(BaseUserAdmin):
+    model = AuthUser
+    list_display = ('username', 'email', 'full_name', 'is_active', 'is_staff', 'is_superuser')
+    list_filter = ('is_active', 'is_staff', 'is_superuser')
     search_fields = ('username', 'email', 'full_name')
-    list_filter = ('is_staff', 'is_active', 'is_superuser')
-    ordering = ('last_login',)
+    ordering = ('username',)
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal info', {'fields': ('email', 'full_name')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+        ('Important dates', {'fields': ('last_login',)}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'full_name', 'password1', 'password2'),
+        }),
+    )
 
-    fields = ('username', 'password', 'email', 'full_name', 'is_staff', 'is_active', 'is_superuser')
-
-    readonly_fields = ('last_login',)
 
 admin.site.register(AuthUser, AuthUserAdmin)

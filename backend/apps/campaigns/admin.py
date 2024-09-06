@@ -1,33 +1,51 @@
 from django.contrib import admin
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.urls import path, reverse
+from django.utils.html import format_html
 
-from .models import (
-    Campaign, CampaignCategory, CampaignMedia, CampaignNews,
-    CampaignNewsMedia, CampaignRating, CampaignTag,
-    CampaignTeamMember, CampaignVisit, CampaignFAQ, CampaignLike
-)
+from .models import CampaignCategory, CampaignMedia, CampaignNews, CampaignNewsMedia, CampaignRating, CampaignTag, \
+    CampaignTeamMember, CampaignVisit, CampaignFAQ, CampaignLike, CampaignLink, Campaign
 
 
+@admin.register(Campaign)
 class CampaignAdmin(admin.ModelAdmin):
     list_display = (
-        'title', 'location', 'currency', 'goal_amount', 'raised_amount',
+        'title', 'name', 'pitch_link', 'location', 'goal_amount', 'raised_amount',
         'funding_status', 'project_state', 'approval_status', 'investment_type',
         'start_date', 'end_date', 'created_at', 'updated_at', 'creator',
         'get_categories', 'get_tags',
     )
     search_fields = (
-        'title', 'location', 'currency', 'goal_amount', 'raised_amount',
+        'title', 'name', 'location', 'goal_amount', 'raised_amount',
         'funding_status', 'project_state', 'approval_status', 'start_date',
-        'end_date', 'creator__username', 'categories__name', 'tags__name'
+        'end_date', 'creator__user__username', 'categories__name', 'tags__name'
     )
 
     fields = [
-        'title', 'description', 'location', 'currency', 'goal_amount', 'raised_amount',
+        'name', 'title', 'description',
+        'pitch',
+        'location', 'goal_amount', 'max_goal_amount', 'raised_amount',
         'funding_status', 'project_state', 'approval_status',
-        'start_date', 'end_date', 'creator', 'categories', 'tags',
-        'investment_type',
-        'equity_percentage', 'company_valuation',  # For equity-based campaigns
-        'interest_rate', 'repayment_period_months',  # For debt-based campaigns
+        'start_date', 'end_date', 'categories', 'tags', 'creator',
+        'investment_type', 'min_investment',
+        'valuation_cap',  # For equity-based campaigns
+        # 'interest_rate', 'repayment_period_months',  # For debt-based campaigns
     ]
+
+    actions = ['approve_campaign', 'reject_campaign']
+
+    def approve_campaign(self, request, queryset):
+        queryset.update(approval_status='approved')
+        self.message_user(request, "Selected campaigns have been approved.")
+
+    approve_campaign.short_description = "Approve selected campaigns"
+
+    def reject_campaign(self, request, queryset):
+        queryset.update(approval_status='rejected')
+        self.message_user(request, "Selected campaigns have been rejected.")
+
+    reject_campaign.short_description = "Reject selected campaigns"
 
     def get_categories(self, obj):
         return ", ".join([category.name for category in obj.categories.all()])
@@ -39,19 +57,28 @@ class CampaignAdmin(admin.ModelAdmin):
 
     get_tags.short_description = 'Tags'
 
+    def pitch_link(self, obj):
+        return format_html('<a href="{}" target="_blank">View Pitch</a>',
+                           reverse('admin:campaign-pitch', args=[obj.pk]))
+
+    pitch_link.short_description = 'Pitch'
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('pitch/<int:campaign_id>/', self.admin_site.admin_view(self.view_pitch), name='campaign-pitch'),
+        ]
+        return custom_urls + urls
+
+    def view_pitch(self, request, campaign_id):
+        campaign = self.get_object(request, campaign_id)
+        if not campaign:
+            return HttpResponse('Campaign with ID {} doesn\'t exist. Perhaps it was deleted?'.format(campaign_id))
+        return HttpResponse(render_to_string('admin/campaign_pitch.html', {'campaign': campaign}))
+
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        # Optionally, you can add logic here to filter based on investment type if necessary
         return queryset
-
-    # # You can also conditionally hide/show fields in the admin interface based on investment type
-    # def get_fields(self, request, obj=None):
-    #     fields = super().get_fields(request, obj)
-    #     if obj and obj.investment_type == 'equity':
-    #         return fields + ['equity_percentage', 'company_valuation']
-    #     elif obj and obj.investment_type == 'debt':
-    #         return fields + ['interest_rate', 'repayment_period_months']
-    #     return fields
 
 
 class CampaignCategoryAdmin(admin.ModelAdmin):
@@ -104,7 +131,12 @@ class CampaignLikeAdmin(admin.ModelAdmin):
     search_fields = ('user', 'campaign', 'liked_at', 'last_liked_at', 'is_active')
 
 
-admin.site.register(Campaign, CampaignAdmin)
+@admin.register(CampaignLink)
+class CampaignLinkAdmin(admin.ModelAdmin):
+    list_display = ('campaign', 'link', 'platform')
+    search_fields = ('campaign', 'link', 'platform')
+
+
 admin.site.register(CampaignCategory, CampaignCategoryAdmin)
 admin.site.register(CampaignMedia, CampaignMediaAdmin)
 admin.site.register(CampaignNews, CampaignNewsAdmin)

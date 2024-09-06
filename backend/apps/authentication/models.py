@@ -30,5 +30,10 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
 
     objects = AuthUserManager()
 
+    @property
+    def profile_image(self):
+        return self.profile.profile_image.url if self.profile and self.profile.profile_image else None
+
+
     def __str__(self) -> str:
         return self.username

@@ -3,19 +3,338 @@ from datetime import timedelta
 from django.db.models import Max, F
 from django.utils import timezone
 from django_filters import rest_framework as filters
-from rest_framework import generics, status
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
+from rest_framework import status, generics
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import CampaignCategory, CampaignTag, CampaignRating, CampaignVisit, CampaignNews, CampaignFAQ, \
-    CampaignLike, Campaign
+    CampaignLike, CampaignMedia, CampaignLink, CampaignTeamMember, Campaign
 from .serializers import CampaignCategorySerializer, CampaignTagSerializer, CampaignVisitSerializer, \
     CampaignRatingSerializer, LastVisitedCampaignSerializer, CampaignSerializer, CampaignDetailSerializer, \
-    CampaignNewsSerializer, CampaignNewsDetailSerializer, CampaignFAQSerializer, CampaignInvestmentSerializer
+    CampaignNewsSerializer, CampaignNewsDetailSerializer, CampaignFAQSerializer, CampaignInvestmentSerializer, \
+    CampaignRegistrationSerializer, CampaignRegistrationSuccessSerializer, ValidationErrorSerializer, \
+    CampaignEditSerializer, CampaignEditSuccessSerializer, FounderCampaignDetailSerializer, \
+    FounderCampaignListSerializer, FounderCampaignMediaSerializer, CampaignLinkSerializer, CampaignTeamMemberSerializer, \
+    CampaignTeamMemberCreateSerializer
 from ..users.models import UserSavedCampaign
+
+
+class CampaignTeamMemberCreateView(generics.CreateAPIView):
+    serializer_class = CampaignTeamMemberCreateSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = CampaignTeamMember.objects.all()
+
+    def perform_create(self, serializer):
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(id=campaign_id)
+        serializer.save(campaign=campaign)
+
+
+class CampaignTeamMemberListView(generics.ListAPIView):
+    serializer_class = CampaignTeamMemberSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        campaign_id = self.kwargs['campaign_id']
+        return CampaignTeamMember.objects.filter(campaign_id=campaign_id)
+
+
+class CampaignLinkListView(generics.ListAPIView):
+    serializer_class = CampaignLinkSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        campaign_id = self.kwargs['campaign_id']
+        return CampaignLink.objects.filter(campaign_id=campaign_id)
+
+
+class CampaignLinkCreateUpdateView(generics.CreateAPIView):
+    queryset = CampaignLink.objects.all()
+    serializer_class = CampaignLinkSerializer
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        request=CampaignLinkSerializer,
+        responses={
+            200: OpenApiResponse(description="Links created or updated successfully"),
+            400: OpenApiResponse(description="Request data cannot be empty")
+        },
+        examples=[
+            OpenApiExample(
+                'List of objects',
+                summary='List of objects',
+                value=[
+                    {
+                        "platform": "telegram",
+                        "link": "https://t.me/campaign"
+                    },
+                    {
+                        "platform": "instagram",
+                        "link": "https://instagram.com/campaign"
+                    }
+                ],
+                request_only=True
+            ),
+            OpenApiExample(
+                'Single object',
+                summary='Single object',
+                value={
+                    "platform": "website",
+                    "link": "https://campaign.com"
+                },
+                request_only=True
+            )
+        ]
+    )
+    def post(self, request, *args, **kwargs):
+        if not request.data:
+            return Response({"error": "Request data cannot be empty."}, status=status.HTTP_400_BAD_REQUEST)
+
+        campaign_id = self.kwargs['campaign_id']
+        campaign = Campaign.objects.get(id=campaign_id)
+        links_data = request.data if isinstance(request.data, list) else [request.data]
+
+        response_data = []
+        for link_data in links_data:
+            platform = link_data.get('platform')
+            link = link_data.get('link')
+
+            campaign_link, created = CampaignLink.objects.update_or_create(
+                campaign=campaign,
+                platform=platform,
+                defaults={'link': link}
+            )
+
+            response_data.append({
+                'status': 'created' if created else 'updated',
+                'campaign_link': CampaignLinkSerializer(campaign_link).data
+            })
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+class CampaignMediaCreateView(generics.CreateAPIView):
+    queryset = CampaignMedia.objects.all()
+    serializer_class = FounderCampaignMediaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        campaign_id = self.kwargs['id']
+        campaign = Campaign.objects.get(id=campaign_id)
+        serializer.save(campaign=campaign)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class FounderCampaignListView(ListAPIView):
+    serializer_class = FounderCampaignListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user.profile
+        return Campaign.objects.filter(creator=user)
+
+
+class FounderCampaignDetailView(RetrieveAPIView):
+    queryset = Campaign.objects.all()
+    serializer_class = FounderCampaignDetailSerializer
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        # Set the response schema to the serializer directly
+        responses=FounderCampaignDetailSerializer,
+        # Define response examples using OpenApiExample
+        examples=[
+            OpenApiExample(
+                'Get campaign details',
+                summary='Get campaign details',
+                value={
+                    "id": 1,
+                    "name": "Best camp",
+                    "title": "Best camp",
+                    "description": "Hi there",
+                    "categories": [
+                        {
+                            "id": 1,
+                            "name": "Tech"
+                        }
+                    ],
+                    "tags": [
+                        {
+                            "id": 1,
+                            "name": "tech"
+                        }
+                    ],
+                    "media": {
+                        "image": "http://127.0.0.1:8000/media/campaigns/campaign_media/1/y_fd0f3442.jpg",
+                        "video": "https://www.youtube.com/watch?v=123456"
+                    },
+                    "project_state": "concept",
+                    "location": "Tashkent",
+                    "investment_type": "equity",
+                    "goal_amount": "10000.00",
+                    "raised_amount": "1000.00",
+                    "min_investment": "100.00",
+                    "max_goal_amount": "20000.00",
+                    "funding_status": "live",
+                    "approval_status": "approved",
+                    "start_date": "2024-08-22",
+                    "end_date": "2024-09-26"
+                },
+                response_only=True
+            )
+        ]
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+
+class CampaignEditView(generics.UpdateAPIView):
+    queryset = Campaign.objects.all()
+    serializer_class = CampaignEditSerializer
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        request=CampaignEditSerializer,
+        responses={
+            200: OpenApiResponse(description="Campaign updated successfully",
+                                 response=CampaignEditSuccessSerializer),
+            400: OpenApiResponse(description="Validation error", response=ValidationErrorSerializer)
+        },
+        examples=[
+            OpenApiExample(
+                'Update multiple fields of a campaign',
+                summary='Update all fields of a campaign',
+                value={
+                    "name": "New Campaign Name",
+                    "title": "New Campaign Title",
+                    "description": "New Campaign Description",
+                    "categories": [1, 2],
+                    "project_state": "concept",
+                    "location": "Campaign Location",
+                    "investment_type": "equity",
+                    "goal_amount": 10000,
+                    'tags': [1, 2],
+                    "valuation_cap": 100000,
+                    "min_investment": 100,
+                    "max_goal_amount": 20000,
+                    "start_date": "2022-01-01",
+                    "end_date": "2022-12-31"
+                },
+                request_only=True
+            ),
+            OpenApiExample(
+                'Update basic fields of a campaign',
+                summary='Update basic fields of a campaign',
+                value={
+                    "name": "New Campaign Name",
+                    "title": "New Campaign Title",
+                    "description": "New Campaign Description",
+                    "categories": [1, 2],
+                    "project_state": "concept",
+                    "location": "Campaign Location",
+                },
+                request_only=True
+            ),
+            OpenApiExample(
+                'Update contract fields of a campaign',
+                summary='Update contract fields of a campaign',
+                value={
+                    "investment_type": "equity",
+                    "valuation_cap": 100000,
+                    "min_investment": 100,
+                },
+                request_only=True
+            ),
+            OpenApiExample(
+                'Update funding fields of a campaign',
+                summary='Update funding fields of a campaign',
+                value={
+                    "goal_amount": 10000,
+                    "max_goal_amount": 20000,
+                },
+                request_only=True
+            ),
+            OpenApiExample(
+                'Update date fields of a campaign',
+                summary='Update date fields of a campaign',
+                value={
+                    "start_date": "2022-01-01",
+                    "end_date": "2022-12-31"
+                },
+                request_only=True
+            ),
+        ]
+    )
+    def patch(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', True)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response({"message": "Campaign updated successfully", "campaign_id": serializer.instance.id},
+                        status=status.HTTP_200_OK)
+
+
+class CampaignRegistrationView(generics.CreateAPIView):
+    queryset = Campaign.objects.all()
+    serializer_class = CampaignRegistrationSerializer
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        request=CampaignRegistrationSerializer,
+        responses={
+            201: OpenApiResponse(description="Campaign registered successfully",
+                                 response=CampaignRegistrationSuccessSerializer),
+            400: OpenApiResponse(description="Validation error", response=ValidationErrorSerializer)
+        },
+        examples=[
+            OpenApiExample(
+                'Register new campaign with 2 categories',
+                summary='Register a campaign with 2 categories',
+                value={
+                    "name": "Campaign Name",
+                    "description": "Campaign Description",
+                    "categories": [1, 2],
+                    "project_state": "concept",
+                    "location": "Campaign Location",
+                    "investment_type": "equity",
+                    "goal_amount": 10000,
+                    "extra_info": "Extra Info"
+                },
+                request_only=True
+            ),
+            OpenApiExample(
+                'Register new campaign with 1 category',
+                summary='Register a campaign with 1 category',
+                value={
+                    "name": "Campaign Name",
+                    "description": "Campaign Description",
+                    "categories": [1],
+                    "project_state": "concept",
+                    "location": "Campaign Location",
+                    "investment_type": "equity",
+                    "goal_amount": 10000,
+                    "extra_info": "Extra Info",
+                },
+                request_only=True
+            )
+        ]
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response({"message": "Campaign registered successfully", "campaign_id": serializer.instance.id},
+                        status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user.profile)
 
 
 class CampaignInvestmentView(APIView):
@@ -33,7 +352,7 @@ class CampaignSaveView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, campaign_id):
-        user = request.user.userprofile
+        user = request.user.profile
         campaign = Campaign.objects.get(id=campaign_id)
 
         saved_campaign, created = UserSavedCampaign.objects.get_or_create(
@@ -60,7 +379,7 @@ class CampaignLikeView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, campaign_id):
-        user = request.user.userprofile
+        user = request.user.profile
         campaign = Campaign.objects.get(id=campaign_id)
 
         like, created = CampaignLike.objects.get_or_create(
@@ -112,7 +431,7 @@ class CampaignDetailView(RetrieveAPIView):
         instance = self.get_object()
 
         # Add campaign visit
-        user = request.user.userprofile
+        user = request.user.profile
         CampaignVisit.objects.create(user=user, campaign=instance)
 
         # Serialize the campaign details
@@ -123,6 +442,12 @@ class CampaignDetailView(RetrieveAPIView):
 class CampaignCategoryListView(generics.ListAPIView):
     queryset = CampaignCategory.objects.all()
     serializer_class = CampaignCategorySerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        others_category = queryset.filter(name='Others')
+        queryset = queryset.exclude(name='Others')
+        return list(queryset) + list(others_category)
 
 
 class CampaignTagListView(generics.ListAPIView):
@@ -146,7 +471,7 @@ class LastVisitedCampaignsView(generics.ListAPIView):
 
     def get_queryset(self):
         # Get the UserProfile instance for the authenticated user
-        user_profile = self.request.user.userprofile
+        user_profile = self.request.user.profile
 
         # Subquery to get the latest visit per campaign for the user
         latest_visits = CampaignVisit.objects.filter(user=user_profile).values('campaign').annotate(
@@ -238,11 +563,13 @@ class CampaignListView(generics.ListAPIView):
     serializer_class = CampaignSerializer
     filter_backends = [filters.DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = CampaignFilter
-    search_fields = ['title', 'description']
+    search_fields = ['title', 'description', 'tags__name', 'categories__name', 'creator__name', 'location']
     ordering_fields = ['created_at', 'end_date', 'raised_amount']
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
+        queryset = queryset.filter(funding_status='live', approval_status='approved')
 
         # Sort by "Most Funded"
         if self.request.query_params.get('sort') == 'most_funded':

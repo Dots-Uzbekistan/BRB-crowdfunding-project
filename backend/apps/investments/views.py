@@ -8,8 +8,8 @@ from rest_framework.views import APIView
 
 from .models import Investment, Transaction, Payment
 from .serializers import TransactionSerializer, PaymentSerializer, UserInvestmentSerializer, InvestmentSerializer, \
-    CampaignNewsSerializer, TransactionHistorySerializer, CampaignViewsRateSerializer, Last30DaysInvestmentSerializer, \
-    InvestmentCreateSerializer
+    TransactionHistorySerializer, CampaignViewsRateSerializer, Last30DaysInvestmentSerializer, \
+    InvestmentCreateSerializer, UserInvestedCampaignNewsSerializer, InvestmentCategoryBreakdownSerializer
 from ..campaigns.models import Campaign, CampaignCategory, CampaignVisit, CampaignNews
 
 
@@ -38,28 +38,30 @@ class TransactionHistoryView(APIView):
         user = request.user
 
         # Get transactions for the user's investments
-        transactions = Transaction.objects.filter(investment__user=user).order_by('-transaction_date')
+        transactions = (
+            Transaction.objects.filter(investment__user=user, status='successful').order_by('-transaction_date'))
 
-        # Serialize the transactions data
-        serializer = TransactionHistorySerializer(transactions, many=True)
+        # Serialize the transactions data and pass the request context
+        serializer = self.serializer_class(transactions, many=True, context={'request': request})
         return Response(serializer.data)
 
 
 class UserInvestedCampaignNewsView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = CampaignNewsSerializer
+    serializer_class = UserInvestedCampaignNewsSerializer
 
     def get(self, request):
         user = request.user
 
         # Get campaigns the user has invested in
-        invested_campaigns = Investment.objects.filter(user=user).values_list('campaign', flat=True)
+        invested_campaigns = Investment.objects.filter(user=user, status='successful').values_list('campaign',
+                                                                                                   flat=True)
 
         # Get news related to those campaigns
         news = CampaignNews.objects.filter(campaign__in=invested_campaigns).order_by('-created_at')
 
-        # Serialize the news data
-        serializer = CampaignNewsSerializer(news, many=True)
+        # Serialize the news data and pass the request context
+        serializer = self.serializer_class(news, many=True, context={'request': request})
         return Response(serializer.data)
 
 
@@ -73,7 +75,7 @@ class Last30DaysInvestmentView(APIView):
         last_30_days = today - timezone.timedelta(days=30)
 
         # Sum the total investment amount in the last 30 days
-        total_investment = Investment.objects.filter(user=user, investment_date__gte=last_30_days) \
+        total_investment = Investment.objects.filter(user=user, investment_date__gte=last_30_days, status='successful') \
                                .aggregate(total=Sum('amount'))['total'] or 0
 
         # Prepare the response
@@ -92,7 +94,8 @@ class CampaignViewsRateView(APIView):
         user = request.user
 
         # Get campaigns the user has invested in
-        invested_campaigns = Investment.objects.filter(user=user).values_list('campaign', flat=True)
+        invested_campaigns = Investment.objects.filter(user=user, status='successful').values_list('campaign',
+                                                                                                   flat=True)
 
         # Aggregate views by month for these campaigns
         campaign_views = CampaignVisit.objects.filter(campaign__in=invested_campaigns) \
@@ -131,28 +134,20 @@ class CampaignViewsRateView(APIView):
 
 
 class InvestmentCategoryBreakdownView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = InvestmentCategoryBreakdownSerializer
+
     def get(self, request):
         user = request.user
 
-        # Retrieve all campaigns the user has invested in
-        invested_campaigns = Investment.objects.filter(user=user).values_list('campaign', flat=True)
+        # Get all categories associated with campaigns the user has invested in
+        invested_campaigns = Investment.objects.filter(user=user, status='successful').values_list('campaign',
+                                                                                                   flat=True)
+        categories = CampaignCategory.objects.filter(campaign__in=invested_campaigns).distinct()
 
-        # Filter categories that are associated with those campaigns
-        category_investments = CampaignCategory.objects.filter(
-            campaign__in=invested_campaigns  # Use 'campaign' instead of 'campaigns'
-        ).annotate(total_investment=Sum('campaign__investments__amount'))
-
-        # Calculate percentage for each category
-        total_investment = category_investments.aggregate(Sum('total_investment'))['total_investment__sum']
-        category_data = [
-            {
-                'category_name': category.name,
-                'percentage': f"{(category.total_investment / total_investment) * 100:.2f}" if total_investment else 0
-            }
-            for category in category_investments
-        ]
-
-        return Response(category_data)
+        # Serialize the categories and calculate percentages
+        serializer = InvestmentCategoryBreakdownSerializer(categories, many=True, context={'request': request})
+        return Response(serializer.data)
 
 
 class InvestmentsEndingSoonView(APIView):
@@ -167,7 +162,7 @@ class InvestmentsEndingSoonView(APIView):
         investments = Investment.objects.filter(user=user, campaign__end_date__gte=today) \
             .values('campaign') \
             .annotate(total_invested=Sum('amount')) \
-            .filter(campaign__investment_type='equity') \
+            .filter(campaign__investment_type='equity', status='successful') \
             .order_by('campaign__end_date')
 
         # We fetch the related campaigns for these investments

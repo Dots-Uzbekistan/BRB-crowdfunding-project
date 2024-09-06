@@ -1,11 +1,14 @@
+import re
+
 from django.utils import timezone
 from rest_framework import serializers
 
-from .models import UserProfile
+from .models import UserProfile, UserSavedCampaign
 from ..campaigns.models import Campaign
 
 
 class SavedCampaignSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='campaign.id')
     campaign_title = serializers.CharField(source='campaign.title')
     campaign_image = serializers.SerializerMethodField()
     days_left = serializers.SerializerMethodField()
@@ -13,8 +16,8 @@ class SavedCampaignSerializer(serializers.ModelSerializer):
     creator_name = serializers.CharField(source='campaign.creator.name')
 
     class Meta:
-        model = Campaign
-        fields = ['campaign_title', 'campaign_image', 'days_left', 'percent_funded', 'creator_name']
+        model = UserSavedCampaign
+        fields = ['id', 'campaign_title', 'campaign_image', 'days_left', 'percent_funded', 'creator_name']
 
     def get_campaign_image(self, obj):
         request = self.context.get('request')
@@ -29,7 +32,7 @@ class SavedCampaignSerializer(serializers.ModelSerializer):
         return max(days_left, 0)
 
     def get_percent_funded(self, obj):
-        return (obj.campaign.raised_amount / obj.campaign.goal_amount) * 100
+        return f"{(obj.campaign.raised_amount / obj.campaign.goal_amount) * 100:.0f}"
 
 
 class UpdateUserProfileSerializer(serializers.ModelSerializer):
@@ -52,10 +55,27 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ['username', 'name', 'surname', 'email', 'phone_number', 'passport_number', 'passport_document',
-                    'bio', 'profile_image', 'created_at', 'updated_at', 'role']
+                  'bio', 'profile_image', 'created_at', 'updated_at', 'role']
 
     def get_username(self, obj):
         return obj.user.username
+
+    def validate_phone_number(self, value):
+        pattern = r'^\+998\d{9}$'
+        if not re.match(pattern, value):
+            raise serializers.ValidationError(
+                'Phone number must be in the format +998XXXXXXXXX, where X is a digit.'
+            )
+        return value
+
+    def validate_passport_number(self, value):
+        if value:
+            pattern = r'^[A-Z]{2}\d{7}$'
+            if not re.match(pattern, value):
+                raise serializers.ValidationError(
+                    'Passport number must be in the format AA1234567, where AA are uppercase letters and 1234567 are digits.'
+                )
+        return value
 
     def create(self, validated_data):
         user_id = self.context['request'].user.id

@@ -14,10 +14,10 @@ class SavedCampaignsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user_profile = self.request.user.userprofile
+        user_profile = self.request.user.profile
 
         # Get saved campaigns for the user, ordered by saved_at
-        saved_campaigns = UserSavedCampaign.objects.filter(user=user_profile).order_by('-last_saved_at')
+        saved_campaigns = UserSavedCampaign.objects.filter(user=user_profile, is_active=True).order_by('-last_saved_at')
 
         # Serialize the saved campaigns data
         serializer = SavedCampaignSerializer(saved_campaigns, many=True, context={'request': request})
@@ -30,7 +30,7 @@ class UpdateUserProfileView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.request.user.userprofile
+        return self.request.user.profile
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', True)  # Allow partial updates by default
@@ -57,4 +57,4 @@ class UserProfileRetrieveView(generics.RetrieveAPIView):
     authentication_classes = [JWTAuthentication]
 
     def get_object(self):
-        return self.request.user.userprofile
+        return self.request.user.profile

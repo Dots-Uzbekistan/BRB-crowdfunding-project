@@ -60,8 +60,12 @@ AUTH_USER_MODEL = 'authentication.AuthUser'
 # Application definition
 
 INSTALLED_APPS = [
+    # 'admin_soft.apps.AdminSoftDashboardConfig',
+    'jazzmin',
+    'django_ckeditor_5',
+
     'django.contrib.admin',
-    'django.contrib.auth',
+    # 'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -73,11 +77,15 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_spectacular',
     # local apps
-    'apps.authentication',
+    'apps.authentication.apps.UsersConfig',
+    'apps.authentication.apps.CustomAuthConfig',
+
+    # 'apps.authentication',
     'apps.users',
     'apps.campaigns',
     'apps.investments',
     'apps.notifications',
+
 ]
 
 MIDDLEWARE = [
@@ -131,14 +139,6 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.2',  # Set your API version here
     'SERVE_INCLUDE_SCHEMA': False,
 }
-
-# DATABASES = {
-# 	'default': {
-# 		'ENGINE': 'django.db.backends.sqlite3',
-# 		'NAME': BASE_DIR / 'db.sqlite3',
-# 	}
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -250,4 +250,196 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'DEBUG',
     },
+}
+
+# for authentication
+
+LOGIN_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+JAZZMIN_SETTINGS = {
+    # "show_ui_builder": True,
+
+    "site_title": "FundflowAdmin",
+    "site_header": "FundflowAdmin",
+    "site_brand": "Fundflow Admin",
+    "site_icon": "fundflow-icon.png",
+    "site_logo": "fundflow-icon.png",
+    "site_logo_dark": "fundflow-icon.png",
+    "welcome_sign": "Welcome to Fundflow Admin",
+
+    "user_avatar": "profile_image",
+    # "use_google_fonts_cdn": True,
+    # "language_chooser": True,
+
+    # "changeform_format": "collapsible",
+
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "new_window": False},
+        {"name": "View Platform", "url": "http://localhost:5173/", "icon": "open_in_new_.png", "new_window": True},
+    ],
+
+    # "usermenu_links": [
+    #     {"name": "View Platform", "url": "http://localhost:5173/", "new_window": True},
+    # ],
+    # dark mode switcher
+    "change_theme": "theme",
+    "default_dark_mode": True,
+
+    "order_with_respect_to": [
+        "authentication", "auth", "users", "campaigns", "investments", "notifications"
+    ],
+
+    "icons": {
+        "authentication.authuser": "fas fa-users-cog",
+        "auth.group": "fas fa-users",
+        "users.userprofile": "fas fa-user",
+        "users.usersavedcampaign": "fas fa-save",
+        "campaigns.campaign": "fas fa-bullhorn",
+        "campaigns.campaigncategory": "fas fa-list",
+        "campaigns.campaignfaq": "fas fa-question",
+        "campaigns.campaignlike": "fas fa-heart",
+        "campaigns.campaignmedia": "fas fa-image",
+        "campaigns.campaignnews": "fas fa-newspaper",
+        "campaigns.campaignnewsmedia": "fas fa-image",
+        "campaigns.campaignrating": "fas fa-star",
+        "campaigns.campaigntag": "fas fa-tag",
+        "campaigns.campaignteammember": "fas fa-user-friends",
+        "campaigns.campaignvisit": "fas fa-eye",
+        "investments.investment": "fas fa-hand-holding-usd",
+        "investments.payment": "fas fa-money-check-alt",
+        "investments.transaction": "fas fa-money-check",
+        "notifications.notification": "fas fa-bell",
+        "token_blacklist.blacklistedtoken": "fas fa-user-lock",
+        "token_blacklist.outstandingtoken": "fas fa-user-lock",
+    },
+    # Icons that are used when one is not manually specified
+    "default_icon_parents": "fas fa-folder",
+    "default_icon_children": "fas fa-file",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-teal",
+    "accent": "accent-teal",
+    "navbar": "navbar-teal navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-light-teal",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "minty",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}
+
+# JAZZMIN_SETTINGS = ["show_ui_builder"] = True
+
+
+# CKEDITOR5
+
+customColorPalette = [
+    {
+        'color': 'hsl(4, 90%, 58%)',
+        'label': 'Red'
+    },
+    {
+        'color': 'hsl(340, 82%, 52%)',
+        'label': 'Pink'
+    },
+    {
+        'color': 'hsl(291, 64%, 42%)',
+        'label': 'Purple'
+    },
+    {
+        'color': 'hsl(262, 52%, 47%)',
+        'label': 'Deep Purple'
+    },
+    {
+        'color': 'hsl(231, 48%, 48%)',
+        'label': 'Indigo'
+    },
+    {
+        'color': 'hsl(207, 90%, 54%)',
+        'label': 'Blue'
+    },
+]
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
+                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
+
+    },
+    'extends': {
+        'blockToolbar': [
+            'paragraph', 'heading1', 'heading2', 'heading3',
+            '|',
+            'bulletedList', 'numberedList',
+            '|',
+            'blockQuote',
+        ],
+        'toolbar': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
+                    'code', 'subscript', 'superscript', 'highlight', '|', 'codeBlock', 'sourceEditing', 'insertImage',
+                    'bulletedList', 'numberedList', 'todoList', '|', 'blockQuote', 'imageUpload', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
+                    'insertTable', ],
+        'image': {
+            'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft',
+                        'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side', '|'],
+            'styles': [
+                'full',
+                'side',
+                'alignLeft',
+                'alignRight',
+                'alignCenter',
+            ]
+
+        },
+        'table': {
+            'contentToolbar': ['tableColumn', 'tableRow', 'mergeTableCells',
+                               'tableProperties', 'tableCellProperties'],
+            'tableProperties': {
+                'borderColors': customColorPalette,
+                'backgroundColors': customColorPalette
+            },
+            'tableCellProperties': {
+                'borderColors': customColorPalette,
+                'backgroundColors': customColorPalette
+            }
+        },
+        'heading': {
+            'options': [
+                {'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph'},
+                {'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1'},
+                {'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2'},
+                {'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3'}
+            ]
+        }
+    },
+    'list': {
+        'properties': {
+            'styles': 'true',
+            'startIndex': 'true',
+            'reversed': 'true',
+        }
+    }
 }

@@ -1,7 +1,8 @@
+from django.db.models import Sum
 from django.utils import timezone
 from rest_framework import serializers
 
-from apps.campaigns.models import Campaign, CampaignNews
+from apps.campaigns.models import Campaign, CampaignNews, CampaignCategory
 from apps.investments.models import Investment, Transaction, Payment
 from apps.users.models import UserProfile
 
@@ -96,10 +97,11 @@ class TransactionHistorySerializer(serializers.ModelSerializer):
     transaction_date = serializers.SerializerMethodField()
     transaction_time = serializers.SerializerMethodField()
     amount = serializers.SerializerMethodField()
+    campaign_image = serializers.SerializerMethodField()
 
     class Meta:
         model = Transaction
-        fields = ['transaction_date', 'transaction_time', 'amount', 'campaign_name']
+        fields = ['transaction_date', 'transaction_time', 'amount', 'campaign_name', 'campaign_image']
 
     def get_transaction_date(self, obj):
         return obj.transaction_date.date()  # Extracts the date part
@@ -110,13 +112,28 @@ class TransactionHistorySerializer(serializers.ModelSerializer):
     def get_amount(self, obj):
         return f"{obj.amount:.0f}"  # Rounds the amount to one decimal place
 
+    def get_campaign_image(self, obj):
+        request = self.context.get('request')
+        media = obj.investment.campaign.media.filter(type='image').first()
+        if media and media.file:
+            return request.build_absolute_uri(media.file.url) if request else media.file.url
+        return None
 
-class CampaignNewsSerializer(serializers.ModelSerializer):
+
+class UserInvestedCampaignNewsSerializer(serializers.ModelSerializer):
     campaign_name = serializers.CharField(source='campaign.title')
+    campaign_image = serializers.SerializerMethodField()
 
     class Meta:
         model = CampaignNews
-        fields = ['campaign_name', 'title']
+        fields = ['campaign_name', 'campaign_image', 'title']
+
+    def get_campaign_image(self, obj):
+        request = self.context.get('request')
+        media = obj.campaign.media.filter(type='image').first()  # Assuming you have a media relationship in Campaign
+        if media and media.file:
+            return request.build_absolute_uri(media.file.url) if request else media.file.url
+        return None
 
 
 class Last30DaysInvestmentSerializer(serializers.Serializer):
@@ -173,13 +190,9 @@ class UserInvestmentSerializer(serializers.ModelSerializer):
         campaign_investment_map = self.context.get('campaign_investment_map', {})
         total_invested = campaign_investment_map.get(obj.id, 0)
 
-        if obj.raised_amount > obj.goal_amount:
-            effective_amount = obj.raised_amount
-        else:
-            effective_amount = obj.goal_amount
-
-        if obj.investment_type == 'equity' and obj.equity_percentage:
-            user_equity = (total_invested / effective_amount) * obj.equity_percentage
+        if obj.investment_type == 'equity' and obj.valuation_cap:
+            valuation_cap = obj.valuation_cap
+            user_equity = (total_invested / valuation_cap) * 100
             return f"{user_equity:.2f}%"
         return None  # If not an equity-based campaign
 
@@ -190,6 +203,39 @@ class UserInvestmentSerializer(serializers.ModelSerializer):
             return f"${obj.raised_amount / 1000:.1f}K"
         else:
             return f"${obj.raised_amount / 1000000:.1f}M"
+
+
+class InvestmentCategoryBreakdownSerializer(serializers.ModelSerializer):
+    campaign_name = serializers.CharField(source='name')
+    percentage = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CampaignCategory
+        fields = ['campaign_name', 'percentage']
+
+    def get_percentage(self, obj):
+        user = self.context['request'].user
+        total_investment = Investment.objects.filter(
+            user=user,
+            status='successful'
+        ).aggregate(total=Sum('amount'))['total'] or 0
+
+        # Calculate the total amount invested in campaigns within this category, distributed among all categories
+        category_investment = 0
+        campaigns = Campaign.objects.filter(categories=obj, investments__user=user, investments__status='successful').distinct()
+
+        for campaign in campaigns:
+            campaign_investment = Investment.objects.filter(
+                campaign=campaign,
+                user=user,
+                status='successful'
+            ).aggregate(total=Sum('amount'))['total'] or 0
+
+            # Distribute the investment among the categories the campaign belongs to
+            category_count = campaign.categories.count()
+            category_investment += campaign_investment / category_count
+
+        return f"{(category_investment / total_investment) * 100:.2f}" if total_investment else "0.00"
 
 
 class InvestmentSerializer(serializers.ModelSerializer):

@@ -4,8 +4,8 @@ from .models import UserProfile, UserSavedCampaign
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-	list_display = ('user__username', 'name', 'surname', 'email', 'phone_number', 'passport_number', 'role', 'created_at')
-	search_fields = ('user__username', 'name', 'surname', 'email', 'phone_number', 'passport_number')
+	list_display = ('user', 'name', 'surname', 'email', 'phone_number', 'passport_number', 'role', 'created_at')
+	search_fields = ('user', 'name', 'surname', 'email', 'phone_number', 'passport_number')
 
 	list_filter = ('role',)
 
