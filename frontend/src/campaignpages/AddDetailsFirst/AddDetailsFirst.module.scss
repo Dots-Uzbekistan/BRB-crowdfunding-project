@@ -1,0 +1,115 @@
+.wrapper_content_first_addition {
+  width: 92%;
+  margin: auto;
+
+  h1 {
+    font-size: 50px;
+    line-height: 1.2;
+
+    span {
+      background-color: #e8fc85;
+      padding: 3px;
+      border-radius: 14px;
+    }
+  }
+
+  .wrapper_input_addition {
+    margin: 3rem 0;
+  }
+
+  .formContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: auto;
+  }
+
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    label {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+    }
+
+    textarea {
+      height: 100px;
+      resize: none;
+    }
+  }
+
+  .stages {
+    display: flex;
+    justify-content: space-between;
+
+    .stage {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 10px;
+      cursor: pointer;
+
+      &.activeStage {
+        background-color: #e8fc85;
+        border-radius: 10px;
+      }
+
+      input {
+        display: none;
+      }
+
+      .stageIcon {
+        font-size: 20px;
+        margin-top: 7px;
+      }
+    }
+  }
+
+  .funding_type_wrapper_radio {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+}
+
+.submitButton {
+  padding: 20px;
+  font-size: 25px;
+  background-color: black;
+  border: 2px solid black;
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: white;
+    color: black;
+  }
+}
+.cont_textarea_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

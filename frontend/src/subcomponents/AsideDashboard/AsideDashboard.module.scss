@@ -1,0 +1,66 @@
+.aside_filter {
+  .filtersContainer {
+    padding: 1rem 2rem;
+    line-height: 1;
+    width: 300px;
+    height: 110vh;
+    background-color: #a5ffb8;
+    border-radius: 14px;
+    font-weight: 600;
+    position: relative;
+
+    .filterHeader {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .filterSection {
+      margin-bottom: 20px;
+    }
+
+    h4 {
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .radioGroup {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .radioOption {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+
+      input[type="radio"] {
+        margin-right: 10px;
+        accent-color: black; /* Adjust the color of the radio button */
+      }
+    }
+
+    .radioOption:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .applyButton {
+    width: 100%;
+    border-radius: 14px;
+    padding: 10px 15px;
+    background-color: black;
+    color: white;
+  }
+  .deselectButton {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    background: transparent;
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: black;
+    color: white;
+  }
+}

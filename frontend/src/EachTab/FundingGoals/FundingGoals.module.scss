@@ -1,0 +1,88 @@
+.fundingGoalsContainer {
+  max-width: 800px;
+  margin: auto;
+  padding: 1rem;
+}
+
+.fundingGoalsForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.inputField {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+.inputField:focus {
+  border-color: black;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2); // Light blue shadow
+}
+
+.dateFields {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dateSelect {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.dateSelect:focus {
+  border-color: #007bff; // Blue border on focus
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2); // Light blue shadow
+}
+
+.saveButton {
+  padding: 0.75rem;
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.saveButton:hover {
+  background-color: black; // Darker blue on hover
+}
+
+.successMessage {
+  color: green;
+  font-weight: bold;
+  text-align: center;
+}
+
+.errorMessage {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}

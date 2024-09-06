@@ -1,0 +1,61 @@
+.faq_wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.ask_question {
+  margin: 2rem 0;
+  h3 {
+    font-size: 30px;
+    line-height: 1.1;
+  }
+  .btn_ask {
+    width: 350px;
+    font-size: 30px;
+    padding: 10px 15px;
+    margin: 1rem 0;
+    background-color: black;
+    color: white;
+    border-radius: 14px;
+    cursor: pointer;
+    border: 2px solid black;
+    transition: 0.3 all linear;
+    &:hover {
+      background-color: white;
+      color: black;
+    }
+  }
+}
+
+.faqContainer {
+  width: 70%;
+  margin: 20px 0;
+}
+
+.accordionItem {
+  border-radius: 24px;
+  background-color: #d5e8ea;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+  padding: 1rem;
+}
+
+.accordionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 30px;
+}
+
+.accordionHeader h3 {
+  margin: 0;
+}
+
+.accordionContent {
+  padding: 10px;
+  background-color: #d5e8ea;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
