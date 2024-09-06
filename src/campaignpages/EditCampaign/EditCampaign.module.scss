@@ -2,24 +2,29 @@
   width: 92%;
   margin: auto;
 }
+
 .nav_edit {
+  display: flex;
+  justify-content: space-between; /* Aligns items to the start and end */
+  align-items: center; /* Aligns items vertically */
   width: 100%;
   border-radius: 14px;
   border: 2px solid black;
   padding: 1rem;
-  position: relative;
+
   h1 {
     text-align: center;
+    flex: 1; /* Takes up remaining space */
+    margin: 0; /* Remove default margin */
   }
+
   .back {
     text-decoration: none;
     color: black;
     cursor: pointer;
     font-size: 20px;
-    top: 1.6rem;
     display: flex;
     align-items: center;
-    position: absolute;
     gap: 10px;
   }
 }

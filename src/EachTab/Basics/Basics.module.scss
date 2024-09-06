@@ -1,0 +1,128 @@
+.container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #555;
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+  }
+
+  .categories {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+  }
+
+  .radioWrapper {
+    display: flex;
+    align-items: center;
+
+    input[type="radio"] {
+      display: none; // Hide the native radio button
+
+      &:checked + label .radioButton {
+        border-color: #4a90e2;
+        background-color: #4a90e2;
+      }
+    }
+
+    .customRadio {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .radioButton {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ddd;
+      border-radius: 50%;
+      margin-right: 8px;
+      position: relative;
+      transition: all 0.3s ease;
+
+      &:after {
+        content: "";
+        width: 10px;
+        height: 10px;
+        background-color: #fff;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.3s ease;
+      }
+    }
+
+    label {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+}
+
+.button {
+  background-color: black;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 25px;
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.dropzone {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+
+  p {
+    color: #666;
+  }
+}

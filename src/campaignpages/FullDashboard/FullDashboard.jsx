@@ -55,7 +55,9 @@ const FullDashboard = () => {
           </select>
           <div className={styles.link_dashboard_campaign}>
             <Link className={styles.link_dashboard}>Edit Campaign</Link>
-            <Link className={styles.link_dashboard}>View Stats</Link>
+            <Link className={styles.link_dashboard} to={"/stats"}>
+              View Stats
+            </Link>
             <Link className={styles.link_dashboard}>Post Update</Link>
           </div>
         </nav>

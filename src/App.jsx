@@ -15,6 +15,7 @@ import AddCampaign from "./campaignpages/AddCampaign/AddCampaign";
 import AddDetailsFirst from "./campaignpages/AddDetailsFirst/AddDetailsFirst";
 import FullDashboard from "./campaignpages/FullDashboard/FullDashboard";
 import EditCampaign from "./campaignpages/EditCampaign/EditCampaign";
+import CampaignStats from "./components/CampaignStats/CampaignStats";
 export const AuthContext = createContext();
 function App() {
   const [isSuccessful, setIsSuccessful] = useState(false);
@@ -46,6 +47,7 @@ function App() {
         <Route path="/firstadditioncampaign" element={<AddDetailsFirst />} />
         <Route path="/fulldashboard/" element={<FullDashboard />} />
         <Route path="/editcampaign/:id" element={<EditCampaign />} />
+        <Route path="/stats" element={<CampaignStats />} />
       </Routes>
     </AuthContext.Provider>
   );

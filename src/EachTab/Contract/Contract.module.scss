@@ -1,0 +1,142 @@
+.contractFormContainer {
+  max-width: 800px;
+  margin: auto;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.contractForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  position: relative;
+  padding: 0.5rem;
+  border-radius: 5px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.radioLabel:hover {
+  background-color: #e0e0e0; // Light gray background on hover
+}
+
+.radioLabel input {
+  position: absolute;
+  opacity: 0; // Hide the default radio button
+  cursor: pointer;
+}
+
+.radioCustom {
+  width: 24px; // Increased size for better visibility
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #007bff; // Border color for the radio button
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s, background-color 0.3s;
+  position: relative;
+}
+
+.radioLabel input:checked + .radioCustom {
+  background-color: black; // Color when selected
+  border-color: black;
+}
+
+.radioCustom::after {
+  content: "";
+  width: 12px; // Inner dot size
+  height: 12px;
+  border-radius: 50%;
+  background: #fff; // Dot color
+  display: block;
+  transform: scale(0);
+  transition: transform 0.3s;
+}
+
+.radioLabel input:checked + .radioCustom::after {
+  transform: scale(1); // Show the dot when checked
+}
+
+.valuationCapInput {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px; // Adjusted to match overall design
+  padding: 0.5rem;
+  background-color: #fff;
+}
+
+.dollarSign {
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.inputField {
+  border: none;
+  font-size: 1.25rem;
+  outline: none;
+  width: 100%;
+  padding: 0.5rem;
+  background: #fff;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.saveButton {
+  padding: 0.75rem;
+  background-color: #000; // Maintained black for contrast
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s; // Smooth transition effect
+}
+
+.saveButton:hover {
+  background-color: #333;
+}
+
+.successMessage {
+  color: #28a745;
+  font-weight: bold;
+  text-align: center;
+}
+
+.errorMessage {
+  color: #dc3545;
+  font-weight: bold;
+  text-align: center;
+}
