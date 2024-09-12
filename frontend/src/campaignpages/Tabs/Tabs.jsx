@@ -8,7 +8,7 @@ import Contract from "../../EachTab/Contract/Contract";
 import FundingGoals from "../../EachTab/FundingGoals/FundingGoals";
 import Collaboration from "../../EachTab/Collaboration/Collaboration";
 
-const Tabs = ({ campaignId }) => {
+const Tabs = ({ campaign }) => {
   const [activeTab, setActiveTab] = useState("Basics");
   const [isMobile, setIsMobile] = useState(false);
 
@@ -29,6 +29,7 @@ const Tabs = ({ campaignId }) => {
   }, []);
 
   const renderTabContent = () => {
+    const campaignId = campaign?.id; // Extract campaignId from campaign object
     switch (activeTab) {
       case "Basics":
         return <Basics campaignId={campaignId} />;
