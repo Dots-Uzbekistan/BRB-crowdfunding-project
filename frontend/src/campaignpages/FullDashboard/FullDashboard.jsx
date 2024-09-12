@@ -46,19 +46,41 @@ const FullDashboard = () => {
             value={selectedCampaign}
             onChange={(e) => setSelectedCampaign(e.target.value)}
           >
-            <option value="Select Campaign">Select Campaign</option>
+            <option value="">Select Campaign</option>
             {campaigns.map((campaign) => (
               <option key={campaign.id} value={campaign.id}>
                 {campaign.name}
               </option>
             ))}
           </select>
+
           <div className={styles.link_dashboard_campaign}>
-            <Link className={styles.link_dashboard}>Edit Campaign</Link>
-            <Link className={styles.link_dashboard} to={"/stats"}>
+            <Link
+              className={
+                selectedCampaign ? styles.link_dashboard : styles.link_disabled
+              }
+              to={selectedCampaign ? `/update/${selectedCampaign}` : "#"}
+            >
+              Post Update
+            </Link>
+
+            <Link
+              className={
+                selectedCampaign ? styles.link_dashboard : styles.link_disabled
+              }
+              to={selectedCampaign ? `/stats/${selectedCampaign}` : "#"}
+            >
               View Stats
             </Link>
-            <Link className={styles.link_dashboard}>Post Update</Link>
+
+            <Link
+              className={
+                selectedCampaign ? styles.link_dashboard : styles.link_disabled
+              }
+              to={selectedCampaign ? `/editcampaign/${selectedCampaign}` : "#"}
+            >
+              Edit Campaign
+            </Link>
           </div>
         </nav>
 

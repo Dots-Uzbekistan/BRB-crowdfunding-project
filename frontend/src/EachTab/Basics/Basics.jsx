@@ -4,21 +4,20 @@ import { ThreeDots } from "react-loader-spinner";
 import styles from "./Basics.module.scss";
 
 const Basics = ({ campaignId }) => {
-  const initialFormData = {
+  const [formData, setFormData] = useState({
     name: "",
     title: "",
     description: "",
     categories: "",
     project_state: "",
     location: "",
-  };
-
-  const [formData, setFormData] = useState(initialFormData);
-  const [initialData, setInitialData] = useState(initialFormData);
+  });
+  const [initialData, setInitialData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [media, setMedia] = useState({ image: null, video: null });
   const [mediaError, setMediaError] = useState(null);
+  const [categories, setCategories] = useState([]);
 
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
@@ -37,8 +36,26 @@ const Basics = ({ campaignId }) => {
             },
           }
         );
-        setFormData(response.data);
-        setInitialData(response.data);
+
+        const { data } = response;
+
+        setCategories(data.categories || []);
+        setFormData({
+          name: data.name || "",
+          title: data.title || "",
+          description: data.description || "",
+          categories: data.categories[0]?.id || "", // Default to first category or empty
+          project_state: data.project_state || "",
+          location: data.location || "",
+        });
+        setInitialData({
+          name: data.name || "",
+          title: data.title || "",
+          description: data.description || "",
+          categories: data.categories[0]?.id || "",
+          project_state: data.project_state || "",
+          location: data.location || "",
+        });
       } catch (error) {
         console.error("Fetch Error:", error);
         setError(error.response ? error.response.data : error.message);
@@ -100,34 +117,38 @@ const Basics = ({ campaignId }) => {
     e.preventDefault();
     try {
       setLoading(true);
+
+      // Filter out only modified fields
       const updatedData = Object.keys(formData).reduce((acc, key) => {
         if (formData[key] !== initialData[key]) {
           acc[key] = formData[key];
         }
         return acc;
       }, {});
-      console.log("Updated Data:", updatedData);
-      const response = await axios.patch(
-        `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/edit/`,
-        updatedData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Patch Response:", response.data);
-      alert("Campaign updated successfully");
+
+      if (Object.keys(updatedData).length > 0) {
+        const response = await axios.patch(
+          `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/edit/`,
+          updatedData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Patch Response:", response.data);
+        alert("Campaign updated successfully");
+      }
 
       if (media.image || media.video) {
-        const formData = new FormData();
-        if (media.image) formData.append("image", media.image);
-        if (media.video) formData.append("video", media.video);
+        const mediaFormData = new FormData();
+        if (media.image) mediaFormData.append("image", media.image);
+        if (media.video) mediaFormData.append("video", media.video);
 
         await axios.post(
           `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/add-media/`,
-          formData,
+          mediaFormData,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -188,22 +209,22 @@ const Basics = ({ campaignId }) => {
         </label>
         <label>Categories:</label>
         <div className={styles.categories}>
-          {["1", "2"].map((category) => (
-            <div key={category} className={styles.radioWrapper}>
+          {categories.map((category) => (
+            <div key={category.id} className={styles.radioWrapper}>
               <input
                 type="radio"
-                id={`category-${category}`}
+                id={`category-${category.id}`}
                 name="categories"
-                value={category}
-                checked={formData.categories === category}
+                value={category.id}
+                checked={formData.categories === category.id}
                 onChange={handleChange}
               />
               <label
-                htmlFor={`category-${category}`}
+                htmlFor={`category-${category.id}`}
                 className={styles.customRadio}
               >
                 <span className={styles.radioButton}></span>
-                Category {category}
+                {category.name}
               </label>
             </div>
           ))}

@@ -1,16 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // corrected import
-import { FaSearch, FaBell, FaUserCircle } from "react-icons/fa";
+import { jwtDecode } from "jwt-decode";
+import { FaSearch, FaUserCircle, FaBell } from "react-icons/fa";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+import Badge from "@mui/material/Badge";
+import { IoNotifications } from "react-icons/io5";
+import clsx from "clsx";
+import { AiOutlineMenu } from "react-icons/ai";
+import { IoIosCloseCircle } from "react-icons/io";
 import styles from "./Navbar.module.scss";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showNavMenu, setShowNavMenu] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profileImage, setProfileImage] = useState("");
-  const [searchQuery, setSearchQuery] = useState([]); // State to store search query
-  const [searchResults, setSearchResults] = useState([]); // State to store search results
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
@@ -18,10 +27,14 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
-    setProfileImage(""); // Clear profile image on logout
+    setProfileImage("");
     navigate("/");
   };
 
@@ -31,10 +44,10 @@ const Navbar = () => {
       try {
         const decodedToken = jwtDecode(token);
         const currentTime = new Date().getTime() / 1000;
-
         if (decodedToken.exp > currentTime) {
           setIsAuthenticated(true);
           fetchUserProfile();
+          fetchNotifications();
         } else {
           handleLogout();
         }
@@ -60,7 +73,23 @@ const Navbar = () => {
         setProfileImage(data.profile_image);
       })
       .catch((error) => {
-        console.error("There was an error fetching the user profile:", error);
+        console.error("Error fetching user profile:", error);
+      });
+  };
+
+  const fetchNotifications = () => {
+    const token = localStorage.getItem("token");
+    axios
+      .get("http://161.35.19.77:8001/api/notifications/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setNotifications(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching notifications:", error);
       });
   };
 
@@ -77,13 +106,11 @@ const Navbar = () => {
         }
       );
       setSearchResults(response.data);
-      console.log("Search Results:", searchResults);
-      // Assuming response.data.results contains the campaigns
     } catch (error) {
       console.error("Error during search:", error);
     }
   };
-  const results = searchResults || [];
+
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -96,19 +123,25 @@ const Navbar = () => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
+        setShowNotifications(false);
+        setSearchResults(false);
       }
     };
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, []);
+
+  const unreadNotificationsCount = notifications.filter(
+    (notification) => !notification.is_read
+  ).length;
+  const variants = {
+    open: { opacity: 1, x: 0 },
+    closed: { opacity: 0, x: 0 },
+  };
 
   return (
     <nav className={styles.wrapper_navbar}>
@@ -138,19 +171,27 @@ const Navbar = () => {
             value={searchQuery}
             onChange={handleSearchChange}
           />
-          {results.length > 0 && (
-            <div className={styles.searchResults}>
-              {results.map((result) => (
-                <Link
-                  key={result.id}
-                  to={`/campaigns/${result.id}`}
-                  className={styles.searchResultItem}
-                >
-                  {result.title}
-                </Link>
-              ))}
-            </div>
-          )}
+          <AnimatePresence>
+            {searchResults.length > 0 && (
+              <motion.div
+                className={styles.searchResults}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                {searchResults.map((result) => (
+                  <Link
+                    key={result.id}
+                    to={`/campaigns/${result.id}`}
+                    className={styles.searchResultItem}
+                  >
+                    {result.title}
+                  </Link>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <Link className={styles.link_navbar} to={"/addcampaign"}>
           Raise Money
@@ -158,7 +199,41 @@ const Navbar = () => {
         <div className={styles.btns}>
           {isAuthenticated ? (
             <div className={styles.user_icons}>
-              <FaBell className={styles.icon} />
+              <div className={styles.notificationIconWrapper}>
+                <Badge color="error" badgeContent={unreadNotificationsCount}>
+                  <IoNotifications
+                    className={styles.icon}
+                    onClick={toggleNotifications}
+                  />
+                </Badge>
+              </div>
+              <AnimatePresence>
+                {showNotifications && (
+                  <motion.div
+                    className={styles.notificationsDropdown}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <div
+                          key={notification.id}
+                          className={styles.notificationItem}
+                        >
+                          {notification.message}
+                          {notification.collaboration_request_id}
+                        </div>
+                      ))
+                    ) : (
+                      <div className={styles.notificationItem}>
+                        No new notifications
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <div className={styles.dropdownContainer} ref={dropdownRef}>
                 {profileImage ? (
                   <img
@@ -173,22 +248,46 @@ const Navbar = () => {
                     onClick={toggleDropdown}
                   />
                 )}
-                {isOpen && (
-                  <div className={styles.dropdownMenu}>
-                    <Link to={"/profile"} className={styles.link_dropdown}>
-                      <button className={styles.dropdownItem}>Profile</button>
-                    </Link>
-                    <Link to={"/settings"} className={styles.link_dropdown}>
-                      <button className={styles.dropdownItem}>Settings</button>
-                    </Link>
-                    <button
-                      className={styles.dropdownItem}
-                      onClick={handleLogout}
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      className={styles.dropdownMenu}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
                     >
-                      Log out
-                    </button>
-                  </div>
-                )}
+                      <Link to={"/profile"} className={styles.link_dropdown}>
+                        <button className={styles.dropdownItem}>Profile</button>
+                      </Link>
+                      <Link to={"/settings"} className={styles.link_dropdown}>
+                        <button className={styles.dropdownItem}>
+                          Settings
+                        </button>
+                      </Link>
+                      <Link
+                        to={"/fulldashboard"}
+                        className={styles.link_dropdown}
+                      >
+                        <button className={styles.dropdownItem}>
+                          My campaigns
+                        </button>
+                      </Link>
+                      <button
+                        className={styles.dropdownItem}
+                        onClick={handleLogout}
+                      >
+                        Log out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              <div className={styles.menu}>
+                <AiOutlineMenu
+                  onClick={() => setShowNavMenu(!showNavMenu)}
+                  className={styles.iconMenu}
+                />
               </div>
             </div>
           ) : (
@@ -203,6 +302,59 @@ const Navbar = () => {
           )}
         </div>
       </div>
+      <motion.div
+        animate={showNavMenu ? "open" : "closed"}
+        variants={variants}
+        className={clsx({
+          [styles.navMenu]: true,
+          [styles.showMenu]: showNavMenu,
+        })}
+      >
+        <IoIosCloseCircle
+          onClick={() => setShowNavMenu(!showNavMenu)}
+          className={styles.close_icon}
+        />
+        <div className={styles.mobile_view}>
+          <div className={styles.search_mobile}>
+            <FaSearch className={styles.icon} />
+            <input
+              type="search"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            <AnimatePresence>
+              {searchResults.length > 0 && (
+                <motion.div
+                  className={styles.searchResults}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {searchResults.map((result) => (
+                    <Link
+                      key={result.id}
+                      to={`/campaigns/${result.id}`}
+                      className={styles.searchResultItem}
+                    >
+                      {result.title}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          <div className={styles.mobile_links}>
+            <Link className={styles.link_navbar_mobile} to={"/dashboard"}>
+              Explore
+            </Link>
+            <Link className={styles.link_navbar_mobile} to={"/addcampaign"}>
+              Raise Money
+            </Link>
+          </div>
+        </div>
+      </motion.div>
     </nav>
   );
 };

@@ -58,8 +58,7 @@ const VerifyIdentity = () => {
     if (role) {
       data.append("role", role);
     }
-    // const token = localStorage.getItem(token);
-    const token = localStorage.getItem("token"); // Corrected token retrieval
+    const token = localStorage.getItem("token");
 
     console.log(token);
     if (!token) {
@@ -69,7 +68,7 @@ const VerifyIdentity = () => {
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`, // Ensure this token is valid
+        Authorization: `Bearer ${token}`,
       },
     };
 

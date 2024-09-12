@@ -5,6 +5,7 @@ import Navbar from "../Navbar/Navbar";
 import FooterMini from "../../subcomponents/FooterMini/FooterMini";
 import avatar from "../../assets/avatar.jpg";
 import { FaCamera } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const Settings = () => {
   const [profileImage, setProfileImage] = useState(null);
@@ -123,7 +124,6 @@ const Settings = () => {
     }
   };
 
-  // Handle password change
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
 
@@ -163,7 +163,12 @@ const Settings = () => {
     <div>
       <Navbar />
       <div className={styles.settingsContainer}>
-        <div className={styles.profileSection}>
+        <motion.div
+          className={styles.profileSection}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <h2>Settings</h2>
 
           {alertMessage && (
@@ -236,9 +241,14 @@ const Settings = () => {
               </button>
             </div>
           </form>
-        </div>
+        </motion.div>
 
-        <div className={styles.passwordSection}>
+        <motion.div
+          className={styles.passwordSection}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <h2>Change Password</h2>
           <form onSubmit={handlePasswordSubmit}>
             <div className={styles.formGroup}>
@@ -275,9 +285,8 @@ const Settings = () => {
               Apply Changes
             </button>
           </form>
-        </div>
+        </motion.div>
       </div>
-      <FooterMini />
     </div>
   );
 };

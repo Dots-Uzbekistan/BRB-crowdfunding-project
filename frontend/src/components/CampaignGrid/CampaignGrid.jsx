@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
-import StarRatings from "react-star-ratings";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
+import { motion } from "framer-motion";
 import styles from "./CampaignGrid.module.scss";
 
-const CampaignGrid = ({ filters, onSaveCampaign }) => {
+const CampaignGrid = ({ filters, onSaveCampaign, currentCategory }) => {
   const [campaignList, setCampaignList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -96,9 +96,11 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
 
     fetchSavedCampaigns();
   }, []);
+
   const handleCardClick = (campaignId) => {
     navigate(`/campaigns/${campaignId}`);
   };
+
   const handleSaveCampaign = async (campaign) => {
     const token = localStorage.getItem("token");
 
@@ -154,6 +156,13 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
     ? campaignList
     : campaignList.slice(0, initialShowCount);
 
+  const title =
+    currentCategory && currentCategory !== ""
+      ? `${
+          currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)
+        } Campaigns`
+      : "All Campaigns";
+
   return (
     <div className={styles.gridContainer}>
       {loading ? (
@@ -165,7 +174,7 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
       ) : (
         <div>
           <div className={styles.title_grid_campaigns}>
-            <h1>Trending Campaigns</h1>
+            <h1>{title}</h1>
             <p className={styles.toggleButton} onClick={toggleShowAll}>
               {showAll ? "See Less" : "See More"}
             </p>
@@ -174,65 +183,67 @@ const CampaignGrid = ({ filters, onSaveCampaign }) => {
             <p>No campaigns available.</p>
           ) : (
             <div className={styles.grid}>
-              {displayedCampaigns.map((campaign) => {
-                const imageUrl =
-                  campaign.media && campaign.media.length > 0
-                    ? campaign.media[0].file
-                    : "https://via.placeholder.com/150";
+              {displayedCampaigns
+                .sort((a, b) => (b.label === "Trending this week" ? 1 : -1))
+                .map((campaign) => {
+                  const imageUrl =
+                    campaign.media && campaign.media.length > 0
+                      ? campaign.media[0].file
+                      : "https://via.placeholder.com/150";
 
-                const ratings = campaign.ratings || [];
-                const averageRating =
-                  ratings.reduce((sum, rating) => sum + rating.rating, 0) /
-                    ratings.length || 0;
+                  const isSaved = savedCampaigns.some(
+                    (savedCampaign) => savedCampaign.id === campaign.id
+                  );
 
-                const isSaved = savedCampaigns.some(
-                  (savedCampaign) => savedCampaign.id === campaign.id
-                );
-
-                return (
-                  <div
-                    key={campaign.id}
-                    className={styles.campaignCard}
-                    onClick={() => handleCardClick(campaign.id)}
-                  >
-                    <div className={styles.imageWrapper}>
-                      <img src={imageUrl} alt={campaign.title} />
-                      <div className={styles.trendingLabel}>
-                        Trending this week
-                      </div>
-                      <div className={styles.hoverOverlay}>
-                        {campaign.description}
-                        <div className={styles.btn_overlay}>
-                          {campaign.tags.map((tag) => (
-                            <button key={tag.id} className="tag-button">
-                              {tag.name}
-                            </button>
-                          ))}
+                  return (
+                    <motion.div
+                      key={campaign.id}
+                      className={styles.campaignCard}
+                      onClick={() => handleCardClick(campaign.id)}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className={styles.imageWrapper}>
+                        <img src={imageUrl} alt={campaign.title} />
+                        {campaign.label === "Trending this week" && (
+                          <div className={styles.trendingLabel}>
+                            {campaign.label}
+                          </div>
+                        )}
+                        <div className={styles.hoverOverlay}>
+                          {campaign.description}
+                          <div className={styles.btn_overlay}>
+                            {campaign.tags.map((tag) => (
+                              <button key={tag.id} className="tag-button">
+                                {tag.name}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className={styles.campaignDetails}>
-                      <h4>{campaign.title}</h4>
-                      <p>{campaign.location}</p>
-                      <p>
-                        {campaign.days_left} days left |{" "}
-                        {campaign.percent_raised} % funded
-                      </p>
-                      <div className={styles.bottomSection}>
-                        <button
-                          className={styles.saveButton}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSaveCampaign(campaign);
-                          }}
-                        >
-                          {isSaved ? <IoBookmark /> : <IoBookmarkOutline />}
-                        </button>
+
+                      <div className={styles.campaignDetails}>
+                        <h4>{campaign.title}</h4>
+                        <p>{campaign.location}</p>
+                        <p>
+                          {campaign.days_left} days left |{" "}
+                          {campaign.percent_raised} % funded
+                        </p>
+                        <div className={styles.bottomSection}>
+                          <button
+                            className={styles.saveButton}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSaveCampaign(campaign);
+                            }}
+                          >
+                            {isSaved ? <IoBookmark /> : <IoBookmarkOutline />}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
+                    </motion.div>
+                  );
+                })}
             </div>
           )}
         </div>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import styles from "./Updates.module.scss"; // Ensure this file exists for styling
+import { motion } from "framer-motion";
+import styles from "./Updates.module.scss";
 
 const Updates = () => {
   const { id } = useParams();
@@ -67,25 +68,19 @@ const Updates = () => {
     <div className={styles.updatesWrapper}>
       {currentItems.length > 0 ? (
         currentItems.map((update) => (
-          <div key={update.id} className={styles.updateItem}>
+          <motion.div
+            key={update.id}
+            className={styles.updateItem}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             <h3>{update.title}</h3>
             <p>{update.description}</p>
-            {update.media && update.media.length > 0 && (
-              <div className={styles.media}>
-                {update.media.map((mediaItem) => (
-                  <img
-                    key={mediaItem.id}
-                    src={mediaItem.file}
-                    alt={mediaItem.type}
-                    className={styles.mediaImage}
-                  />
-                ))}
-              </div>
-            )}
             <p className={styles.date}>
               {new Date(update.created_at).toLocaleDateString()}
             </p>
-          </div>
+          </motion.div>
         ))
       ) : (
         <p>No updates available.</p>

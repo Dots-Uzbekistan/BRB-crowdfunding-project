@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import styles from "./Registration.module.scss";
-import LoginNavbar from "../../subcomponents/LoginNavbar/LoginNavbar";
 import money from "../../assets/money.png";
 import laptop from "../../assets/laptop.png";
-import { Link } from "react-router-dom";
 
 const Registration = () => {
   const [selectedRole, setSelectedRole] = useState(null);
 
   useEffect(() => {
-    // Retrieve the role from localStorage when the component mounts
     const savedRole = localStorage.getItem("selectedRole");
     if (savedRole) {
       setSelectedRole(savedRole);
@@ -18,35 +17,53 @@ const Registration = () => {
 
   const handleRoleSelection = (role) => {
     setSelectedRole(role);
-    localStorage.setItem("selectedRole", role); // Save the selected role to localStorage
+    localStorage.setItem("selectedRole", role);
   };
 
   return (
     <section className={styles.registration}>
-      <LoginNavbar />
-      <div className={styles.wrapper_register}>
-        <h1>Who are you?</h1>
+      <motion.div
+        className={styles.wrapper_register}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.7 }}
+      >
+        <motion.h1
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          Who are you?
+        </motion.h1>
+
         <div className={styles.selection_role}>
-          <article
+          <motion.article
             className={`${styles.role_investor} ${
               selectedRole === "investor" ? styles.selected : ""
             }`}
             onClick={() => handleRoleSelection("investor")}
+            whileHover={{ scale: 1.05 }}
           >
             <img src={money} alt="Investor" />
             <p>Investor</p>
-          </article>
-          <article
+          </motion.article>
+
+          <motion.article
             className={`${styles.role_creator} ${
               selectedRole === "creator" ? styles.selected : ""
             }`}
             onClick={() => handleRoleSelection("creator")}
+            whileHover={{ scale: 1.05 }}
           >
             <img src={laptop} alt="Creator" />
             <p>Founder</p>
-          </article>
+          </motion.article>
         </div>
-        <button className={styles.btn_register}>
+
+        <motion.button
+          className={styles.btn_register}
+          whileHover={{ scale: 1.1, gap: "2rem" }}
+        >
           <Link to={"/lastregistration"} className={styles.fullregister}>
             Next
           </Link>
@@ -62,14 +79,20 @@ const Registration = () => {
               fill="black"
             />
           </svg>
-        </button>
-        <p>
+        </motion.button>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.7 }}
+          className={styles.login_here}
+        >
           Already have an account?{" "}
           <Link className={styles.link_register} to={"/login"}>
             Log in here
           </Link>
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
     </section>
   );
 };

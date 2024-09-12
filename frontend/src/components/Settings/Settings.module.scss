@@ -2,199 +2,189 @@
   width: 92%;
   margin: auto;
   display: flex;
-  justify-content: space-between;
-  .profileSection {
-    width: 600px;
-    h2 {
-      font-size: 50px;
-      font-weight: 500;
-      margin-bottom: 3rem;
+  margin-top: 8rem;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 1rem;
+    flex-direction: column;
+  }
+
+  .profileSection,
+  .passwordSection {
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+
+    @media (max-width: 768px) {
+      width: 100%;
     }
-    .img_settings {
+  }
+
+  .profileSection {
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .left_setting_title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .profileImage {
+      position: relative;
       width: 150px;
       height: 150px;
-    }
-  }
-}
-.alert {
-  width: 100%;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  text-align: center;
-  font-size: 1.2rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+      margin-right: 1rem;
 
-.success {
-  background-color: #d4edda;
-  color: #155724;
-}
+      .imageLabel {
+        cursor: pointer;
+      }
 
-.error {
-  background-color: #f8d7da;
-  color: #721c24;
-}
+      .img_settings {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
 
-.profileImage {
-  position: relative;
-  display: inline-block;
-}
-
-.img_settings {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.cameraIcon {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  font-size: 24px;
-  color: white;
-  background-color: black;
-  border-radius: 50%;
-  padding: 5px;
-  cursor: pointer;
-  display: none;
-}
-
-.profileImage:hover .cameraIcon {
-  display: block;
-}
-
-.left_setting_title {
-  display: flex;
-  align-items: center;
-  line-height: 1.2;
-  .profileHeader {
-    margin-left: 1rem;
-    h3 {
-      font-size: 30px;
-      font-weight: 600;
-    }
-    p {
-      font-size: 24px;
-      color: rgb(142, 140, 140);
-    }
-  }
-}
-.profileInfo {
-  margin-top: 2rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .formGroup {
-    width: 100%;
-    margin-bottom: 1rem;
-    .icon {
-      font-size: 1.5rem;
-      color: rgb(100, 100, 100);
-      margin-right: 0.5rem;
+      .cameraIcon {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        font-size: 2rem;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        padding: 0.5rem;
+        cursor: pointer;
+      }
     }
 
-    .textField {
-      max-width: 100%;
-      min-width: 100%;
-      min-height: 500px;
-      max-height: 500px;
-      padding: 15px 20px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      width: 100%;
-      border: 2px solid black;
-      box-sizing: border-box;
+    .profileHeader {
+      h3 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+
+      p {
+        margin: 0;
+        color: #555;
+      }
     }
-    .textField_number {
-      padding: 18px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      width: 100%;
-      border: 2px solid rgb(160, 159, 159);
-      box-sizing: border-box;
-    }
-    p {
-      font-weight: 600;
+
+    .profileInfo {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      .formGroup {
+        display: flex;
+        flex-direction: column;
+
+        p {
+          margin: 0;
+          font-size: 1rem;
+          color: #333;
+        }
+
+        .textField,
+        .textField_number {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+
+        .textField {
+          min-height: 100px;
+          resize: vertical;
+        }
+
+        .textField_number {
+          height: auto;
+        }
+      }
+
+      .applyButton {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        background-color: #a5ffb8;
+        color: black;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #86d697;
+        }
+      }
     }
   }
 
-  .saveButton {
-    width: 100%;
-    padding: 18px;
-    font-size: 1rem;
-    border-radius: 8px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: 500;
-    &:hover {
-      background-color: #0056b3;
+  .passwordSection {
+    margin-top: 11rem;
+    @media (max-width: 768px) {
+      margin-top: 2rem;
     }
-  }
-}
-
-.passwordSection {
-  width: 700px;
-  margin-top: 7rem;
-  h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    font-weight: 500;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
 
     .formGroup {
-      margin-bottom: 1rem;
-      width: 100%;
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+
       p {
-        text-align: start;
-        margin-bottom: 5px;
-      }
-      .icon {
-        font-size: 1.5rem;
-        color: rgb(100, 100, 100);
-        margin-right: 0.5rem;
+        margin: 0;
+        font-size: 1rem;
+        color: #333;
       }
 
       .textField {
-        padding: 18px;
-        font-size: 1.2rem;
-        border-radius: 8px;
         width: 100%;
-        border: 2px solid rgb(160, 159, 159);
-        box-sizing: border-box;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
       }
-      p {
-        font-weight: 600;
+    }
+
+    .applyButton {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      background-color: #a5ffb8;
+      color: black;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+      &:hover {
+        background-color: #86d697;
       }
     }
   }
-}
-.applyButton {
-  padding: 20px;
-  font-size: 25px;
-  border-radius: 8px;
-  border: none;
-  width: 100%;
-  background-color: #e8fc85;
-  color: black;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  font-weight: 500;
 
-  &:hover {
-    background-color: #c4d474;
-    color: black;
+  .alert {
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    text-align: center;
+
+    &.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    &.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
   }
 }

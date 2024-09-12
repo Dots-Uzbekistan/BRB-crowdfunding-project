@@ -17,7 +17,6 @@ import { SiTicktick } from "react-icons/si";
 import Kickstarterad from "../../subcomponents/Kickstarterad/Kickstarterad";
 import FAQ from "../../subcomponents/FAQ/FAQ";
 import Updates from "../../subcomponents/Updates/Updates";
-import { IoLink } from "react-icons/io5";
 
 const CampaignDetail = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -27,8 +26,7 @@ const CampaignDetail = () => {
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [showNotification, setShowNotification] = useState(false); // New state for notification
-
+  const [showNotification, setShowNotification] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -147,17 +145,31 @@ const CampaignDetail = () => {
     }
   };
 
-  const handleShare = () => {
-    const campaignLink = window.location.href;
-    navigator.clipboard
-      .writeText(campaignLink)
-      .then(() => {
+  const handleShare = async () => {
+    try {
+      const response = await axios.post(
+        `http://161.35.19.77:8001/api/catalog/campaigns/${id}/share/`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const campaignLink = window.location.href;
+        await navigator.clipboard.writeText(campaignLink);
         setShowNotification(true);
         setTimeout(() => setShowNotification(false), 8000);
-      })
-      .catch((err) => alert("Failed to copy link: " + err));
+      } else {
+        alert("Failed to share campaign.");
+      }
+    } catch (err) {
+      alert("Failed to share campaign.");
+    }
   };
-
   if (loading) {
     return (
       <div className={styles.loader}>
@@ -240,7 +252,7 @@ const CampaignDetail = () => {
                 <Progress
                   percent={campaign.percent_raised}
                   showInfo={false}
-                  size={[660, 20]}
+                  size={[`100%`, 20]}
                 />
               </div>
               <div className={styles.miniStats}>
@@ -261,7 +273,7 @@ const CampaignDetail = () => {
                   {liked ? <IoIosHeart /> : <FaRegHeart />} Like
                 </button>
                 <button className={styles.share} onClick={handleShare}>
-                  <IoLink />
+                  <FaShare />
                   Share
                 </button>
                 <button
@@ -275,7 +287,6 @@ const CampaignDetail = () => {
           </div>
         </div>
 
-        {/* Share Notification */}
         {showNotification && (
           <div className={styles.shareNotification}>
             Link copied to clipboard!

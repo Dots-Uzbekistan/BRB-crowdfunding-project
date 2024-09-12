@@ -1,14 +1,26 @@
 .faq_wrapper {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 2rem;
+  margin: 20px;
+
+  @media (max-width: 768px) {
+    gap: 1rem;
+  }
 }
+
 .ask_question {
   margin: 2rem 0;
+
   h3 {
     font-size: 30px;
     line-height: 1.1;
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+    }
   }
+
   .btn_ask {
     width: 350px;
     font-size: 30px;
@@ -19,10 +31,16 @@
     border-radius: 14px;
     cursor: pointer;
     border: 2px solid black;
-    transition: 0.3 all linear;
+    transition: 0.3s all linear;
+
     &:hover {
       background-color: white;
       color: black;
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      font-size: 20px;
     }
   }
 }
@@ -30,6 +48,10 @@
 .faqContainer {
   width: 70%;
   margin: 20px 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 
 .accordionItem {
@@ -47,6 +69,10 @@
   cursor: pointer;
   padding: 10px;
   font-size: 30px;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
 }
 
 .accordionHeader h3 {

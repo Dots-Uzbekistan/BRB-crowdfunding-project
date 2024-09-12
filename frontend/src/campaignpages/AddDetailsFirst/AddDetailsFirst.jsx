@@ -53,7 +53,7 @@ const AddDetailsFirst = () => {
     if (name === "projectDescription") {
       if (value.length <= 255) {
         setFormData({ ...formData, [name]: value });
-        setCharCount(value.length); // Only update charCount for projectDescription
+        setCharCount(value.length);
       }
     } else if (name === "additionalInfo") {
       if (value.length <= 255) {
@@ -61,7 +61,7 @@ const AddDetailsFirst = () => {
         setCharCountAdditional(value.length);
       }
     } else if (name === "fundraisingGoal") {
-      const formattedValue = value.replace(/[^\d.]/g, ""); // Keep only digits and decimal
+      const formattedValue = value.replace(/[^\d.]/g, "");
       setFormData({ ...formData, fundraisingGoal: formattedValue });
     } else {
       setFormData({ ...formData, [name]: value });
@@ -77,7 +77,7 @@ const AddDetailsFirst = () => {
     }
 
     const data = {
-      name: projectName, // Ensure projectName from local storage is used
+      name: projectName,
       description: formData.projectDescription,
       categories: [formData.category],
       project_state: formData.projectState.toLowerCase(),
@@ -95,12 +95,9 @@ const AddDetailsFirst = () => {
       })
       .then((response) => {
         console.log("Response:", response.data);
-        alert(response.data.message || "Campaign registered successfully!");
 
-        // Redirect to FullDashboard after successful campaign registration
-        // Pass the campaign ID if needed for further use in FullDashboard
-        const campaignId = response.data.id; // Assuming the response contains the created campaign ID
-        navigate(`/fulldashboard`, { state: { campaignId } }); // Navigate to FullDashboard with campaignId
+        const campaignId = response.data.id;
+        navigate(`/fulldashboard`, { state: { campaignId } });
       })
       .catch((error) => {
         if (error.response && error.response.data) {
@@ -212,7 +209,7 @@ const AddDetailsFirst = () => {
                   5. Which type of funding is most suitable for your project?
                 </label>
                 <div className={styles.funding_type_wrapper_radio}>
-                  <label>
+                  <div className={styles.radio_fundings}>
                     <input
                       type="radio"
                       name="fundingType"
@@ -220,9 +217,9 @@ const AddDetailsFirst = () => {
                       checked={formData.fundingType === "equity"}
                       onChange={handleChange}
                     />
-                    Equity-based (Investors get a share of the project)
-                  </label>
-                  <label>
+                    <p>Equity-based (Investors get a share of the project)</p>
+                  </div>
+                  <div className={styles.radio_fundings}>
                     <input
                       type="radio"
                       name="fundingType"
@@ -230,8 +227,8 @@ const AddDetailsFirst = () => {
                       checked={formData.fundingType === "donation"}
                       onChange={handleChange}
                     />
-                    Donation-based (Support with no returns)
-                  </label>
+                    <p>Donation-based (Support with no returns)</p>
+                  </div>
                 </div>
               </div>
 

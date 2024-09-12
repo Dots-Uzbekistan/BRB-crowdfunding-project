@@ -35,9 +35,14 @@ const Header = () => {
               >
                 Campaigns funded
               </motion.p>
-              <div className={styles.header_icon1}>
+              <motion.div
+                className={styles.header_icon1}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+              >
                 <FaUser />
-              </div>
+              </motion.div>
             </div>
             <CountUp end={3466} className={styles.number_header_countup} />
           </motion.article>
@@ -56,9 +61,14 @@ const Header = () => {
               >
                 Raised on Fundflow
               </motion.p>
-              <div className={styles.header_icon1}>
+              <motion.div
+                className={styles.header_icon1}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+              >
                 <FaMoneyBill />
-              </div>
+              </motion.div>
             </div>
             <CountUp
               prefix="$"
@@ -109,7 +119,11 @@ const Header = () => {
           </motion.span>
         </motion.div>
         {token ? (
-          <motion.button className={styles.button_signup}>
+          <motion.button
+            className={styles.button_signup}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
             <Link to={"/dashboard"} className={styles.signup_register}>
               <p>Explore</p>
             </Link>
@@ -127,7 +141,11 @@ const Header = () => {
             </svg>
           </motion.button>
         ) : (
-          <motion.button className={styles.button_signup}>
+          <motion.button
+            className={styles.button_signup}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
             <Link to={"/registration"} className={styles.signup_register}>
               <p>Sign up</p>
             </Link>

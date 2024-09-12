@@ -1,28 +1,35 @@
-.wrapper_edit {
-  width: 92%;
-  margin: auto;
-}
+
 
 .nav_edit {
+  width: 90%;
+  max-width: 1200px; // Max width to avoid stretching on large screens
+  margin: auto;
+  padding: 1rem;
+
+  @media (max-width: 768px) {
+    width: 95%;
+  }
   display: flex;
-  justify-content: space-between; /* Aligns items to the start and end */
-  align-items: center; /* Aligns items vertically */
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   border-radius: 14px;
   border: 2px solid black;
   padding: 1rem;
+  background: #f9f9f9; // Background color for better visibility
 
   h1 {
     text-align: center;
-    flex: 1; /* Takes up remaining space */
-    margin: 0; /* Remove default margin */
+    flex: 1;
+    margin: 0;
+    font-size: 1.5rem; // Adjusted font size for responsiveness
   }
 
   .back {
     text-decoration: none;
     color: black;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 1.2rem; // Adjusted font size for responsiveness
     display: flex;
     align-items: center;
     gap: 10px;

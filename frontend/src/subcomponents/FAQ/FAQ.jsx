@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import axios from "axios";
-import styles from "./FAQ.module.scss"; // Ensure this file exists for styling
-import { CiCircleChevUp } from "react-icons/ci";
-import { CiCircleChevDown } from "react-icons/ci";
+import { Link } from "@react-email/components";
+import styles from "./FAQ.module.scss";
+import { CiCircleChevUp, CiCircleChevDown } from "react-icons/ci";
+import { useParams } from "react-router-dom";
+
 const FAQ = () => {
   const { id } = useParams();
   const [faqs, setFaqs] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeIndex, setActiveIndex] = useState(0); // Default to the first FAQ being open
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     const fetchFaqs = async () => {
@@ -39,7 +41,33 @@ const FAQ = () => {
       }
     };
 
+    const fetchCampaignDetails = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setError("No authentication token found.");
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `http://161.35.19.77:8001/api/catalog/campaigns/${id}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setEmail(response.data.creator.email);
+      } catch (error) {
+        console.error("Failed to fetch campaign details", error);
+        setError("Failed to fetch campaign details");
+      }
+    };
+
     fetchFaqs();
+    fetchCampaignDetails();
   }, [id]);
 
   const toggleAccordion = (index) => {
@@ -48,6 +76,14 @@ const FAQ = () => {
 
   if (loading) return <p>Loading FAQs...</p>;
   if (error) return <p>{error}</p>;
+
+  const subject = encodeURIComponent(`Question Regarding Campaign ${id}`);
+  const body = encodeURIComponent(
+    `I have a question regarding the campaign with ID ${id}.`
+  );
+
+  // Gmail URL for composing a new email
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`;
 
   return (
     <div className={styles.faq_wrapper}>
@@ -83,7 +119,9 @@ const FAQ = () => {
         <h3>
           Don’t see the answer to <br /> your question? Ask here{" "}
         </h3>
-        <button className={styles.btn_ask}>Ask Question</button>
+        <a href={gmailUrl} target="_blank" rel="noopener noreferrer">
+          <button className={styles.btn_ask}>Ask Question</button>
+        </a>
       </div>
     </div>
   );

@@ -1,0 +1,77 @@
+.collaborationContainer {
+  padding: 20px;
+  h2,
+  h3 {
+    margin-bottom: 10px;
+  }
+}
+
+.sendRequestContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  button {
+    padding: 10px 20px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
+
+.campaignGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.campaignCard,
+.collaborationCard {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 10px;
+  position: relative;
+  text-align: center;
+  margin-bottom: 20px;
+
+  .trendingBadge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #ffff8b;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  button {
+    padding: 10px 20px;
+    background-color: #e0ffe0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
+
+.existingCollaborations {
+  margin-bottom: 30px;
+}
+
+.errorMessage {
+  color: red;
+  margin-bottom: 20px;
+}
