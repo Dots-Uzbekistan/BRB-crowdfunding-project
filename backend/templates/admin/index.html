@@ -1,41 +1,38 @@
 {% extends "admin/index.html" %}
 
 {% block content %}
-{#    <h1 style="margin-bottom: 30px;">Some Charts</h1>  <!-- Added margin-bottom for space -->#}
-{#    <h1 style="margin-right: 10px;">Some Charts</h1>  <!-- Added margin-right for space -->#}
+    <!-- Grid container for all charts -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 20px; margin-bottom: 40px;">
 
-    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-
-    <!-- Users Joined Per Day (Spanning the full width) -->
-    <div style="flex: 1; padding: 20px; background-color: #fff; border-radius: 10px;">
-        <canvas id="usersJoinedChart" width="1320" height="250"></canvas>  <!-- Double the size for emphasis -->
-    </div>
-
-    </div>
-
-    <!-- Flex container to align charts in a row -->
-    <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
+        <!-- Users Joined Per Day (Top row, spanning all columns) -->
+        <div style="grid-column: span 3; padding: 20px; background-color: #fff; border-radius: 10px;">
+            <canvas id="usersJoinedChart"></canvas>
+        </div>
 
         <!-- Pie chart for Users by Role -->
-        <div style="flex: 1; padding: 20px; background-color: #fff; margin-right: 20px; border-radius: 10px;">
-            <canvas id="userRoleChart" width="400" height="200"></canvas>
+        <div style="padding: 20px; background-color: #fff; border-radius: 10px;">
+            <canvas id="userRoleChart"></canvas>
         </div>
 
         <!-- Bar chart for Campaigns by Funding Status -->
-        <div style="flex: 1; padding: 20px; background-color: #fff; margin-right: 20px; border-radius: 10px;">
-            <canvas id="campaignStatusChart" width="400" height="200"></canvas>
+        <div style="padding: 20px; background-color: #fff; border-radius: 10px;">
+            <canvas id="campaignStatusChart"></canvas>
         </div>
 
-        <!-- Bar chart for Investments by Status -->
-        <div style="flex: 1; padding: 20px; background-color: #fff; border-radius: 10px;">
-            <canvas id="investmentStatusChart" width="400" height="200"></canvas>
+        <!-- Doughnut chart for Investments by Status -->
+        <div style="padding: 20px; background-color: #fff; border-radius: 10px;">
+            <canvas id="investmentStatusChart"></canvas>
         </div>
 
     </div>
+
+    <!-- Extra space between charts and other content -->
+    <div style="margin-bottom: 60px;"></div>  <!-- This adds 60px of space after the charts -->
 
     <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Line chart for Users Joined Per Day -->
     <script>
         {% if users_joined_data %}
             const usersJoinedData = {{ users_joined_data|safe }};
@@ -63,6 +60,8 @@
                     ]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true
@@ -94,6 +93,10 @@
                         backgroundColor: ['#C4E82F', '#6F5CC0'],
                         hoverBackgroundColor: ['#A6C21F', '#4A3A8A']
                     }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                 }
             };
 
@@ -122,6 +125,8 @@
                     }]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true

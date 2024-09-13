@@ -57,21 +57,21 @@ class UserProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = 'User Profiles'
+        verbose_name_plural = 'Profiles'
 
     def __str__(self):
         return self.email
 
 
 class UserSavedCampaign(models.Model):
-    user = models.ForeignKey('users.UserProfile', on_delete=models.CASCADE)
+    user = models.ForeignKey('users.UserProfile', on_delete=models.CASCADE, related_name='saved_campaigns')
     campaign = models.ForeignKey('campaigns.Campaign', on_delete=models.CASCADE)
     saved_at = models.DateTimeField(auto_now_add=True)
     last_saved_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        verbose_name_plural = 'User Saved Campaigns'
+        verbose_name_plural = 'Saved Campaigns'
         unique_together = ('user', 'campaign')
 
     def __str__(self):

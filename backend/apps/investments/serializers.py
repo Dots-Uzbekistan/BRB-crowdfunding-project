@@ -41,7 +41,7 @@ class InvestmentCreateSerializer(serializers.ModelSerializer):
         fields = ['investment_amount_usd', 'campaign_id', 'address']
 
     def create(self, validated_data):
-        user = self.context['request'].user
+        user = self.context['request'].user.profile
         campaign = Campaign.objects.get(id=validated_data['campaign_id'])
         investment_amount_usd = validated_data['investment_amount_usd']
         address = validated_data['address']
@@ -65,12 +65,11 @@ class InvestmentCreateSerializer(serializers.ModelSerializer):
         )
 
         # Generate Payment Link
-        user_profile = UserProfile.objects.get(user=user)
-        payment_details = f"Investment in {campaign.title} by {user_profile.name} {user_profile.surname}"
+        payment_details = f"Investment in {campaign.title} by {user.name} {user.surname}"
         payment_link = generate_payment_link(
             amount_in_sum=investment_amount_soums,
             invoice_id=str(investment.id),
-            recipient_name=user_profile.name + " " + user_profile.surname,
+            recipient_name=user.name + " " + user.surname,
             payment_details=payment_details,
             tin="50202036030010"  # assuming this is a fixed value
         )
@@ -183,8 +182,8 @@ class UserInvestmentSerializer(serializers.ModelSerializer):
 
     def get_days_left(self, obj):
         today = timezone.now().date()
-        days_left = (obj.end_date - today).days
-        return max(days_left, 0)
+        days_left = (obj.end_date - today).days if obj.end_date else 'N/A'
+        return max(days_left, 0) if days_left != 'N/A' else 'N/A'
 
     def get_user_equity(self, obj):
         campaign_investment_map = self.context.get('campaign_investment_map', {})
@@ -214,7 +213,7 @@ class InvestmentCategoryBreakdownSerializer(serializers.ModelSerializer):
         fields = ['campaign_name', 'percentage']
 
     def get_percentage(self, obj):
-        user = self.context['request'].user
+        user = self.context['request'].user.profile
         total_investment = Investment.objects.filter(
             user=user,
             status='successful'

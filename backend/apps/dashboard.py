@@ -1,10 +1,11 @@
 from django.contrib import admin
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 
 from apps.utils import get_users_by_role, get_campaigns_by_funding_status, get_investments_by_status, \
     get_users_joined_per_day
 
-
+@staff_member_required
 def admin_dashboard(request):
     # Get chart data for users
     user_role_data = get_users_by_role()

@@ -1,9 +1,94 @@
+from decimal import Decimal
+
 from django.utils import timezone
 from rest_framework import serializers
 
 from .models import CampaignRating, CampaignVisit, CampaignNewsMedia, CampaignNews, CampaignFAQ, CampaignLike, \
-    CampaignCategory, CampaignTag, CampaignMedia, Campaign, CampaignLink, CampaignTeamMember
+    CampaignCategory, CampaignTag, CampaignMedia, CampaignLink, CampaignTeamMember, CollaborationRequest, Campaign, \
+    WithdrawalRequest
 from ..users.models import UserProfile, UserSavedCampaign
+
+
+class SimpleCategoryRecommendationRequestSerializer(serializers.Serializer):
+    name = serializers.CharField(help_text="Name of the campaign")
+    title = serializers.CharField(help_text="Title of the campaign")
+    description = serializers.CharField(help_text="Description of the campaign")
+
+
+class CategoryRecommendationSerializer(serializers.Serializer):
+    category = serializers.CharField(help_text="Recommended category")
+
+
+class WithdrawalRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WithdrawalRequest
+        fields = [
+            'method',
+            'card_number', 'account_type', 'name_on_account',
+            'account_number', 'routing_number', 'bank_name'
+        ]
+
+    def validate(self, data):
+        # Ensure either card or bank details are provided based on method
+        method = data.get('method')
+        if method == 'card' and not data.get('card_number'):
+            raise serializers.ValidationError("Card number is required for card withdrawal.")
+        if method == 'bank_account':
+            required_fields = ['account_type', 'name_on_account', 'account_number', 'routing_number', 'bank_name']
+            for field in required_fields:
+                if not data.get(field):
+                    raise serializers.ValidationError(
+                        f"{field.replace('_', ' ').capitalize()} is required for bank withdrawal.")
+        return data
+
+
+class CampaignFundingStatusSerializer(serializers.Serializer):
+    raised_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    commission_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    withdrawal_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['raised_amount'] = format(float(representation['raised_amount']), '.0f')
+        representation['commission_amount'] = format(float(representation['commission_amount']), '.0f')
+        representation['withdrawal_amount'] = format(float(representation['withdrawal_amount']), '.0f')
+        return representation
+
+
+class CampaignApprovalStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Campaign
+        fields = ['id', 'title', 'approval_status']
+
+
+class FounderCampaignNewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CampaignNews
+        fields = ['title', 'content', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
+
+
+class CollaborationRequestSerializer(serializers.ModelSerializer):
+    sender_campaign = serializers.SlugRelatedField(slug_field='name', queryset=Campaign.objects.all())
+    receiver_campaign = serializers.SlugRelatedField(slug_field='name', queryset=Campaign.objects.all())
+    sender = serializers.CharField(source='sender.user.email', read_only=True)
+    receiver = serializers.CharField(source='receiver.user.email', read_only=True)
+
+    class Meta:
+        model = CollaborationRequest
+        fields = ['id', 'sender_campaign', 'receiver_campaign', 'sender', 'receiver', 'status', 'created_at',
+                  'updated_at', 'responded_at']
+        read_only_fields = ['status', 'created_at', 'updated_at', 'responded_at']
+
+
+class CollaborationRequestCreateSerializer(serializers.Serializer):
+    target_campaign_id = serializers.IntegerField()
+
+
+class CampaignPitchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Campaign
+        fields = ['pitch']
 
 
 class CampaignTeamMemberCreateSerializer(serializers.ModelSerializer):
@@ -77,6 +162,7 @@ class CampaignEditSerializer(serializers.ModelSerializer):
         fields = [
             'name', 'description', 'categories', 'project_state', 'location', 'investment_type', 'goal_amount',
             'extra_info', 'title', 'tags', 'valuation_cap', 'min_investment', 'max_goal_amount',
+            'pitch',
             'start_date', 'end_date'
         ]
 
@@ -167,7 +253,7 @@ class CampaignNewsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CampaignNews
-        fields = ['id', 'title', 'description', 'created_at', 'update_number']
+        fields = ['id', 'title', 'content', 'description', 'created_at', 'update_number']
 
     def get_update_number(self, obj):
         # Get the queryset of all updates for the campaign
@@ -204,10 +290,15 @@ class CampaignMediaSerializer(serializers.ModelSerializer):
 
 class CampaignCreatorSerializer(serializers.ModelSerializer):
     campaigns_count = serializers.IntegerField(source='campaigns.count')
+    name = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
-        fields = ['id', 'name', 'bio', 'campaigns_count', 'profile_image']
+        fields = ['id', 'name', 'email', 'phone_number',
+                  'bio', 'campaigns_count', 'profile_image']
+
+    def get_name(self, obj):
+        return f"{obj.name} {obj.surname}"
 
 
 class CampaignDetailSerializer(serializers.ModelSerializer):
@@ -230,12 +321,12 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
         ]
 
     def get_percent_raised(self, obj):
-        return (obj.raised_amount / obj.goal_amount) * 100 if obj.goal_amount else 0
+        return format((obj.raised_amount / obj.goal_amount) * 100, '.0f') if obj.goal_amount else 'N/A'
 
     def get_days_left(self, obj):
         today = timezone.now().date()
-        days_left = (obj.end_date - today).days
-        return max(days_left, 0)
+        days_left = (obj.end_date - today).days if obj.end_date else 'N/A'
+        return max(days_left, 0) if days_left != 'N/A' else 'N/A'
 
     def get_investors_count(self, obj):
         return obj.investments.values('user').distinct().count()
@@ -244,7 +335,7 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['raised_amount'] = format(instance.raised_amount, '.0f')
         representation['goal_amount'] = format(instance.goal_amount, '.0f')
-        representation['percent_raised'] = format(self.get_percent_raised(instance), '.0f')
+        representation['percent_raised'] = self.get_percent_raised(instance)
         return representation
 
 
@@ -268,14 +359,36 @@ class CampaignSerializer(serializers.ModelSerializer):
     creator = CampaignCreatorSerializer()
     days_left = serializers.SerializerMethodField()
     percent_raised = serializers.SerializerMethodField()
+    label = serializers.SerializerMethodField()
 
     def get_days_left(self, obj):
         today = timezone.now().date()
-        days_left = (obj.end_date - today).days
-        return max(days_left, 0)
+        days_left = (obj.end_date - today).days if obj.end_date else 'N/A'
+        return max(days_left, 0) if days_left != 'N/A' else 'N/A'
 
     def get_percent_raised(self, obj):
-        return format((obj.raised_amount / obj.goal_amount) * 100, '.0f') if obj.goal_amount else 0
+        return format((obj.raised_amount / obj.goal_amount) * 100, '.0f') if obj.goal_amount else 'N/A'
+
+    def get_label(self, obj):
+        """
+        Logic to assign a label to a campaign:
+        - "New this week": created in the past 7 days
+        - "Trending this week": has a lot of raised amount in the past 7 days
+        - "Almost funded": raised more than 80% of goal amount
+        """
+        # "New this week" if campaign created in the last 7 days
+        if (timezone.now() - obj.created_at).days <= 7:
+            return "New this week"
+
+        # "Trending this week" (simple logic for now)
+        if obj.raised_amount > 1000:
+            return "Trending this week"
+
+        # "Almost funded" if more than 80% of the goal is raised
+        if obj.raised_amount >= obj.goal_amount * Decimal('0.8'):
+            return "Almost funded"
+
+        return None
 
     class Meta:
         model = Campaign
@@ -287,27 +400,9 @@ class CampaignSerializer(serializers.ModelSerializer):
             'project_passport',
             'valuation_cap',  # For equity-based campaigns
             # 'interest_rate', 'repayment_period_months',  # For debt-based campaigns
-            'days_left', 'percent_raised'
+            'days_left', 'percent_raised',
+            'label'
         ]
-
-    # def to_representation(self, instance):
-    #     """Customize the representation of the serialized data."""
-    #     representation = super().to_representation(instance)
-    #     if instance.investment_type == 'equity':
-    #         # Include equity-related fields
-    #         representation['equity_percentage'] = instance.equity_percentage
-    #         representation['valuation_cap'] = instance.valuation_cap
-    #     elif instance.investment_type == 'debt':
-    #         # Include debt-related fields
-    #         representation['interest_rate'] = instance.interest_rate
-    #         representation['repayment_period_months'] = instance.repayment_period_months
-    #     else:
-    #         # If it's neither equity nor debt, exclude these fields
-    #         representation.pop('equity_percentage', None)
-    #         representation.pop('valuation_cap', None)
-    #         representation.pop('interest_rate', None)
-    #         representation.pop('repayment_period_months', None)
-    #     return representation
 
 
 class LastVisitedCampaignSerializer(serializers.ModelSerializer):
@@ -326,7 +421,119 @@ class FounderCampaignDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Campaign
         fields = [
-            'id', 'name', 'title', 'description', 'categories', 'tags', 'media', 'project_state',
+            'id', 'name', 'title', 'description', 'pitch',
+            'categories', 'tags', 'media', 'project_state',
             'location', 'investment_type', 'goal_amount', 'raised_amount', 'min_investment', 'max_goal_amount',
             'funding_status', 'approval_status', 'start_date', 'end_date'
         ]
+
+
+class RecommendedCampaignSerializer(serializers.ModelSerializer):
+    creator_name = serializers.SerializerMethodField()
+    categories = serializers.StringRelatedField(many=True)
+    tags = serializers.StringRelatedField(many=True)
+    image = serializers.SerializerMethodField()
+    video = serializers.SerializerMethodField()
+    label = serializers.SerializerMethodField()
+
+    percent_raised = serializers.SerializerMethodField()
+    days_left = serializers.SerializerMethodField()
+
+    matching_percentage = serializers.SerializerMethodField()
+    collaboration_reason = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Campaign
+        fields = [
+            'id', 'title', 'description', 'creator_name',
+            'image', 'video',
+            'percent_raised', 'days_left',
+            'goal_amount', 'raised_amount',
+            'start_date', 'end_date', 'funding_status', 'approval_status', 'categories',
+            'tags', 'label',
+            'matching_percentage', 'collaboration_reason'
+        ]
+
+    def get_creator_name(self, obj):
+        return f"{obj.creator.name} {obj.creator.surname}" if obj.creator else None
+
+    def get_image(self, obj):
+        request = self.context.get('request')
+        media = obj.media.filter(type='image').last()
+        return request.build_absolute_uri(media.file.url) if media and media.file else None
+
+    def get_video(self, obj):
+        request = self.context.get('request')
+        media = obj.media.filter(type='video').last()
+        return request.build_absolute_uri(media.file.url) if media and media.file else None
+
+    def get_label(self, obj):
+        """
+        Logic to assign a label to a campaign:
+        - "New this week": created in the past 7 days
+        - "Trending this week": has a lot of raised amount in the past 7 days
+        - "Almost funded": raised more than 80% of goal amount
+        """
+        # "New this week" if campaign created in the last 7 days
+        if (timezone.now() - obj.created_at).days <= 7:
+            return "New this week"
+
+        # "Trending this week" (simple logic for now)
+        if obj.raised_amount > 1000:
+            return "Trending this week"
+
+        # "Almost funded" if more than 80% of the goal is raised
+        if obj.raised_amount >= obj.goal_amount * Decimal('0.8'):
+            return "Almost funded"
+
+        return None
+
+    def get_percent_raised(self, obj):
+        return format((obj.raised_amount / obj.goal_amount) * 100, '.0f') if obj.goal_amount else 'N/A'
+
+    def get_days_left(self, obj):
+        today = timezone.now().date()
+        days_left = (obj.end_date - today).days if obj.end_date else 'N/A'
+        return max(days_left, 0) if days_left != 'N/A' else 'N/A'
+
+    def get_matching_percentage(self, obj):
+        return obj.matching_percentage if hasattr(obj, 'matching_percentage') else None
+
+    def get_collaboration_reason(self, obj):
+        return obj.collaboration_reason if hasattr(obj, 'collaboration_reason') else None
+
+
+class FounderCampaignSerializer(serializers.ModelSerializer):
+    categories = CampaignCategorySerializer(many=True)
+    tags = CampaignTagSerializer(many=True)
+    media = FounderCampaignDetailsMediaSerializer(many=True)
+    ratings = CampaignRatingSerializer(many=True)
+    creator = CampaignCreatorSerializer()
+    days_left = serializers.SerializerMethodField()
+    percent_raised = serializers.SerializerMethodField()
+
+    def get_days_left(self, obj):
+        today = timezone.now().date()
+        days_left = (obj.end_date - today).days if obj.end_date else 'N/A'
+        return max(days_left, 0) if days_left != 'N/A' else 'N/A'
+
+    def get_percent_raised(self, obj):
+        return format((obj.raised_amount / obj.goal_amount) * 100, '.0f') if obj.goal_amount else 'N/A'
+
+    class Meta:
+        model = Campaign
+        fields = [
+            'id', 'title', 'description', 'categories', 'tags',
+            'location', 'currency', 'goal_amount', 'raised_amount', 'min_investment',
+            'funding_status', 'project_state', 'investment_type', 'start_date', 'end_date',
+            'created_at', 'updated_at', 'creator', 'media', 'ratings',
+            'project_passport',
+            'valuation_cap',  # For equity-based campaigns
+            # 'interest_rate', 'repayment_period_months',  # For debt-based campaigns
+            'days_left', 'percent_raised'
+        ]
+
+
+class CampaignCreationStatsSerializer(serializers.Serializer):
+    total_campaigns = serializers.IntegerField()
+    total_raised = serializers.CharField()

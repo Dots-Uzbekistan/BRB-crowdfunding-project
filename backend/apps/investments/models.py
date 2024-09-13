@@ -9,7 +9,7 @@ class Investment(models.Model):
         ('failed', 'Failed'),
     ]
 
-    user = models.ForeignKey('authentication.AuthUser', on_delete=models.CASCADE)
+    user = models.ForeignKey('users.UserProfile', on_delete=models.CASCADE, related_name='investments')
     campaign = models.ForeignKey('campaigns.Campaign', on_delete=models.CASCADE, related_name='investments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     address = models.CharField(max_length=255)
@@ -17,7 +17,7 @@ class Investment(models.Model):
     status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
-        return f"{self.user.username} invested {self.amount} in {self.campaign.title}"
+        return f"{self.user.user.username} invested {self.amount} in {self.campaign.title}"
 
 
 class Transaction(models.Model):

@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     # 'admin_soft.apps.AdminSoftDashboardConfig',
     'jazzmin',
     'django_ckeditor_5',
+    # 'admin_honeypot',
+    'config.apps.AdminHoneypotConfig',
 
     'django.contrib.admin',
     # 'django.contrib.auth',
@@ -85,7 +87,7 @@ INSTALLED_APPS = [
     'apps.campaigns',
     'apps.investments',
     'apps.notifications',
-
+    'apps.ai_services',
 ]
 
 MIDDLEWARE = [
@@ -237,6 +239,20 @@ CSRF_TRUSTED_ORIGINS = [
 #     'http://localhost:5173'
 # ]
 
+INSTALLED_APPS += ['dbbackup']
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'  # default
+DBBACKUP_STORAGE_OPTIONS = {'location': BASE_DIR / 'db_backups'}
+DBBACKUP_CLEANUP_KEEP = 100  # number of backups to keep
+DBBACKUP_CONNECTORS = {
+    'default': {
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+    }
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -284,36 +300,113 @@ JAZZMIN_SETTINGS = {
     #     {"name": "View Platform", "url": "http://localhost:5173/", "new_window": True},
     # ],
     # dark mode switcher
+
     "change_theme": "theme",
     "default_dark_mode": True,
 
     "order_with_respect_to": [
-        "authentication", "auth", "users", "campaigns", "investments", "notifications"
+        "campaigns",
+        "campaigns.campaign",
+        "campaigns.campaignmedia",
+        "campaigns.campaignlink",
+        "campaigns.campaignteammember",
+        "campaigns.campaignnews",
+        "campaigns.campaignfaq",
+        "campaigns.campaignlike",
+        "campaigns.campaignshare",
+        "campaigns.campaignvisit",
+        "campaigns.campaigntag",
+        "campaigns.campaigncategory",
+        "campaigns.collaborationrequest",
+        "campaigns.withdrawalrequest",
+
+        "ai_services",
+        "ai_services.moderationlog",
+
+        "investments",
+        "investments.payment",
+        "investments.transaction",
+        "investments.investment",
+
+        "notifications",
+        "notifications.notification",
+
+        "users",
+        "users.userprofile",
+        "users.usersavedcampaign",
+
+        "authentication",
+        "auth.user",
+
+        "auth",
+        "auth.group",
+
+        "admin_honeypot",
+        "admin_honeypot.loginattempt",
+
+        "token_blacklist",
+        "token_blacklist.blacklistedtoken",
+        "token_blacklist.outstandingtoken",
     ],
 
+    # "hide_apps": [
+    #     "token_blacklist",
+    # ],
+
+    "navigation_expanded": False,
+
     "icons": {
-        "authentication.authuser": "fas fa-users-cog",
-        "auth.group": "fas fa-users",
-        "users.userprofile": "fas fa-user",
-        "users.usersavedcampaign": "fas fa-save",
-        "campaigns.campaign": "fas fa-bullhorn",
-        "campaigns.campaigncategory": "fas fa-list",
-        "campaigns.campaignfaq": "fas fa-question",
-        "campaigns.campaignlike": "fas fa-heart",
-        "campaigns.campaignmedia": "fas fa-image",
+        # Campaigns app and models
+        "campaigns": "fas fa-bullhorn",
+        "campaigns.campaign": "fas fa-flag",
+        "campaigns.campaignmedia": "fas fa-images",
+        "campaigns.campaignlink": "fas fa-link",
+        "campaigns.campaignteammember": "fas fa-users",
         "campaigns.campaignnews": "fas fa-newspaper",
-        "campaigns.campaignnewsmedia": "fas fa-image",
-        "campaigns.campaignrating": "fas fa-star",
-        "campaigns.campaigntag": "fas fa-tag",
-        "campaigns.campaignteammember": "fas fa-user-friends",
+        "campaigns.campaignfaq": "fas fa-question-circle",
+        "campaigns.campaignlike": "fas fa-heart",
+        "campaigns.campaignshare": "fas fa-share-alt",
         "campaigns.campaignvisit": "fas fa-eye",
-        "investments.investment": "fas fa-hand-holding-usd",
-        "investments.payment": "fas fa-money-check-alt",
-        "investments.transaction": "fas fa-money-check",
-        "notifications.notification": "fas fa-bell",
-        "token_blacklist.blacklistedtoken": "fas fa-user-lock",
-        "token_blacklist.outstandingtoken": "fas fa-user-lock",
+        "campaigns.campaigntag": "fas fa-tag",
+        "campaigns.campaigncategory": "fas fa-list",
+        "campaigns.collaborationrequest": "fas fa-handshake",
+        "campaigns.withdrawalrequest": "fas fa-money-check-alt",
+
+        # AI Services
+        "ai_services": "fas fa-robot",
+        "ai_services.moderationlog": "fas fa-clipboard-check",
+
+        # Investments app and models
+        "investments": "fas fa-chart-line",
+        "investments.payment": "fas fa-credit-card",
+        "investments.transaction": "fas fa-exchange-alt",
+        "investments.investment": "fas fa-piggy-bank",
+
+        # Notifications
+        "notifications": "fas fa-bell",
+        "notifications.notification": "fas fa-envelope",
+
+        # Authentication and Permissions
+        "authentication": "fas fa-lock",
+        "authentication.authuser": "fas fa-user",
+        "auth": "fas fa-shield-alt",
+        "auth.group": "fas fa-users-cog",
+
+        # Users app
+        "users": "fas fa-user-circle",
+        "users.userprofile": "fas fa-id-badge",
+        "users.usersavedcampaign": "fas fa-save",
+
+        # HoneyPot
+        "admin_honeypot": "fas fa-spider",
+        "admin_honeypot.loginattempt": "fas fa-user-secret",
+
+        # Token Blacklist
+        "token_blacklist": "fas fa-ban",
+        "token_blacklist.blacklistedtoken": "fas fa-user-slash",
+        "token_blacklist.outstandingtoken": "fas fa-exclamation-triangle",
     },
+
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-folder",
     "default_icon_children": "fas fa-file",
@@ -443,3 +536,12 @@ CKEDITOR_5_CONFIGS = {
         }
     }
 }
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = 587  # TLS, 465 for SSL
+EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')

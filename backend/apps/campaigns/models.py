@@ -1,6 +1,8 @@
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
 
+from apps.users.models import UserProfile
+
 
 def campaign_media_upload_path(instance, filename):
     return f'campaigns/campaign_media/{instance.campaign.id}/{filename}'
@@ -107,7 +109,7 @@ class CampaignMedia(models.Model):
     file = models.FileField(upload_to=campaign_media_upload_path)
 
     class Meta:
-        verbose_name_plural = 'Campaign Media'
+        verbose_name_plural = 'Media'
 
     def __str__(self):
         return f"{self.campaign.title} - {self.type}"
@@ -124,7 +126,7 @@ class CampaignTeamMember(models.Model):
                                         blank=True)
 
     class Meta:
-        verbose_name_plural = 'Campaign Team Members'
+        verbose_name_plural = 'Team Members'
 
     def __str__(self):
         return f"{self.name} - {self.role}"
@@ -133,13 +135,14 @@ class CampaignTeamMember(models.Model):
 class CampaignNews(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='news')
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    content = CKEditor5Field('Content', config_name='extends', blank=True, null=True)
+    description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
-        verbose_name_plural = 'Campaign News'
+        verbose_name_plural = 'Updates'
 
     def __str__(self):
         return f"{self.campaign.title} - {self.created_at}"
@@ -152,7 +155,7 @@ class CampaignNewsMedia(models.Model):
     type = models.CharField(max_length=10, choices=[('image', 'Image'), ('video', 'Video'), ('document', 'Document')])
 
     class Meta:
-        verbose_name_plural = 'Campaign News Media'
+        verbose_name_plural = 'News Media'
 
     def __str__(self):
         return f"{self.campaign_news.campaign.title} - {self.type}"
@@ -162,7 +165,7 @@ class CampaignCategory(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
     class Meta:
-        verbose_name_plural = 'Campaign Categories'
+        verbose_name_plural = 'Categories'
 
     def __str__(self):
         return self.name
@@ -172,7 +175,7 @@ class CampaignTag(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
     class Meta:
-        verbose_name_plural = 'Campaign Tags'
+        verbose_name_plural = 'Tags'
 
     def __str__(self):
         return self.name
@@ -195,7 +198,7 @@ class CampaignRating(models.Model):
     class Meta:
         ordering = ['-rated_at']
         unique_together = ('user', 'campaign')
-        verbose_name_plural = 'Campaign Ratings'
+        verbose_name_plural = 'Ratings'
 
     def __str__(self):
         return f"{self.user.email} rated {self.campaign.title} with {self.rating}"
@@ -208,7 +211,7 @@ class CampaignVisit(models.Model):
 
     class Meta:
         ordering = ['-visited_at']
-        verbose_name_plural = 'Campaign Visits'
+        verbose_name_plural = 'Visits'
 
     def __str__(self):
         return f"{self.user.email} visited {self.campaign.title} at {self.visited_at}"
@@ -223,7 +226,7 @@ class CampaignFAQ(models.Model):
 
     class Meta:
         ordering = ['order']
-        verbose_name_plural = 'Campaign FAQs'
+        verbose_name_plural = 'FAQs'
 
     def __str__(self):
         return f"FAQ for {self.campaign.title}: {self.question}"
@@ -231,17 +234,31 @@ class CampaignFAQ(models.Model):
 
 class CampaignLike(models.Model):
     user = models.ForeignKey('users.UserProfile', on_delete=models.CASCADE)
-    campaign = models.ForeignKey('campaigns.Campaign', on_delete=models.CASCADE)
+    campaign = models.ForeignKey('campaigns.Campaign', on_delete=models.CASCADE, related_name='likes')
     liked_at = models.DateTimeField(auto_now_add=True)  # Timestamp of the first like
     last_liked_at = models.DateTimeField(auto_now=True)  # Timestamp of the last like
     is_active = models.BooleanField(default=True)  # field to track if the like is active
 
     class Meta:
-        verbose_name_plural = 'Campaign Likes'
+        verbose_name_plural = 'Likes'
         unique_together = ('user', 'campaign')
 
     def __str__(self):
         return f"{self.user.email} liked {self.campaign.title} (Active: {self.is_active})"
+
+
+class CampaignShare(models.Model):
+    user = models.ForeignKey('users.UserProfile', on_delete=models.CASCADE)
+    campaign = models.ForeignKey('campaigns.Campaign', on_delete=models.CASCADE, related_name='shares')
+    shared_at = models.DateTimeField(auto_now_add=True)
+    last_shared_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name_plural = 'Shares'
+
+    def __str__(self):
+        return f"{self.user.email} shared {self.campaign.title} (Active: {self.is_active})"
 
 
 class CampaignLink(models.Model):
@@ -261,4 +278,72 @@ class CampaignLink(models.Model):
         return f"{self.campaign.title} - {self.platform}"
 
     class Meta:
-        verbose_name_plural = 'Campaign Links'
+        verbose_name_plural = 'Links'
+
+
+class CollaborationRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('declined', 'Declined'),
+    ]
+
+    sender_campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='sent_collaboration_requests')
+    receiver_campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE,
+                                          related_name='received_collaboration_requests')
+    sender = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='sent_collaborations')
+    receiver = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='received_collaborations')
+
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    message = models.TextField(null=True, blank=True)  # Optional message to the receiver
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    responded_at = models.DateTimeField(null=True, blank=True)  # When the request was responded to (accepted/declined)
+
+    def __str__(self):
+        return f"Collaboration Request from {self.sender_campaign.name} to {self.receiver_campaign.name} ({self.status})"
+
+    class Meta:
+        verbose_name = 'Collaboration Request'
+        verbose_name_plural = 'Collaboration Requests'
+        unique_together = ('sender_campaign', 'receiver_campaign')  # Ensures no duplicate collaboration requests
+
+
+class WithdrawalRequest(models.Model):
+    WITHDRAWAL_METHOD_CHOICES = [
+        ('card', 'Card'),
+        ('bank_account', 'Bank Account'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='withdrawal_requests')
+    method = models.CharField(max_length=15, choices=WITHDRAWAL_METHOD_CHOICES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    commission = models.DecimalField(max_digits=10, decimal_places=2, default=0.05)  # 5% commission
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='pending')
+
+    # Card details (optional)
+    card_number = models.CharField(max_length=16, null=True, blank=True)
+
+    # Bank account details (optional)
+    account_type = models.CharField(max_length=10, choices=[('savings', 'Savings'), ('debit', 'Debit')], null=True,
+                                    blank=True)
+    name_on_account = models.CharField(max_length=255, null=True, blank=True)
+    account_number = models.CharField(max_length=255, null=True, blank=True)
+    routing_number = models.CharField(max_length=255, null=True, blank=True)
+    bank_name = models.CharField(max_length=255, null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Withdrawal Request for {self.campaign.title} - {self.status}"
+
+    class Meta:
+        verbose_name = 'Withdrawal Request'
+        verbose_name_plural = 'Withdrawal Requests'

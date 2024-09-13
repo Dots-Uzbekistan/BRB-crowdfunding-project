@@ -35,7 +35,7 @@ class TransactionHistoryView(APIView):
     serializer_class = TransactionHistorySerializer
 
     def get(self, request):
-        user = request.user
+        user = request.user.profile
 
         # Get transactions for the user's investments
         transactions = (
@@ -51,7 +51,7 @@ class UserInvestedCampaignNewsView(APIView):
     serializer_class = UserInvestedCampaignNewsSerializer
 
     def get(self, request):
-        user = request.user
+        user = request.user.profile
 
         # Get campaigns the user has invested in
         invested_campaigns = Investment.objects.filter(user=user, status='successful').values_list('campaign',
@@ -70,7 +70,7 @@ class Last30DaysInvestmentView(APIView):
     serializer_class = Last30DaysInvestmentSerializer
 
     def get(self, request):
-        user = request.user
+        user = request.user.profile
         today = timezone.now().date()
         last_30_days = today - timezone.timedelta(days=30)
 
@@ -91,7 +91,7 @@ class CampaignViewsRateView(APIView):
     serializer_class = CampaignViewsRateSerializer
 
     def get(self, request):
-        user = request.user
+        user = request.user.profile
 
         # Get campaigns the user has invested in
         invested_campaigns = Investment.objects.filter(user=user, status='successful').values_list('campaign',
@@ -138,7 +138,7 @@ class InvestmentCategoryBreakdownView(APIView):
     serializer_class = InvestmentCategoryBreakdownSerializer
 
     def get(self, request):
-        user = request.user
+        user = request.user.profile
 
         # Get all categories associated with campaigns the user has invested in
         invested_campaigns = Investment.objects.filter(user=user, status='successful').values_list('campaign',
@@ -155,7 +155,7 @@ class InvestmentsEndingSoonView(APIView):
     serializer_class = UserInvestmentSerializer
 
     def get(self, request):
-        user = request.user
+        user = request.user.profile
         today = timezone.now().date()
 
         # Aggregate total investment per campaign

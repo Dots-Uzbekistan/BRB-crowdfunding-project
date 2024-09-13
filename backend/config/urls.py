@@ -7,8 +7,10 @@ from apps.dashboard import admin_dashboard
 from config import settings
 
 urlpatterns = [
-    path('admin/', admin_dashboard, name='admin-dashboard'),
-    path('admin/', admin.site.urls),
+    path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')), # fake admin login page
+
+    path('magic/', admin_dashboard, name='admin-dashboard'), # real admin login page dashboard
+    path('magic/', admin.site.urls), # real admin login page
 
     path('api/auth/', include('apps.authentication.urls')),
 
@@ -21,6 +23,8 @@ urlpatterns = [
     path('api/founder/', include('apps.campaigns.founder_urls')),
 
     path('api/notifications/', include('apps.notifications.urls')),
+
+    path('api/ai_services/', include('apps.ai_services.urls')),
 
     path('api-auth/', include('rest_framework.urls')),
 

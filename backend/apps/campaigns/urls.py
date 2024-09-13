@@ -3,7 +3,7 @@ from django.urls import path
 from .views import CampaignListView, CampaignCategoryListView, CampaignTagListView, CampaignVisitView, \
     CampaignRatingView, LastVisitedCampaignsView, ClosingSoonCampaignsView, CampaignDetailView, CampaignNewsListView, \
     CampaignNewsDetailView, CampaignFAQListView, CampaignSaveView, CampaignLikeView, CampaignInvestmentView, \
-    CampaignRegistrationView
+    CampaignShareView, CampaignDetailByNameView
 
 urlpatterns = [
     path('campaigns/', CampaignListView.as_view(), name='campaign-list'),
@@ -17,6 +17,7 @@ urlpatterns = [
     path('campaigns/<int:pk>/rate/', CampaignRatingView.as_view(), name='campaign-rate'),
 
     path('campaigns/<int:pk>/', CampaignDetailView.as_view(), name='campaign-detail'),
+    path('campaigns/<str:name>/', CampaignDetailByNameView.as_view(), name='campaign-detail-by-name'),
 
     path('campaigns/<int:campaign_id>/updates/', CampaignNewsListView.as_view(), name='campaign-news-list'),
     path('updates/<int:id>/', CampaignNewsDetailView.as_view(), name='campaign-news-detail'),
@@ -24,6 +25,8 @@ urlpatterns = [
     path('campaigns/<int:campaign_id>/faqs/', CampaignFAQListView.as_view(), name='campaign-faqs'),
 
     path('campaigns/<int:campaign_id>/like/', CampaignLikeView.as_view(), name='campaign-like'),
+
+    path('campaigns/<int:campaign_id>/share/', CampaignShareView.as_view(), name='campaign-share'),
 
     path('campaigns/<int:campaign_id>/save/', CampaignSaveView.as_view(), name='campaign-save'),
 

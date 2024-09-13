@@ -28,8 +28,8 @@ class SavedCampaignSerializer(serializers.ModelSerializer):
 
     def get_days_left(self, obj):
         today = timezone.now().date()
-        days_left = (obj.campaign.end_date - today).days
-        return max(days_left, 0)
+        days_left = (obj.campaign.end_date - today).days if obj.campaign.end_date else 'N/A'
+        return max(days_left, 0) if days_left != 'N/A' else 'N/A'
 
     def get_percent_funded(self, obj):
         return f"{(obj.campaign.raised_amount / obj.campaign.goal_amount) * 100:.0f}"
