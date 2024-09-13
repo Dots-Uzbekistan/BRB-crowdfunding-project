@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
 import styles from "./LoginForm.module.scss";
 import oneid from "../../assets/oneid.png";
 import quant from "../../assets/quant.png";
@@ -64,16 +65,27 @@ const LoginForm = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.welcome}>
+      <motion.div
+        className={styles.welcome}
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <h1>
-          We are <span className={styles.highlightYellow}>happy</span> to <br />{" "}
-          see you <span className={styles.highlightGreen}>again</span>!
+          Welcome Back to <span className={styles.highlightYellow}>Your</span>{" "}
+          Dreams!
         </h1>
         <p>
-          Together, we're making <br /> dreams a reality.
+          Let's continue your journey towards <br /> success. We’re glad to have
+          you!
         </p>
-      </div>
-      <div className={styles.form}>
+      </motion.div>
+      <motion.div
+        className={styles.form}
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <input
           type="text"
           name="username"
@@ -119,7 +131,7 @@ const LoginForm = () => {
             <img src={quant} alt="Quant" /> Quant bank account
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

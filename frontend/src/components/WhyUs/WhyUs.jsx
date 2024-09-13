@@ -135,13 +135,12 @@ const WhyUs = () => {
           </p>
           <LineChart
             className={styles.linechart}
-            xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
             series={[
               {
                 data: [2, 5.5, 2, 8.5, 1.5, 5],
               },
             ]}
-            width={800}
+            max-width={800}
             height={200}
           />
         </div>

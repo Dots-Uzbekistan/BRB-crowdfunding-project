@@ -7,19 +7,29 @@
 .middle {
   width: 92%;
   margin: auto;
+  margin-top: 10rem;
 }
 .wrapper_card_campaign {
   gap: 3rem;
   display: flex;
   justify-content: center;
+  @media (max-width: 1300px) {
+    flex-direction: column;
+  }
   .card_image {
     width: 700px;
     height: 500px;
     object-fit: cover;
     object-position: center;
     border-radius: 24px;
+    @media (max-width: 1300px) {
+      width: 100%;
+    }
   }
   .info_desc_card {
+    @media (max-width: 1400px) {
+      width: 100%;
+    }
     .title_card {
       font-size: 50px;
       font-weight: 600;
@@ -79,6 +89,10 @@
         display: grid;
         gap: 10px;
         grid-template-columns: auto auto auto;
+        @media (max-width: 1300px) {
+          display: flex;
+          flex-direction: column;
+        }
         .like {
           cursor: pointer;
           border-radius: 14px;
@@ -126,6 +140,9 @@
   border-bottom: 1px solid #ddd;
   margin-bottom: 20px;
   width: 600px;
+  @media (max-width: 1300px) {
+    width: 100%;
+  }
 }
 
 .tabButton {
@@ -159,10 +176,17 @@
   background-color: #d5e8ea;
   border-radius: 14px;
   padding: 2rem 3rem;
+  @media (max-width: 1300px) {
+    width: 100%;
+    height: 100%;
+  }
 }
 .tab_container_wrapper_overview {
   display: flex;
   gap: 1rem;
+  @media (max-width: 1300px) {
+    flex-direction: column;
+  }
   h2 {
     font-size: 40px;
   }
@@ -230,6 +254,10 @@
   width: 48%;
   border: 4px solid black;
   border-radius: 24px;
+  @media (max-width: 1300px) {
+    width: 100%;
+    height: 100%;
+  }
 }
 .bio_creator {
   text-align: center;

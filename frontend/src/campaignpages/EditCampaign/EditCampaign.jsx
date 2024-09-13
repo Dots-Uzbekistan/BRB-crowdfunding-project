@@ -5,6 +5,8 @@ import Tabs from "../Tabs/Tabs";
 import Navbar from "../../components/Navbar/Navbar";
 import styles from "./EditCampaign.module.scss";
 import { FaChevronLeft } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { ThreeDots } from "react-loader-spinner";
 
 const EditCampaign = () => {
   const { id } = useParams();
@@ -42,23 +44,33 @@ const EditCampaign = () => {
     fetchCampaign();
   }, [id, navigate]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className={styles.loader}>
+        <ThreeDots color="#4fa94d" height={80} width={80} />
+      </div>
+    );
+  }
+
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
+    <motion.div
+      className={styles.wrapper_edit}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <Navbar />
-      <div className={styles.wrapper_edit}>
-        <div className={styles.nav_edit}>
-          <Link to={"/fulldashboard"} className={styles.back}>
-            <FaChevronLeft />
-            <p>Back</p>
-          </Link>
-          <h1>Edit Campaign</h1>
-        </div>
-        <Tabs campaignId={campaign.id} />
+      <div className={styles.nav_edit}>
+        <Link to={"/fulldashboard"} className={styles.back}>
+          <FaChevronLeft />
+          <p>Back</p>
+        </Link>
+        <h1>Edit Campaign</h1>
       </div>
-    </div>
+      <Tabs campaign={campaign} />
+    </motion.div>
   );
 };
 

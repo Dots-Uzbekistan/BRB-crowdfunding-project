@@ -103,7 +103,7 @@ const ViewsRateChart = () => {
         <ResponsiveContainer width="100%" height={400}>
           <AreaChart
             data={viewsData}
-            margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+            margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
           >
             <defs>
               <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
@@ -116,6 +116,9 @@ const ViewsRateChart = () => {
               tickFormatter={(date) =>
                 moment(date).isValid() ? moment(date).format("MMM YYYY") : date
               }
+              angle={-45} // Rotate labels to avoid overlapping
+              textAnchor="end" // Align text
+              interval={0} // Display all labels
             />
             <YAxis />
             <CartesianGrid strokeDasharray="3 3" />

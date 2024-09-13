@@ -9,13 +9,16 @@
   justify-content: space-between;
   margin-bottom: 20px;
   h1 {
-    font-size:70px;
+    font-size: 2.5em;
+    @media (max-width: 768px) {
+      font-size: 2em;
+    }
   }
 }
 
 .savedContainer {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
 }
 
@@ -36,19 +39,6 @@
   height: 250px;
   object-fit: cover;
   object-position: center center;
-}
-
-.trendingLabel {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: #e8fc85;
-  color: #000000;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-weight: 600;
-  z-index: 2;
-  border: 2px solid black;
 }
 
 .hoverOverlay {
@@ -113,7 +103,6 @@
   margin-top: auto;
 }
 
-.saveButton,
 .removeButton {
   background: none;
   border: none;
@@ -123,7 +112,6 @@
   transition: color 0.3s ease;
 }
 
-.saveButton:hover,
 .removeButton:hover {
   color: #ff6347;
 }
@@ -138,4 +126,10 @@
   margin: 20px 0;
   white-space: nowrap;
   text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .savedContainer {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
 }

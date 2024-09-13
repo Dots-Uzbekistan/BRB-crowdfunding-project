@@ -18,7 +18,6 @@ const ContactsLinks = ({ campaignId }) => {
 
   const token = localStorage.getItem("token");
 
-  // Fetch the current links for the campaign
   useEffect(() => {
     const fetchLinks = async () => {
       try {
@@ -106,7 +105,6 @@ const ContactsLinks = ({ campaignId }) => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
   if (error)
     return <div>Error: {error.message || "Something went wrong."}</div>;
 

@@ -1,0 +1,50 @@
+.pitch-container {
+  position: relative;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  height: 700px;
+
+  .title_pitch {
+    margin: 1rem 0;
+    line-height: 1.1;
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  }
+
+  .quill-editor {
+    height: 400px; /* Editor height set to 400px */
+    margin-bottom: 20px;
+
+    .ql-toolbar {
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Toolbar shadow */
+    }
+
+    .ql-container {
+      border-radius: 4px;
+      padding: 10px;
+    }
+  }
+
+  .save-button {
+    top: 10px;
+    right: 10px;
+    background-color: black; /* Black background for save button */
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: absolute;
+
+    &:hover {
+      background-color: #0056b3; /* Hover state color change */
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { AiFillDelete } from "react-icons/ai";
+import { motion } from "framer-motion";
 import styles from "./SavedCampaigns.module.scss";
 
 const SavedCampaigns = () => {
@@ -79,9 +80,13 @@ const SavedCampaigns = () => {
               campaign.campaign_image || "https://via.placeholder.com/150";
 
             return (
-              <div
+              <motion.div
                 key={campaign.campaign_title}
                 className={styles.campaignCard}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
               >
                 <div className={styles.imageWrapper}>
                   <img src={imageUrl} alt={campaign.campaign_title} />
@@ -102,7 +107,7 @@ const SavedCampaigns = () => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })
         ) : (

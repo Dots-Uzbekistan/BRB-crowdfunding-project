@@ -5,12 +5,21 @@
   height: 100%;
   gap: 17px;
   display: flex;
+  @media (max-width: 1400px) {
+    flex-direction: column;
+  }
   .left_us {
     width: 80%;
+    @media (max-width: 1400px) {
+      width: 100%;
+    }
     .text_us {
       font-size: 70px;
       font-weight: 500;
       line-height: 1.2;
+      @media (max-width: 1400px) {
+        font-size: 50px;
+      }
     }
     .cont_us_yellow {
       margin-top: 17px;
@@ -23,6 +32,9 @@
       .text_yellow {
         font-size: 40px;
         font-weight: 500;
+        @media (max-width: 1400px) {
+          font-size: 30px;
+        }
       }
       .number_info_yellow {
         align-self: end;
@@ -30,6 +42,9 @@
         line-height: 1;
         font-size: 80px;
         margin-top: 4rem;
+        @media (max-width: 1400px) {
+          font-size: 60px;
+        }
       }
     }
   }
@@ -40,6 +55,9 @@
       align-items: center;
       justify-content: center;
       gap: 17px;
+      @media (max-width: 1400px) {
+        flex-direction: column;
+      }
       article {
         border-radius: 24px;
       }
@@ -77,6 +95,7 @@
       padding: 1rem;
       background-color: #d5e8ea;
       border-radius: 24px;
+
       .text_linechart {
         font-size: 30px;
         line-height: 1.1;

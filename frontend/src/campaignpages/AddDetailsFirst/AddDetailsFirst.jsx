@@ -5,6 +5,7 @@ import FooterMini from "../../subcomponents/FooterMini/FooterMini";
 import axios from "axios";
 import { FaLightbulb, FaCog, FaStore, FaCheckCircle } from "react-icons/fa"; // Import icons
 import { useNavigate } from "react-router-dom";
+import { ThreeDots } from "react-loader-spinner"; // Import spinner
 
 const AddDetailsFirst = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const AddDetailsFirst = () => {
   const [charCount, setCharCount] = useState(0);
   const [charCountAdditional, setCharCountAdditional] = useState(0);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const storedProjectName = localStorage.getItem("projectName");
@@ -33,9 +35,7 @@ const AddDetailsFirst = () => {
     }
     if (storedToken) {
       setToken(storedToken);
-    }
 
-    if (storedToken) {
       axios
         .get("http://161.35.19.77:8001/api/catalog/categories/", {
           headers: {
@@ -43,9 +43,16 @@ const AddDetailsFirst = () => {
           },
         })
         .then((response) => setCategories(response.data))
-        .catch((error) => console.error("Error fetching categories:", error));
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            // Token expired, redirect to login
+            navigate("/");
+          } else {
+            console.error("Error fetching categories:", error);
+          }
+        });
     }
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,7 +60,7 @@ const AddDetailsFirst = () => {
     if (name === "projectDescription") {
       if (value.length <= 255) {
         setFormData({ ...formData, [name]: value });
-        setCharCount(value.length); // Only update charCount for projectDescription
+        setCharCount(value.length);
       }
     } else if (name === "additionalInfo") {
       if (value.length <= 255) {
@@ -61,25 +68,70 @@ const AddDetailsFirst = () => {
         setCharCountAdditional(value.length);
       }
     } else if (name === "fundraisingGoal") {
-      const formattedValue = value.replace(/[^\d.]/g, ""); // Keep only digits and decimal
+      const formattedValue = value.replace(/[^\d.]/g, "");
       setFormData({ ...formData, fundraisingGoal: formattedValue });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
-  const handleSubmit = (e) => {
+  const getRecommendedCategory = async (details) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://161.35.19.77:8001/api/founder/campaigns/recommend-category/",
+        details,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data.category;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        // Token expired, redirect to login
+        navigate("/");
+      } else {
+        console.error("Error recommending category:", error);
+      }
+      return null;
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!token) {
       alert("Authentication error. Please log in again.");
+      navigate("/");
       return;
     }
 
+    let selectedCategory = formData.category;
+
+    if (!selectedCategory) {
+      // Get recommended category if none selected
+      const recommendedCategory = await getRecommendedCategory({
+        name: projectName,
+        title: formData.projectDescription,
+        description: formData.additionalInfo,
+      });
+      if (recommendedCategory) {
+        selectedCategory = recommendedCategory;
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          category: recommendedCategory,
+        }));
+      }
+    }
+
     const data = {
-      name: projectName, // Ensure projectName from local storage is used
+      name: projectName,
       description: formData.projectDescription,
-      categories: [formData.category],
+      categories: [selectedCategory],
       project_state: formData.projectState.toLowerCase(),
       location: formData.location,
       investment_type: formData.fundingType.toLowerCase(),
@@ -87,29 +139,31 @@ const AddDetailsFirst = () => {
       extra_info: formData.additionalInfo,
     };
 
-    axios
-      .post("http://161.35.19.77:8001/api/founder/campaigns/register/", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        console.log("Response:", response.data);
-        alert(response.data.message || "Campaign registered successfully!");
-
-        // Redirect to FullDashboard after successful campaign registration
-        // Pass the campaign ID if needed for further use in FullDashboard
-        const campaignId = response.data.id; // Assuming the response contains the created campaign ID
-        navigate(`/fulldashboard`, { state: { campaignId } }); // Navigate to FullDashboard with campaignId
-      })
-      .catch((error) => {
-        if (error.response && error.response.data) {
-          console.error("Validation errors:", error.response.data);
-          setErrors(error.response.data);
-        } else {
-          console.error("Error registering campaign:", error);
+    try {
+      const response = await axios.post(
+        "http://161.35.19.77:8001/api/founder/campaigns/register/",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
+      console.log("Response:", response.data);
+
+      const campaignId = response.data.id;
+      navigate("/fulldashboard", { state: { campaignId } });
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        // Token expired, redirect to login
+        navigate("/");
+      } else if (error.response && error.response.data) {
+        console.error("Validation errors:", error.response.data);
+        setErrors(error.response.data);
+      } else {
+        console.error("Error registering campaign:", error);
+      }
+    }
   };
 
   const stages = [
@@ -123,6 +177,11 @@ const AddDetailsFirst = () => {
     <div className={styles.wrapper_first_add_details}>
       <Navbar />
       <div className={styles.wrapper_content_first_addition}>
+        {loading && (
+          <div className={styles.loaderContainer}>
+            <ThreeDots color="#00BFFF" height={80} width={80} />
+          </div>
+        )}
         <h1>
           Few more steps before <br /> you <span>start your campaign</span>
         </h1>
@@ -212,7 +271,7 @@ const AddDetailsFirst = () => {
                   5. Which type of funding is most suitable for your project?
                 </label>
                 <div className={styles.funding_type_wrapper_radio}>
-                  <label>
+                  <div className={styles.radio_fundings}>
                     <input
                       type="radio"
                       name="fundingType"
@@ -220,9 +279,9 @@ const AddDetailsFirst = () => {
                       checked={formData.fundingType === "equity"}
                       onChange={handleChange}
                     />
-                    Equity-based (Investors get a share of the project)
-                  </label>
-                  <label>
+                    <p>Equity-based (Investors get a share of the project)</p>
+                  </div>
+                  <div className={styles.radio_fundings}>
                     <input
                       type="radio"
                       name="fundingType"
@@ -230,8 +289,8 @@ const AddDetailsFirst = () => {
                       checked={formData.fundingType === "donation"}
                       onChange={handleChange}
                     />
-                    Donation-based (Support with no returns)
-                  </label>
+                    <p>Donation-based (Support with no returns)</p>
+                  </div>
                 </div>
               </div>
 
@@ -244,7 +303,7 @@ const AddDetailsFirst = () => {
                   type="text"
                   name="fundraisingGoal"
                   placeholder="$100000"
-                  value={`$${formData.fundraisingGoal}`}
+                  value={formData.fundraisingGoal}
                   onChange={handleChange}
                 />
                 {errors.goal_amount && (
@@ -256,8 +315,7 @@ const AddDetailsFirst = () => {
               <div className={styles.formGroup}>
                 <label className={styles.cont_textarea_wrapper}>
                   7. Is there anything you'd like us to know? (Optional)
-                  <p>{charCountAdditional}/255</p>{" "}
-                  {/* Display character count */}
+                  <p>{charCountAdditional}/255</p>
                   {errors.description && (
                     <p className={styles.errorText}>{errors.description[0]}</p>
                   )}

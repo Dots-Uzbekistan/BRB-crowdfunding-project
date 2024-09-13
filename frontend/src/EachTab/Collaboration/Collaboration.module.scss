@@ -1,0 +1,177 @@
+.loader {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.collaborationContainer {
+  min-height: 600px;
+  padding: 20px;
+  background-color: #f9f9f9;
+
+  h2,
+  h3 {
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+}
+
+.searchContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  .searchInput {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &::placeholder {
+      color: #aaa;
+    }
+
+    &:focus {
+      border-color: #4fa94d;
+    }
+  }
+}
+
+.aiButton {
+  background-color: #4fa94d;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #3a7d3a;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+.campaignGrid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.campaignCard {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden; /* Ensure overlay is within bounds */
+
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+
+  img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  h4 {
+    margin: 10px 0;
+    font-size: 1.2rem;
+  }
+
+  button {
+    background-color: #a5ffb8;
+    color: black;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #7eca8e;
+    }
+  }
+
+  .reason {
+    color: #555;
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+
+  .trendingBadge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #e8fc85;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70%;
+    background-color: #d5e8ea;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 10px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+    z-index: 10; /* Ensure it's above other content */
+  }
+
+  &:hover .overlay {
+    opacity: 1;
+  }
+}
+
+.loaderContainer,
+.aiLoading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.aiLoading {
+  flex-direction: column;
+
+  p {
+    margin-top: 10px;
+    font-size: 1.1rem;
+  }
+}
