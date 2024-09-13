@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./Team.module.scss"; // Import SCSS module
+import { motion } from "framer-motion";
+import styles from "./Team.module.scss";
 
 const Team = ({ campaignId }) => {
   const [teamMembers, setTeamMembers] = useState([]);
@@ -11,24 +12,20 @@ const Team = ({ campaignId }) => {
     profile_picture: null,
   });
   const [error, setError] = useState("");
-  const [imagePreview, setImagePreview] = useState(null); // For image preview
+  const [imagePreview, setImagePreview] = useState(null);
 
-  // Fetch token from local storage
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchTeamMembers();
   }, []);
 
-  // Fetch team members
   const fetchTeamMembers = async () => {
     try {
       const response = await axios.get(
         `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/team/`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setTeamMembers(response.data);
@@ -37,48 +34,46 @@ const Team = ({ campaignId }) => {
     }
   };
 
-  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewMember({
-      ...newMember,
-      [name]: value,
-    });
+    setNewMember({ ...newMember, [name]: value });
   };
 
-  // Handle file input with validation
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     const validTypes = ["image/jpeg", "image/png"];
     if (!validTypes.includes(file.type)) {
       setError("Only .jpg and .png files are allowed.");
       return;
     }
 
-    // Validate file size (2MB limit)
     if (file.size > 2 * 1024 * 1024) {
       setError("File size should not exceed 2MB.");
       return;
     }
 
     setError("");
-    setNewMember({
-      ...newMember,
-      profile_picture: file,
-    });
+    setNewMember({ ...newMember, profile_picture: file });
 
-    // Preview image
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
+    reader.onloadend = () => setImagePreview(reader.result);
     reader.readAsDataURL(file);
   };
 
-  // Validation for inputs
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileChange({ target: { files: [file] } });
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   const validateForm = () => {
     if (!newMember.name || !newMember.role || !newMember.email) {
       setError("All fields must be filled.");
@@ -96,7 +91,6 @@ const Team = ({ campaignId }) => {
     return true;
   };
 
-  // Add a new team member
   const handleAddTeamMember = async () => {
     if (!validateForm()) return;
 
@@ -134,17 +128,35 @@ const Team = ({ campaignId }) => {
         accomplishments that build credibility and trust.
       </p>
 
-      <div className={styles.teamForm}>
-        <div className={styles.profilePicInput}>
+      <motion.div
+        className={styles.teamForm}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div
+          className={styles.profilePicInput}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+        >
           <label htmlFor="profilePicture">Add profile picture</label>
-          <input id="profilePicture" type="file" onChange={handleFileChange} />
-          {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="Profile Preview"
-              className={styles.previewImage}
-            />
-          )}
+          <input
+            id="profilePicture"
+            type="file"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
+          <div className={styles.dropArea}>
+            {imagePreview ? (
+              <img
+                src={imagePreview}
+                alt="Profile Preview"
+                className={styles.previewImage}
+              />
+            ) : (
+              <p>Drag & drop an image or click to select</p>
+            )}
+          </div>
         </div>
         <div className={styles.inputFields}>
           <input
@@ -170,21 +182,36 @@ const Team = ({ campaignId }) => {
           />
         </div>
         {error && <p className={styles.error}>{error}</p>}
-        <button onClick={handleAddTeamMember} className={styles.addButton}>
+        <button
+          onClick={handleAddTeamMember}
+          className={styles.addButton}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           + Add team member
         </button>
-      </div>
+      </motion.div>
 
-      <div className={styles.teamMembers}>
+      <motion.div
+        className={styles.teamMembers}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         {teamMembers.map((member, index) => (
-          <div key={index} className={styles.teamMemberCard}>
+          <motion.div
+            key={index}
+            className={styles.teamMemberCard}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
             <img src={member.profile_picture} alt={member.name} />
             <h3>{member.name}</h3>
             <p>{member.role}</p>
             <p>{member.email}</p>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       <button className={styles.saveBtn}>Save Changes</button>
     </div>

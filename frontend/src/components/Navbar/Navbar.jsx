@@ -258,11 +258,8 @@ const Navbar = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <Link to={"/profile"} className={styles.link_dropdown}>
-                        <button className={styles.dropdownItem}>Profile</button>
-                      </Link>
-                      <Link to={"/settings"} className={styles.link_dropdown}>
                         <button className={styles.dropdownItem}>
-                          Settings
+                          My investments
                         </button>
                       </Link>
                       <Link
@@ -272,6 +269,11 @@ const Navbar = () => {
                         <button className={styles.dropdownItem}>
                           My campaigns
                         </button>
+                        <Link to={"/settings"} className={styles.link_dropdown}>
+                          <button className={styles.dropdownItem}>
+                            Settings
+                          </button>
+                        </Link>
                       </Link>
                       <button
                         className={styles.dropdownItem}

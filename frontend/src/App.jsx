@@ -48,7 +48,7 @@ function App() {
         <Route path="/firstadditioncampaign" element={<AddDetailsFirst />} />
         <Route path="/fulldashboard" element={<FullDashboard />} />
         <Route path="/editcampaign/:id" element={<EditCampaign />} />
-        <Route path="/stats" element={<CampaignStats />} />
+        <Route path="/stats/:campaignId" element={<CampaignStats />} />
         <Route path="/update/:id" element={<UpdateCampaign />} />
       </Routes>
     </AuthContext.Provider>

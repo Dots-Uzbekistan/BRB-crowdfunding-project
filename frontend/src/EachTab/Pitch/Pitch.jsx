@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; // Quill CSS
-import styles from "./Pitch.module.scss"; // Import SCSS module
+import "react-quill/dist/quill.snow.css";
+import styles from "./Pitch.module.scss";
 
 const Pitch = ({ campaignId }) => {
   const [pitch, setPitch] = useState("");
   const [loading, setLoading] = useState(false);
-  const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    // Fetch the pitch when the component loads
     const fetchPitch = async () => {
       setLoading(true);
       try {
@@ -60,25 +59,21 @@ const Pitch = ({ campaignId }) => {
           vision. Why should they invest?
         </p>
       </div>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
+      <div>
         <div>
-          <div>
-            <ReactQuill
-              className={styles["quill-editor"]}
-              theme="snow"
-              value={pitch}
-              onChange={setPitch}
-              modules={Pitch.modules}
-              formats={Pitch.formats}
-            />
-          </div>
-          <button className={styles["save-button"]} onClick={handleSave}>
-            Save Changes
-          </button>
+          <ReactQuill
+            className={styles["quill-editor"]}
+            theme="snow"
+            value={pitch}
+            onChange={setPitch}
+            modules={Pitch.modules}
+            formats={Pitch.formats}
+          />
         </div>
-      )}
+        <button className={styles["save-button"]} onClick={handleSave}>
+          Save Changes
+        </button>
+      </div>
     </div>
   );
 };

@@ -3,32 +3,9 @@ import axios from "axios";
 import { PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 import styles from "./DonutChart.module.scss";
 
-// Custom hook to get window size
-const useWindowSize = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return windowSize;
-};
-
 const DonutChart = () => {
   const [categoryBreakdown, setCategoryBreakdown] = useState([]);
   const [error, setError] = useState(null);
-  const { width } = useWindowSize(); // Get window width
 
   useEffect(() => {
     const fetchCategoryBreakdown = async () => {
@@ -75,25 +52,21 @@ const DonutChart = () => {
     "#36A2EB",
   ];
 
-  // Dynamic chart size based on window width
-  const chartWidth = width > 600 ? width * 0.8 : width * 0.9; // Adjust width
-  const chartHeight = width > 600 ? width * 0.6 : width * 0.7; // Adjust height
-
   return (
     <div className={styles.donutChart}>
       <h1>Investment Categories</h1>
       {error ? (
         <p>{error}</p>
       ) : categoryBreakdown.length > 0 ? (
-        <PieChart width={chartWidth} height={chartHeight}>
+        <PieChart width={500} height={550}>
           <Pie
             data={categoryBreakdown}
             dataKey="percentage"
             nameKey="campaign_name"
             cx="50%"
             cy="50%"
-            outerRadius={chartWidth / 3} // Dynamic outer radius
-            innerRadius={chartWidth / 6} // Dynamic inner radius
+            outerRadius={200}
+            innerRadius={80}
           >
             {categoryBreakdown.map((entry, index) => (
               <Cell

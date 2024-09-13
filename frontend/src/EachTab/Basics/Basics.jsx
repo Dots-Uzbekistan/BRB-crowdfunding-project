@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { ThreeDots } from "react-loader-spinner";
+
 import styles from "./Basics.module.scss";
 
 const Basics = ({ campaignId }) => {
@@ -168,18 +168,7 @@ const Basics = ({ campaignId }) => {
   return (
     <div className={styles.container}>
       <h1>Update Campaign Basics</h1>
-      {loading && (
-        <div className={styles.loading}>
-          <ThreeDots
-            height="80"
-            width="80"
-            radius="9"
-            color="#007bff"
-            ariaLabel="three-dots-loading"
-          />
-        </div>
-      )}
-      {error && <p className={styles.error}>Error: {error}</p>}
+
       <form onSubmit={handleSubmit} className={styles.form}>
         <label>
           Name:

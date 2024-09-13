@@ -7,29 +7,35 @@ import Pitch from "../../EachTab/Pitch/Pitch";
 import Contract from "../../EachTab/Contract/Contract";
 import FundingGoals from "../../EachTab/FundingGoals/FundingGoals";
 import Collaboration from "../../EachTab/Collaboration/Collaboration";
+import { ThreeDots } from "react-loader-spinner";
 
 const Tabs = ({ campaign }) => {
   const [activeTab, setActiveTab] = useState("Basics");
   const [isMobile, setIsMobile] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Check if the screen width is mobile-size and set the state accordingly
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    // Initial check
     handleResize();
-
-    // Add event listener to handle window resizing
     window.addEventListener("resize", handleResize);
 
-    // Cleanup event listener on component unmount
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    if (campaign) {
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }, [campaign]);
+
   const renderTabContent = () => {
-    const campaignId = campaign?.id; // Extract campaignId from campaign object
+    const campaignId = campaign?.id;
+
     switch (activeTab) {
       case "Basics":
         return <Basics campaignId={campaignId} />;
@@ -102,7 +108,15 @@ const Tabs = ({ campaign }) => {
         </div>
       )}
 
-      <div className={styles.tabContent}>{renderTabContent()}</div>
+      <div className={styles.tabContent}>
+        {loading ? (
+          <div className={styles.loader}>
+            <ThreeDots color="#00BFFF" height={80} width={80} />
+          </div>
+        ) : (
+          renderTabContent()
+        )}
+      </div>
     </div>
   );
 };

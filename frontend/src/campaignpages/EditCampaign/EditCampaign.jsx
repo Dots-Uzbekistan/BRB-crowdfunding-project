@@ -4,8 +4,9 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import Tabs from "../Tabs/Tabs";
 import Navbar from "../../components/Navbar/Navbar";
 import styles from "./EditCampaign.module.scss";
-import { FaChevronLeft, FaCheckCircle } from "react-icons/fa"; // Import FaCheckCircle for the tick icon
+import { FaChevronLeft } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { ThreeDots } from "react-loader-spinner";
 
 const EditCampaign = () => {
   const { id } = useParams();
@@ -43,7 +44,14 @@ const EditCampaign = () => {
     fetchCampaign();
   }, [id, navigate]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className={styles.loader}>
+        <ThreeDots color="#4fa94d" height={80} width={80} />
+      </div>
+    );
+  }
+
   if (error) return <p>{error}</p>;
 
   return (

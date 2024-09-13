@@ -105,7 +105,6 @@ const ContactsLinks = ({ campaignId }) => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
   if (error)
     return <div>Error: {error.message || "Something went wrong."}</div>;
 
