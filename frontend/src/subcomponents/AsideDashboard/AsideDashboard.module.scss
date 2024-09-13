@@ -1,0 +1,99 @@
+.aside_filter {
+  .filtersContainer {
+    padding: 1rem 2rem;
+    line-height: 1;
+    width: 300px;
+    height: 140vh;
+    background-color: #a5ffb8;
+    border-radius: 14px;
+    font-weight: 600;
+    position: relative;
+
+    .filterHeader {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .filterSection {
+      margin-bottom: 20px;
+    }
+
+    h4 {
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .radioGroup {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .radioOption {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+
+      input[type="radio"] {
+        margin-right: 10px;
+        accent-color: black;
+      }
+    }
+
+    .radioOption:last-child {
+      margin-bottom: 0;
+    }
+
+    .buttonsContainer {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .applyButton {
+      width: 100%;
+      border-radius: 14px;
+      padding: 10px 15px;
+      background-color: black;
+      color: white;
+      @media (max-width: 1110px) {
+        font-size: 12px;
+        padding: 5px 10px;
+      }
+    }
+
+    .deselectButton {
+      position: absolute;
+      top: 15px;
+      right: 25px;
+      background: transparent;
+      padding: 5px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: black;
+      color: white;
+      @media (max-width: 1110px) {
+        font-size: 12px;
+        right: 45px;
+        top: 14px;
+      }
+    }
+  }
+
+  @media (max-width: 1110px) {
+    .filtersContainer {
+      width: 100%;
+      height: auto;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 1000;
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .filtersContainer {
+      padding: 1rem;
+    }
+  }
+}

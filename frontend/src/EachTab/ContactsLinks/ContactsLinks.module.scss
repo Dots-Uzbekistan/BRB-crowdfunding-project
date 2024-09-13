@@ -1,0 +1,55 @@
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.heading {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.linksSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup {
+  margin-bottom: 20px;
+}
+
+.customLink {
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.saveBtn {
+  padding: 10px 15px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 25px;
+  transition: background-color 0.3s ease;
+}
+
+.saveBtn:hover {
+  background-color: black;
+}
+
+.saveMessage {
+  margin-top: 10px;
+  color: #4caf50;
+  font-weight: bold;
+}

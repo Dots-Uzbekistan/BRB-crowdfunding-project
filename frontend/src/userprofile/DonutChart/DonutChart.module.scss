@@ -1,0 +1,15 @@
+.donutChart {
+  margin-left: 5rem;
+  @media (max-width: 1100px) {
+    margin-left: -2rem;
+  }
+  h1 {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 35px;
+    font-weight: 500;
+    @media (max-width: 1100px) {
+      display: none;
+    }
+  }
+}

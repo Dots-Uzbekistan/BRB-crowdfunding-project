@@ -1,0 +1,42 @@
+.loader {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav_edit {
+  width: 90%;
+  max-width: 1200px; // Max width to avoid stretching on large screens
+  margin: auto;
+  padding: 1rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-radius: 14px;
+  border: 2px solid black;
+  padding: 1rem;
+  background: #f9f9f9; // Background color for better visibility
+  @media (max-width: 768px) {
+    width: 95%;
+  }
+  h1 {
+    text-align: center;
+    flex: 1;
+    margin: 0;
+    font-size: 1.5rem; // Adjusted font size for responsiveness
+  }
+
+  .back {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+    font-size: 1.2rem; // Adjusted font size for responsiveness
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,106 @@
+.wrapper_us {
+  width: 92%;
+  margin: 4rem auto;
+  padding: 0;
+  height: 100%;
+  gap: 17px;
+  display: flex;
+  @media (max-width: 1400px) {
+    flex-direction: column;
+  }
+  .left_us {
+    width: 80%;
+    @media (max-width: 1400px) {
+      width: 100%;
+    }
+    .text_us {
+      font-size: 70px;
+      font-weight: 500;
+      line-height: 1.2;
+      @media (max-width: 1400px) {
+        font-size: 50px;
+      }
+    }
+    .cont_us_yellow {
+      margin-top: 17px;
+      border-radius: 24px;
+      background-color: #e8fc85;
+      padding: 2rem;
+      display: grid;
+      line-height: 1.1;
+      grid-template-rows: auto 328px;
+      .text_yellow {
+        font-size: 40px;
+        font-weight: 500;
+        @media (max-width: 1400px) {
+          font-size: 30px;
+        }
+      }
+      .number_info_yellow {
+        align-self: end;
+        font-weight: 600;
+        line-height: 1;
+        font-size: 80px;
+        margin-top: 4rem;
+        @media (max-width: 1400px) {
+          font-size: 60px;
+        }
+      }
+    }
+  }
+  .right_us {
+    width: 100%;
+    .right_us_containers {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 17px;
+      @media (max-width: 1400px) {
+        flex-direction: column;
+      }
+      article {
+        border-radius: 24px;
+      }
+      .purple {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background-color: #cabcf8;
+        padding: 1rem;
+        font-size: 28px;
+        max-width: 400px;
+        height: 350px;
+        font-weight: 500;
+        line-height: 1.1;
+        svg {
+          margin-bottom: 1rem;
+        }
+      }
+      .green_us {
+        background-color: #a5ffb8;
+        padding: 3rem;
+        max-width: 400px;
+        height: 350px;
+        font-size: 28px;
+        font-weight: 500;
+        line-height: 1.1;
+        svg {
+          margin-top: 4rem;
+        }
+      }
+    }
+    .wrapper_linechart {
+      margin-top: 17px;
+      padding: 1rem;
+      background-color: #d5e8ea;
+      border-radius: 24px;
+
+      .text_linechart {
+        font-size: 30px;
+        line-height: 1.1;
+        font-weight: 500;
+      }
+    }
+  }
+}
