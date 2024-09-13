@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campaign Pitch</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/campaign_pitch.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ campaign.title }}</h1>
+        <div>{{ campaign.pitch|safe }}</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,179 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+{#    <h1 style="margin-bottom: 30px;">Some Charts</h1>  <!-- Added margin-bottom for space -->#}
+{#    <h1 style="margin-right: 10px;">Some Charts</h1>  <!-- Added margin-right for space -->#}
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+
+    <!-- Users Joined Per Day (Spanning the full width) -->
+    <div style="flex: 1; padding: 20px; background-color: #fff; border-radius: 10px;">
+        <canvas id="usersJoinedChart" width="1320" height="250"></canvas>  <!-- Double the size for emphasis -->
+    </div>
+
+    </div>
+
+    <!-- Flex container to align charts in a row -->
+    <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
+
+        <!-- Pie chart for Users by Role -->
+        <div style="flex: 1; padding: 20px; background-color: #fff; margin-right: 20px; border-radius: 10px;">
+            <canvas id="userRoleChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- Bar chart for Campaigns by Funding Status -->
+        <div style="flex: 1; padding: 20px; background-color: #fff; margin-right: 20px; border-radius: 10px;">
+            <canvas id="campaignStatusChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- Bar chart for Investments by Status -->
+        <div style="flex: 1; padding: 20px; background-color: #fff; border-radius: 10px;">
+            <canvas id="investmentStatusChart" width="400" height="200"></canvas>
+        </div>
+
+    </div>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        {% if users_joined_data %}
+            const usersJoinedData = {{ users_joined_data|safe }};
+            const usersJoinedConfig = {
+                type: 'line',
+                data: {
+                    labels: usersJoinedData.dates,
+                    datasets: [
+                        {
+                            label: 'Investors',
+                            data: usersJoinedData.investors_data,
+                            borderColor: '#4FFB79',
+                            backgroundColor: 'rgba(79, 251, 121, 0.2)',
+                            borderWidth: 1,
+                            fill: true
+                        },
+                        {
+                            label: 'Creators',
+                            data: usersJoinedData.creators_data,
+                            borderColor: '#6F5CC0',
+                            backgroundColor: 'rgba(111, 92, 192, 0.2)',
+                            borderWidth: 1,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            };
+
+            var usersJoinedChart = new Chart(
+                document.getElementById('usersJoinedChart'),
+                usersJoinedConfig
+            );
+        {% else %}
+            console.log("User Joined Data is missing");
+        {% endif %}
+    </script>
+
+    <!-- Pie chart for Users by Role -->
+    <script>
+        {% if user_role_data %}
+            const userRoleData = {{ user_role_data|safe }};
+            const userRoleConfig = {
+                type: 'pie',
+                data: {
+                    labels: userRoleData.labels,
+                    datasets: [{
+                        label: 'User Roles',
+                        data: userRoleData.data,
+                        backgroundColor: ['#C4E82F', '#6F5CC0'],
+                        hoverBackgroundColor: ['#A6C21F', '#4A3A8A']
+                    }]
+                }
+            };
+
+            var userRoleChart = new Chart(
+                document.getElementById('userRoleChart'),
+                userRoleConfig
+            );
+        {% else %}
+            console.log("User Role Data is missing");
+        {% endif %}
+    </script>
+
+    <!-- Bar chart for Campaigns by Funding Status -->
+    <script>
+        {% if campaign_status_data %}
+            const campaignStatusData = {{ campaign_status_data|safe }};
+            const campaignStatusConfig = {
+                type: 'bar',
+                data: {
+                    labels: campaignStatusData.labels,
+                    datasets: [{
+                        label: 'Campaign Status',
+                        data: campaignStatusData.data,
+                        backgroundColor: ['#C4E82F', '#6F5CC0', '#4FFB79'],
+                        hoverBackgroundColor: ['#A6C21F', '#4A3A8A', '#3A9A4A']
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            };
+
+            var campaignStatusChart = new Chart(
+                document.getElementById('campaignStatusChart'),
+                campaignStatusConfig
+            );
+        {% else %}
+            console.log("Campaign Status Data is missing");
+        {% endif %}
+    </script>
+
+    <!-- Doughnut chart for Investments by Status -->
+    <script>
+        {% if investment_status_data %}
+            const investmentStatusData = {{ investment_status_data|safe }};
+            const investmentStatusConfig = {
+                type: 'doughnut',
+                data: {
+                    labels: investmentStatusData.labels,
+                    datasets: [{
+                        label: 'Investment Status',
+                        data: investmentStatusData.data,
+                        backgroundColor: ['#C4E82F', '#6F5CC0', '#4FFB79'],
+                        hoverBackgroundColor: ['#A6C21F', '#4A3A8A', '#3A9A4A']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            };
+
+            var investmentStatusChart = new Chart(
+                document.getElementById('investmentStatusChart'),
+                investmentStatusConfig
+            );
+        {% else %}
+            console.log("Investment Status Data is missing");
+        {% endif %}
+    </script>
+
+    <!-- Render the default admin content (apps, recent actions, etc.) -->
+    {{ block.super }}
+{% endblock %}
