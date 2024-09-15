@@ -1,0 +1,15 @@
+/* Example custom styling */
+#site-name {
+    color: #32CD32; /* LimeGreen color */
+}
+
+.module {
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.module h2 {
+    color: #006400; /* DarkGreen color */
+}
