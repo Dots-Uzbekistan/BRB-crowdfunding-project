@@ -13,7 +13,7 @@
 }
 
 .tabs {
-  width: 250px;
+  width: 350px;
   background-color: #f5f5f5;
   border-right: 1px solid #ddd;
   padding: 20px;
@@ -53,6 +53,9 @@
 }
 
 .tabButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 15px;
   border: none;
   background: none;
@@ -100,4 +103,8 @@
   &:hover {
     background-color: #333;
   }
+}
+
+.tickIcon {
+  color: green;
 }

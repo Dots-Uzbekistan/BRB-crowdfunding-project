@@ -214,7 +214,7 @@ const CampaignGrid = ({ filters, onSaveCampaign, currentCategory }) => {
                           {campaign.description}
                           <div className={styles.btn_overlay}>
                             {campaign.tags.map((tag) => (
-                              <button key={tag.id} className="tag-button">
+                              <button key={tag.id} className={styles.tagbutton}>
                                 {tag.name}
                               </button>
                             ))}

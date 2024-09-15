@@ -8,11 +8,21 @@ import Contract from "../../EachTab/Contract/Contract";
 import FundingGoals from "../../EachTab/FundingGoals/FundingGoals";
 import Collaboration from "../../EachTab/Collaboration/Collaboration";
 import { ThreeDots } from "react-loader-spinner";
+import { FaCheckCircle } from "react-icons/fa";
 
-const Tabs = ({ campaign }) => {
+const Tabs = ({ campaign, registrationSteps }) => {
   const [activeTab, setActiveTab] = useState("Basics");
   const [isMobile, setIsMobile] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [completedTabs, setCompletedTabs] = useState({
+    Basics: false,
+    "Contacts & Links": false,
+    Team: false,
+    Pitch: false,
+    Contract: false,
+    "Funding Goals": false,
+    Collaboration: false,
+  });
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,26 +43,87 @@ const Tabs = ({ campaign }) => {
     }
   }, [campaign]);
 
+  useEffect(() => {
+    if (registrationSteps) {
+      setCompletedTabs({
+        Basics: registrationSteps.step_1,
+        "Contacts & Links": registrationSteps.step_2,
+        Team: registrationSteps.step_3,
+        Pitch: registrationSteps.step_4,
+        Contract: registrationSteps.step_5,
+        "Funding Goals": false,
+        Collaboration: false,
+      });
+    }
+  }, [registrationSteps]);
+
   const renderTabContent = () => {
     const campaignId = campaign?.id;
 
+    const handleTabComplete = (tabName) => {
+      setCompletedTabs((prevState) => ({
+        ...prevState,
+        [tabName]: true,
+      }));
+    };
+
     switch (activeTab) {
       case "Basics":
-        return <Basics campaignId={campaignId} />;
+        return (
+          <Basics
+            campaignId={campaignId}
+            onComplete={() => handleTabComplete("Basics")}
+          />
+        );
       case "Contacts & Links":
-        return <ContactsLinks campaignId={campaignId} />;
+        return (
+          <ContactsLinks
+            campaignId={campaignId}
+            onComplete={() => handleTabComplete("Contacts & Links")}
+          />
+        );
       case "Team":
-        return <Team campaignId={campaignId} />;
+        return (
+          <Team
+            campaignId={campaignId}
+            onComplete={() => handleTabComplete("Team")}
+          />
+        );
       case "Pitch":
-        return <Pitch campaignId={campaignId} />;
+        return (
+          <Pitch
+            campaignId={campaignId}
+            onComplete={() => handleTabComplete("Pitch")}
+          />
+        );
       case "Contract":
-        return <Contract campaignId={campaignId} />;
+        return (
+          <Contract
+            campaignId={campaignId}
+            onComplete={() => handleTabComplete("Contract")}
+          />
+        );
       case "Funding Goals":
-        return <FundingGoals campaignId={campaignId} />;
+        return (
+          <FundingGoals
+            campaignId={campaignId}
+            onComplete={() => handleTabComplete("Funding Goals")}
+          />
+        );
       case "Collaboration":
-        return <Collaboration campaignId={campaignId} />;
+        return (
+          <Collaboration
+            campaignId={campaignId}
+            onComplete={() => handleTabComplete("Collaboration")}
+          />
+        );
       default:
-        return <Basics campaignId={campaignId} />;
+        return (
+          <Basics
+            campaignId={campaignId}
+            onComplete={() => handleTabComplete("Basics")}
+          />
+        );
     }
   };
 
@@ -69,16 +140,11 @@ const Tabs = ({ campaign }) => {
             value={activeTab}
             onChange={handleSelectChange}
           >
-            {[
-              "Basics",
-              "Contacts & Links",
-              "Team",
-              "Pitch",
-              "Contract",
-              "Funding Goals",
-              "Collaboration",
-            ].map((tab) => (
+            {Object.keys(completedTabs).map((tab) => (
               <option key={tab} value={tab}>
+                {completedTabs[tab] && (
+                  <FaCheckCircle className={styles.tickIcon} />
+                )}{" "}
                 {tab}
               </option>
             ))}
@@ -86,15 +152,7 @@ const Tabs = ({ campaign }) => {
         </div>
       ) : (
         <div className={styles.tabs}>
-          {[
-            "Basics",
-            "Contacts & Links",
-            "Team",
-            "Pitch",
-            "Contract",
-            "Funding Goals",
-            "Collaboration",
-          ].map((tab) => (
+          {Object.keys(completedTabs).map((tab) => (
             <button
               key={tab}
               className={`${styles.tabButton} ${
@@ -103,6 +161,9 @@ const Tabs = ({ campaign }) => {
               onClick={() => setActiveTab(tab)}
             >
               {tab}
+              {completedTabs[tab] && (
+                <FaCheckCircle className={styles.tickIcon} />
+              )}
             </button>
           ))}
         </div>

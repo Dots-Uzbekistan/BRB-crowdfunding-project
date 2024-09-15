@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "./Team.module.scss";
 
-const Team = ({ campaignId }) => {
+const Team = ({ campaignId, onComplete }) => {
   const [teamMembers, setTeamMembers] = useState([]);
   const [newMember, setNewMember] = useState({
     name: "",
@@ -13,6 +15,7 @@ const Team = ({ campaignId }) => {
   });
   const [error, setError] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [isDirty, setIsDirty] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -37,6 +40,7 @@ const Team = ({ campaignId }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewMember({ ...newMember, [name]: value });
+    setIsDirty(true);
   };
 
   const handleFileChange = (e) => {
@@ -115,13 +119,42 @@ const Team = ({ campaignId }) => {
       setNewMember({ name: "", role: "", email: "", profile_picture: null });
       setImagePreview(null);
       setError("");
+      toast.success("Team member added successfully!");
+      setIsDirty(true);
     } catch (error) {
       console.error("Error adding team member:", error);
+      toast.error("Error adding team member.");
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    if (!isDirty) {
+      toast.success("No changes to save.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/team/save/`,
+        { teamMembers },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Changes saved successfully!");
+      setIsDirty(false);
+      if (onComplete) onComplete();
+    } catch (error) {
+      console.error("Error saving changes:", error);
+      toast.error("Error saving changes.");
     }
   };
 
   return (
     <div className={styles.teamContainer}>
+      <ToastContainer />
       <h2>Team</h2>
       <p>
         Get investors excited about your team. Write about specific
@@ -213,7 +246,14 @@ const Team = ({ campaignId }) => {
         ))}
       </motion.div>
 
-      <button className={styles.saveBtn}>Save Changes</button>
+      <button
+        className={styles.saveBtn}
+        onClick={handleSaveChanges}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        Save Changes
+      </button>
     </div>
   );
 };

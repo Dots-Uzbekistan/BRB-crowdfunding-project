@@ -47,11 +47,10 @@ const UpdateCampaign = () => {
     <div>
       <Navbar />
       <div className={styles.updateCampaignContainer}>
-        <a href="#" className={styles.backButton}>
+        <a href="/dashboard" className={styles.backButton}>
           &lt; Back
         </a>
         <h2 className={styles.header}>Post update for Campaign ID: {id}</h2>{" "}
-        {/* Display Campaign ID */}
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
             <label>Title</label>

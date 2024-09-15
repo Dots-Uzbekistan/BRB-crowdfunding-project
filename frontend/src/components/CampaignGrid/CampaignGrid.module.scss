@@ -91,7 +91,7 @@
   z-index: 1;
   transition: 0.3s all ease;
   opacity: 0;
-  font-size: 20px;
+  font-size: 14px;
   line-height: 1.1;
   display: grid;
 
@@ -100,12 +100,13 @@
   .btn_overlay {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
     button {
       padding: 5px 15px;
       background: transparent;
       border-radius: 10px;
-      font-size: 16px;
+      font-size: 12px;
       font-weight: 600;
       border: 3px solid black;
     }
@@ -113,7 +114,7 @@
 }
 
 .campaignCard:hover .hoverOverlay {
-  height: 80%;
+  height: 90%;
   opacity: 1;
 }
 

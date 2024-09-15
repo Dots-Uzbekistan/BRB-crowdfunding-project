@@ -11,16 +11,17 @@ import { ThreeDots } from "react-loader-spinner";
 const EditCampaign = () => {
   const { id } = useParams();
   const [campaign, setCampaign] = useState(null);
+  const [registrationSteps, setRegistrationSteps] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCampaign = async () => {
+    const fetchCampaignAndSteps = async () => {
       const token = localStorage.getItem("token");
 
       try {
-        const response = await axios.get(
+        const campaignResponse = await axios.get(
           `http://161.35.19.77:8001/api/founder/campaigns/${id}/`,
           {
             headers: {
@@ -28,7 +29,17 @@ const EditCampaign = () => {
             },
           }
         );
-        setCampaign(response.data);
+        setCampaign(campaignResponse.data);
+
+        const stepsResponse = await axios.get(
+          `http://161.35.19.77:8001/api/founder/campaigns/${id}/registration-steps/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setRegistrationSteps(stepsResponse.data);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           localStorage.removeItem("token");
@@ -41,7 +52,7 @@ const EditCampaign = () => {
       }
     };
 
-    fetchCampaign();
+    fetchCampaignAndSteps();
   }, [id, navigate]);
 
   if (loading) {
@@ -69,7 +80,7 @@ const EditCampaign = () => {
         </Link>
         <h1>Edit Campaign</h1>
       </div>
-      <Tabs campaign={campaign} />
+      <Tabs campaign={campaign} registrationSteps={registrationSteps} />
     </motion.div>
   );
 };

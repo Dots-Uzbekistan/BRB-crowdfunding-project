@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "./Pitch.module.scss";
 
-const Pitch = ({ campaignId }) => {
+const Pitch = ({ campaignId, onComplete }) => {
   const [pitch, setPitch] = useState("");
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
@@ -21,7 +23,7 @@ const Pitch = ({ campaignId }) => {
             },
           }
         );
-        setPitch(response.data.pitch); // Set the pitch content from the API
+        setPitch(response.data.pitch);
       } catch (error) {
         console.error("Error fetching the pitch:", error);
       } finally {
@@ -34,9 +36,9 @@ const Pitch = ({ campaignId }) => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/pitch/`,
-        { pitch }, // Send the updated pitch content to the API
+        { pitch },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,14 +46,17 @@ const Pitch = ({ campaignId }) => {
           },
         }
       );
-      console.log("Pitch updated:", response.data);
+      toast.success("Pitch updated successfully.");
+      if (onComplete) onComplete();
     } catch (error) {
       console.error("Error updating the pitch:", error);
+      toast.error("Error updating the pitch.");
     }
   };
 
   return (
     <div className={styles["pitch-container"]}>
+      <ToastContainer />
       <div className={styles.title_pitch}>
         <h1>Pitch</h1>
         <p>
@@ -60,16 +65,14 @@ const Pitch = ({ campaignId }) => {
         </p>
       </div>
       <div>
-        <div>
-          <ReactQuill
-            className={styles["quill-editor"]}
-            theme="snow"
-            value={pitch}
-            onChange={setPitch}
-            modules={Pitch.modules}
-            formats={Pitch.formats}
-          />
-        </div>
+        <ReactQuill
+          className={styles["quill-editor"]}
+          theme="snow"
+          value={pitch}
+          onChange={setPitch}
+          modules={Pitch.modules}
+          formats={Pitch.formats}
+        />
         <button className={styles["save-button"]} onClick={handleSave}>
           Save Changes
         </button>
@@ -78,7 +81,6 @@ const Pitch = ({ campaignId }) => {
   );
 };
 
-// Customizing toolbar options
 Pitch.modules = {
   toolbar: [
     [{ header: "1" }, { header: "2" }, { font: [] }],

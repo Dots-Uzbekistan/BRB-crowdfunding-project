@@ -1,17 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import styles from "./Contract.module.scss"; // Import CSS module for styling
+import styles from "./Contract.module.scss";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const Contract = ({ campaignId }) => {
+const Contract = ({ campaignId, onComplete }) => {
   const [contractFields, setContractFields] = useState({
-    investment_type: "equity", // Default to equity
+    investment_type: "equity",
     valuation_cap: "",
   });
 
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  // Get token from localStorage
   const token = localStorage.getItem("token");
 
   const handleInputChange = (e) => {
@@ -24,18 +22,23 @@ const Contract = ({ campaignId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSuccessMessage("");
-    setErrorMessage("");
+
+    const formattedValuationCap = parseFloat(
+      contractFields.valuation_cap.replace(/[^0-9.]/g, "")
+    );
+
+    if (isNaN(formattedValuationCap)) {
+      toast.error("Valuation cap must be a valid number.");
+      return;
+    }
 
     const payload = {
       investment_type: contractFields.investment_type,
-      valuation_cap: parseFloat(
-        contractFields.valuation_cap.replace(/[^0-9.]/g, "")
-      ),
+      valuation_cap: formattedValuationCap,
     };
 
     try {
-      await axios.patch(
+      const response = await axios.patch(
         `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/edit/`,
         payload,
         {
@@ -45,26 +48,42 @@ const Contract = ({ campaignId }) => {
           },
         }
       );
-      setSuccessMessage("Campaign contract updated successfully!");
+      console.log("API Response:", response.data);
+      toast.success("Campaign contract updated successfully!");
+      if (onComplete) onComplete();
     } catch (error) {
-      console.error(
-        "Error updating contract:",
-        error.response?.data || error.message
-      );
-      setErrorMessage("Failed to update contract. Please try again.");
+      let errorMessage = "An unknown error occurred.";
+
+      if (error.response) {
+        if (error.response.headers["content-type"].includes("text/html")) {
+          errorMessage = "Received unexpected HTML response from the server.";
+        } else {
+          errorMessage = error.response.data?.message || error.message;
+        }
+      } else if (error.request) {
+        errorMessage = "No response received from the server.";
+      } else {
+        errorMessage = error.message;
+      }
+
+      console.error("Error updating contract:", {
+        status: error.response?.status,
+        message: errorMessage,
+        data: error.response?.data,
+        headers: error.response?.headers,
+      });
+      toast.error(`Failed to update contract. ${errorMessage}`);
     }
   };
 
   return (
     <div className={styles.contractFormContainer}>
       <h1>Contract</h1>
-
       <form onSubmit={handleSubmit} className={styles.contractForm}>
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>
             Choose an investment contract
           </label>
-
           <div className={styles.radioGroup}>
             <label className={styles.radioLabel}>
               <input
@@ -77,7 +96,6 @@ const Contract = ({ campaignId }) => {
               <span className={styles.radioCustom}></span>
               <p>Equity based fundraising</p>
             </label>
-
             <label className={styles.radioLabel}>
               <input
                 type="radio"
@@ -91,7 +109,6 @@ const Contract = ({ campaignId }) => {
             </label>
           </div>
         </div>
-
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>
             What is your valuation cap?
@@ -101,7 +118,6 @@ const Contract = ({ campaignId }) => {
             valuation at which convertible debt or notes will convert into
             equity during a future financing round.
           </p>
-
           <div className={styles.valuationCapInput}>
             <span className={styles.dollarSign}>$</span>
             <input
@@ -115,16 +131,10 @@ const Contract = ({ campaignId }) => {
             />
           </div>
         </div>
-
         <button type="submit" className={styles.saveButton}>
           Save Changes
         </button>
       </form>
-
-      {successMessage && (
-        <p className={styles.successMessage}>{successMessage}</p>
-      )}
-      {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
     </div>
   );
 };

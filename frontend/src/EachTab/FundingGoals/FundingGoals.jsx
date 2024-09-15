@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import styles from "./FundingGoals.module.scss"; // Import CSS module for styling
+import { toast } from "react-toastify";
+import styles from "./FundingGoals.module.scss";
 
 const FundingGoals = ({ campaignId }) => {
   const [fundingFields, setFundingFields] = useState({
@@ -14,7 +15,6 @@ const FundingGoals = ({ campaignId }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Get token from localStorage
   const token = localStorage.getItem("token");
 
   const handleInputChange = (e) => {
@@ -52,14 +52,19 @@ const FundingGoals = ({ campaignId }) => {
           },
         }
       );
-      setSuccessMessage("Funding goals updated successfully!");
+      toast.success("Funding goals updated successfully!");
+      if (onComplete) onComplete();
     } catch (error) {
       console.error(
         "Error updating funding goals:",
         error.response?.data || error.message
       );
-      setErrorMessage("Failed to update funding goals. Please try again.");
+      toast.error("Failed to update funding goals. Please try again.");
     }
+  };
+
+  const onComplete = () => {
+    console.log("Update complete.");
   };
 
   return (

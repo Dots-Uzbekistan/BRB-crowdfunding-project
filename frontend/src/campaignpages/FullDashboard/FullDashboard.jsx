@@ -4,12 +4,16 @@ import styles from "./FullDashboard.module.scss";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FullDashboard = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [activeAccordion, setActiveAccordion] = useState(0);
   const [approvalStatus, setApprovalStatus] = useState(null);
+  const [termsAndConditionsAccepted, setTermsAndConditionsAccepted] =
+    useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     method: "card",
@@ -19,7 +23,7 @@ const FullDashboard = () => {
     account_number: "",
     routing_number: "",
     bank_name: "",
-    raised_amount: 0, // Default value for raised_amount
+    raised_amount: 0,
   });
 
   useEffect(() => {
@@ -97,9 +101,33 @@ const FullDashboard = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("Withdrawal request successful:", response.data);
+      toast.success("Withdrawal request submitted successfully!");
     } catch (error) {
+      toast.error("Error submitting withdrawal request.");
       console.error("Error submitting withdrawal request:", error);
+    }
+  };
+
+  const toggleTermsAndConditions = async () => {
+    const token = localStorage.getItem("token");
+    if (!token || !selectedCampaign) {
+      console.error("No token or campaign selected");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://161.35.19.77:8001/api/founder/campaigns/${selectedCampaign}/toggle-terms/`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setTermsAndConditionsAccepted(response.data.terms_and_conditions);
+      toast.success("Terms and Conditions updated!");
+    } catch (error) {
+      toast.error("Error updating Terms and Conditions.");
+      console.error("Error toggling terms and conditions:", error);
     }
   };
 
@@ -125,8 +153,8 @@ const FullDashboard = () => {
           <>
             <h1 className={styles.title_accordition_name}>Screening</h1>
             <p>
-              Your campaign is currently under screening process. We will send
-              you a notification when the process is over
+              Your campaign is currently under screening process. <br /> We will
+              send you a notification when the process is over
             </p>
             <h2>Current status:</h2>
             <button className={styles.button}>{getButtonText()}</button>
@@ -159,6 +187,8 @@ const FullDashboard = () => {
                 id="agreement"
                 name="agreement"
                 className={styles.checkbox}
+                checked={termsAndConditionsAccepted}
+                onChange={toggleTermsAndConditions}
               />
               <label htmlFor="agreement" className={styles.checkbox_label}>
                 I agree to the Terms & Campaign Agreement
@@ -364,6 +394,7 @@ const FullDashboard = () => {
           </div>
         ))}
       </div>
+      <ToastContainer />
     </div>
   );
 };

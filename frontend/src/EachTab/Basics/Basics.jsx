@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import styles from "./Basics.module.scss";
 
-const Basics = ({ campaignId }) => {
+const Basics = ({ campaignId, onComplete }) => {
   const [formData, setFormData] = useState({
     name: "",
     title: "",
@@ -18,6 +19,7 @@ const Basics = ({ campaignId }) => {
   const [media, setMedia] = useState({ image: null, video: null });
   const [mediaError, setMediaError] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [isBasicsCompleted, setIsBasicsCompleted] = useState(false);
 
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
@@ -44,7 +46,7 @@ const Basics = ({ campaignId }) => {
           name: data.name || "",
           title: data.title || "",
           description: data.description || "",
-          categories: data.categories[0]?.id || "", // Default to first category or empty
+          categories: data.categories[0]?.id || "",
           project_state: data.project_state || "",
           location: data.location || "",
         });
@@ -68,6 +70,20 @@ const Basics = ({ campaignId }) => {
       fetchData();
     }
   }, [campaignId, token]);
+
+  useEffect(() => {
+    if (!isFormIncomplete()) {
+      setIsBasicsCompleted(true);
+    } else {
+      setIsBasicsCompleted(false);
+    }
+  }, [formData]);
+
+  useEffect(() => {
+    if (isBasicsCompleted) {
+      onComplete();
+    }
+  }, [isBasicsCompleted, onComplete]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -107,18 +123,25 @@ const Basics = ({ campaignId }) => {
       setMedia((prevMedia) => ({ ...prevMedia, video: file }));
       setMediaError(null);
     } else {
-      setMediaError(
-        `Invalid file type for ${type}. Please upload a valid ${type}.`
-      );
+      setMediaError(`Invalid file type for ${type}. Please upload a valid ${type}.`);
     }
+  };
+
+  const isFormIncomplete = () => {
+    const requiredFields = ["name", "title", "description", "categories", "project_state", "location"];
+    return requiredFields.some((field) => !formData[field]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isFormIncomplete()) {
+      toast.warn("Please complete all required fields.");
+      return;
+    }
+
     try {
       setLoading(true);
 
-      // Filter out only modified fields
       const updatedData = Object.keys(formData).reduce((acc, key) => {
         if (formData[key] !== initialData[key]) {
           acc[key] = formData[key];
@@ -127,7 +150,7 @@ const Basics = ({ campaignId }) => {
       }, {});
 
       if (Object.keys(updatedData).length > 0) {
-        const response = await axios.patch(
+        await axios.patch(
           `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/edit/`,
           updatedData,
           {
@@ -137,8 +160,7 @@ const Basics = ({ campaignId }) => {
             },
           }
         );
-        console.log("Patch Response:", response.data);
-        alert("Campaign updated successfully");
+        toast.success("Campaign updated successfully.");
       }
 
       if (media.image || media.video) {
@@ -155,11 +177,12 @@ const Basics = ({ campaignId }) => {
             },
           }
         );
-        alert("Media uploaded successfully");
+        toast.success("Media uploaded successfully.");
       }
     } catch (error) {
       console.error("Patch Error:", error);
       setError(error.response ? error.response.data : error.message);
+      toast.error("An error occurred while updating the campaign.");
     } finally {
       setLoading(false);
     }
@@ -167,6 +190,7 @@ const Basics = ({ campaignId }) => {
 
   return (
     <div className={styles.container}>
+      <ToastContainer />
       <h1>Update Campaign Basics</h1>
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -208,10 +232,7 @@ const Basics = ({ campaignId }) => {
                 checked={formData.categories === category.id}
                 onChange={handleChange}
               />
-              <label
-                htmlFor={`category-${category.id}`}
-                className={styles.customRadio}
-              >
+              <label htmlFor={`category-${category.id}`} className={styles.customRadio}>
                 <span className={styles.radioButton}></span>
                 {category.name}
               </label>
@@ -273,7 +294,7 @@ const Basics = ({ campaignId }) => {
         </div>
         {mediaError && <p className={styles.error}>{mediaError}</p>}
         <button type="submit" className={styles.button}>
-          Update
+          Update Campaign
         </button>
       </form>
     </div>

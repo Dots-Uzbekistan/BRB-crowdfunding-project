@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "./ContactsLinks.module.scss"; // Import SCSS module
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import styles from "./ContactsLinks.module.scss";
 
-const ContactsLinks = ({ campaignId }) => {
+const ContactsLinks = ({ campaignId, onComplete }) => {
   const [links, setLinks] = useState({
     website: "",
     linkedin: "",
     facebook: "",
     telegram: "",
     instagram: "",
-    custom: "https://fundflow.com/campaign-name", // Default custom link
+    custom: "https://fundflow.com/campaign-name",
   });
-  const [newCustomLink, setNewCustomLink] = useState(links.custom); // Editable custom link
+  const [newCustomLink, setNewCustomLink] = useState(links.custom);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [saveStatus, setSaveStatus] = useState(""); // Track save status
+  const [saveStatus, setSaveStatus] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -62,7 +64,6 @@ const ContactsLinks = ({ campaignId }) => {
     fetchLinks();
   }, [campaignId, token]);
 
-  // Create payload for POST request
   const createPayload = () => {
     const payload = [];
     if (links.website)
@@ -77,15 +78,11 @@ const ContactsLinks = ({ campaignId }) => {
       payload.push({ platform: "instagram", link: links.instagram });
     if (newCustomLink)
       payload.push({ platform: "custom", link: newCustomLink });
-
     return payload;
   };
 
-  // Save updated links
   const handleSaveLinks = async () => {
-    const payload = createPayload(); // Only send non-empty fields
-    console.log("Payload being sent:", payload); // Log the payload for debugging
-
+    const payload = createPayload();
     try {
       const response = await axios.post(
         `http://161.35.19.77:8001/api/founder/campaigns/${campaignId}/links/`,
@@ -96,11 +93,11 @@ const ContactsLinks = ({ campaignId }) => {
           },
         }
       );
-      console.log("Success:", response.data);
-      setSaveStatus("Saved!"); // Set the success message
-      setTimeout(() => setSaveStatus(""), 3000); // Clear the message after 3 seconds
+      toast.success("Links saved successfully!");
+      if (onComplete) onComplete();
     } catch (err) {
       console.error("Error saving links:", err.response?.data || err.message);
+      toast.error("Error saving links.");
       setError(err);
     }
   };
@@ -110,6 +107,7 @@ const ContactsLinks = ({ campaignId }) => {
 
   return (
     <div className={styles.container}>
+      <ToastContainer />
       <h1 className={styles.heading}>Contacts and Links</h1>
       <div className={styles.linksSection}>
         <div className={styles.inputGroup}>
@@ -118,7 +116,7 @@ const ContactsLinks = ({ campaignId }) => {
             <input
               type="text"
               value={newCustomLink}
-              onChange={(e) => setNewCustomLink(e.target.value)} // Allow editing of custom link
+              onChange={(e) => setNewCustomLink(e.target.value)}
               className={styles.input}
             />
           </div>
@@ -146,7 +144,6 @@ const ContactsLinks = ({ campaignId }) => {
         <button onClick={handleSaveLinks} className={styles.saveBtn}>
           Save Changes
         </button>
-        {saveStatus && <p className={styles.saveMessage}>{saveStatus}</p>}
       </div>
     </div>
   );
